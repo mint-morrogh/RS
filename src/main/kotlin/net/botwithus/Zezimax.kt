@@ -16,19 +16,18 @@ class Zezimax(
     name: String,
     scriptConfig: ScriptConfig,
     scriptDefinition: ScriptDefinition
-) : LoopingScript (name, scriptConfig, scriptDefinition) {
+) : LoopingScript(name, scriptConfig, scriptDefinition) {
 
     private val random: Random = Random()
     var botState: BotState = BotState.IDLE
     var someBoolean: Boolean = true
 
-
     enum class BotState {
-        //define your bot states here
+        // Define your bot states here
         IDLE,
         SKILLING,
         BANKING,
-        //etc..
+        // etc..
     }
 
     override fun initialize(): Boolean {
@@ -41,7 +40,7 @@ class Zezimax(
     override fun onLoop() {
         val player = Client.getLocalPlayer()
         if (Client.getGameState() != Client.GameState.LOGGED_IN || player == null || botState == BotState.IDLE) {
-            Execution.delay(random.nextLong(2500,5500))
+            Execution.delay(random.nextLong(2500, 5500))
             return
         }
         when (botState) {
@@ -50,38 +49,39 @@ class Zezimax(
                 return
             }
             BotState.BANKING -> {
-                //Execution.delay(handleBanking(player))
+                // Execution.delay(handleBanking(player))
                 return
             }
             BotState.IDLE -> {
                 println("We're idle!")
-                Execution.delay(random.nextLong(1500,5000))
+                Execution.delay(random.nextLong(1500, 5000))
             }
         }
-        return
     }
 
     private fun handleSkilling(player: LocalPlayer): Long {
-        //for example, if skilling progress interface is open, return a randomized value to keep waiting.
+        // For example, if skilling progress interface is open, return a randomized value to keep waiting.
         if (Interfaces.isOpen(1251))
             return random.nextLong(250, 1500)
 
-        // Check the players adrenaline
+        // Check the player's adrenaline
         if (player.adrenaline < 500) {
             println("Player has less than 50% adrenaline")
         }
 
-        //if our inventory is full, lets bank.
+        // If our inventory is full, let's bank.
         if (Backpack.isFull()) {
             println("Going to banking state!")
             botState = BotState.BANKING
             return random.nextLong(250, 1500)
         }
-        //click my tree, mine my rock, etc...
+
+        // Click my tree, mine my rock, etc...
         val tree: SceneObject? = SceneObjectQuery.newQuery().name("Tree").option("Chop").results().nearest()
-        if (tree != null) {
-            println("Interacted tree: ${tree.interact("Chop")}")
+        tree?.let {
+            println("Interacted with tree: ${it.interact("Chop")}")
         }
+
         return random.nextLong(1500, 3000)
     }
 

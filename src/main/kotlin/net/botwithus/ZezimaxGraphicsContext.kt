@@ -8,7 +8,7 @@ import net.botwithus.rs3.script.ScriptGraphicsContext
 class ZezimaxGraphicsContext(
     private val script: Zezimax,
     console: ScriptConsole
-) : ScriptGraphicsContext (console) {
+) : ScriptGraphicsContext(console) {
 
     override fun drawSettings() {
         super.drawSettings()
@@ -16,11 +16,11 @@ class ZezimaxGraphicsContext(
             if (ImGui.BeginTabBar("My bar", ImGuiWindowFlag.None.value)) {
                 if (ImGui.BeginTabItem("Settings", ImGuiWindowFlag.None.value)) {
                     ImGui.Text("Welcome to my script!")
-                    ImGui.Text("My scripts state is: " + script.botState)
+                    ImGui.Text("My script's state is: " + script.botState)
                     ImGui.EndTabItem()
                 }
                 if (ImGui.BeginTabItem("Other", ImGuiWindowFlag.None.value)) {
-                    script.someBoolean = ImGui.Checkbox("Are you cool?", script.someBoolean)
+                    script.someBoolean = ImGui.Checkbox("Are you dumb?", script.someBoolean)
                     ImGui.EndTabItem()
                 }
                 ImGui.EndTabBar()
