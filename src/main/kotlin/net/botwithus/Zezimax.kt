@@ -12,7 +12,7 @@ import net.botwithus.rs3.script.LoopingScript
 import net.botwithus.rs3.script.config.ScriptConfig
 import java.util.*
 
-class KotlinSkeleton(
+class Zezimax(
     name: String,
     scriptConfig: ScriptConfig,
     scriptDefinition: ScriptDefinition
@@ -34,7 +34,7 @@ class KotlinSkeleton(
     override fun initialize(): Boolean {
         super.initialize()
         // Set the script graphics context to our custom one
-        this.sgc = KotlinSkeletonGraphicsContext(this, console)
+        this.sgc = ZezimaxGraphicsContext(this, console)
         return true
     }
 

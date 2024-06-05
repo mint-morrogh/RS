@@ -5,8 +5,8 @@ import net.botwithus.rs3.imgui.ImGuiWindowFlag
 import net.botwithus.rs3.script.ScriptConsole
 import net.botwithus.rs3.script.ScriptGraphicsContext
 
-class KotlinSkeletonGraphicsContext(
-    private val script: KotlinSkeleton,
+class ZezimaxGraphicsContext(
+    private val script: Zezimax,
     console: ScriptConsole
 ) : ScriptGraphicsContext (console) {
 
