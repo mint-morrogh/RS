@@ -3,15 +3,15 @@ package net.botwithus
 import net.botwithus.api.game.hud.inventories.Backpack
 import net.botwithus.internal.scripts.ScriptDefinition
 import net.botwithus.rs3.game.Client
-import net.botwithus.rs3.game.hud.interfaces.Interfaces
-import net.botwithus.rs3.game.queries.builders.objects.SceneObjectQuery
+import net.botwithus.rs3.game.Coordinate
+import net.botwithus.rs3.game.Area
+import net.botwithus.rs3.game.movement.Movement
+import net.botwithus.rs3.game.movement.NavPath
+import net.botwithus.rs3.game.movement.TraverseEvent
 import net.botwithus.rs3.game.scene.entities.characters.player.LocalPlayer
-import net.botwithus.rs3.game.scene.entities.`object`.SceneObject
 import net.botwithus.rs3.script.Execution
 import net.botwithus.rs3.script.LoopingScript
 import net.botwithus.rs3.script.config.ScriptConfig
-import net.botwithus.rs3.game.movement.Movement
-import net.botwithus.rs3.game.Coordinate
 import java.util.*
 
 class Zezimax(
@@ -22,12 +22,18 @@ class Zezimax(
 
     private val random: Random = Random()
     var botState: BotState = BotState.IDLE
-    var someBoolean: Boolean = true
+    var someBoolean: Boolean = true // Ensure this is declared as var
 
     enum class BotState {
         IDLE,
         WALKING_TO_FALADOR,
     }
+
+    // Define the area for the center of Falador
+    private val faladorCenter = Area.Rectangular(
+        Coordinate(2961, 3376, 0), // Top-left corner
+        Coordinate(2971, 3386, 0)  // Bottom-right corner
+    )
 
     override fun initialize(): Boolean {
         super.initialize()
@@ -58,56 +64,43 @@ class Zezimax(
     }
 
     private fun walkToFalador(player: LocalPlayer) {
-        val faladorCenter = Coordinate(2965, 3380, 0) // Global coordinates of the center of Falador
         println("Current Player Coordinates: ${player.coordinate}")
 
-        val maxStepDistance = 20 // Maximum step distance in tiles
+        // If the player is within the target area, switch to IDLE state
+        if (faladorCenter.contains(player.coordinate)) {
+            println("Reached Falador center.")
+            botState = BotState.IDLE
+            return
+        }
 
-        val currentCoord = player.coordinate
+        // Find a path to a random walkable coordinate within the target area
+        val targetCoord = faladorCenter.randomWalkableCoordinate
+        val path = NavPath.resolve(targetCoord)
 
-        // Calculate the distance to the target
-        val distanceX = faladorCenter.x - currentCoord.x
-        val distanceY = faladorCenter.y - currentCoord.y
+        if (path == null) {
+            println("Failed to find path to Falador center.")
+            return
+        }
 
-        // Calculate the next step coordinates
-        val stepX = if (Math.abs(distanceX) > maxStepDistance) {
-            currentCoord.x + (if (distanceX > 0) maxStepDistance else -maxStepDistance)
+        println("Navigating to Falador Center Coordinates: $targetCoord")
+
+        val results = Movement.traverse(path)
+        if (results == TraverseEvent.State.NO_PATH) {
+            println("Failed to traverse path to Falador center.")
         } else {
-            faladorCenter.x
+            println("Traversing path to Falador center.")
         }
 
-        val stepY = if (Math.abs(distanceY) > maxStepDistance) {
-            currentCoord.y + (if (distanceY > 0) maxStepDistance else -maxStepDistance)
-        } else {
-            faladorCenter.y
-        }
-
-        println("Next Step Coordinates: StepX = $stepX, StepY = $stepY")
-
-        try {
-            Movement.walkTo(stepX, stepY, true) // Using minimap for longer steps
-            println("Invoked Movement.walkTo with coordinates: ($stepX, $stepY)")
-        } catch (e: Exception) {
-            println("Error invoking Movement.walkTo: ${e.message}")
-        }
-
-        val delay = random.nextLong(1000, 4000) // Random delay between 1 to 4 seconds
+        val delay = random.nextLong(3000, 13000) // Random delay between 3 to 13 seconds
         println("Delaying for $delay milliseconds")
         Execution.delay(delay)
 
-        // Check if the player has moved
-        if (player.coordinate.x == stepX && player.coordinate.y == stepY) {
-            println("Moved to next step.")
+        // Check if the player has moved significantly closer to the target
+        val newCoord = player.coordinate
+        if (faladorCenter.contains(newCoord)) {
+            println("Moved significantly closer to target.")
         } else {
-            println("Failed to move to next step. Current Coordinates: ${player.coordinate}")
-        }
-
-        // Check if the player reached the target
-        if (player.coordinate.x == faladorCenter.x && player.coordinate.y == faladorCenter.y) {
-            println("Reached Falador center.")
-            botState = BotState.IDLE
-        } else {
-            println("Continuing to Falador center.")
+            println("Failed to move significantly closer to target. Current Coordinates: $newCoord")
         }
     }
 }
