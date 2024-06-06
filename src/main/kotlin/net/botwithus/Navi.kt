@@ -46,7 +46,7 @@ fun walkToArea(area: Area.Rectangular, random: Random): Boolean {
         return false
     }
 
-    val delay = random.nextLong(3000, 8000) // Random delay between 3 to 13 seconds
+    val delay = random.nextLong(2000, 4000)
     println("Delaying for $delay milliseconds")
     Execution.delay(delay)
 

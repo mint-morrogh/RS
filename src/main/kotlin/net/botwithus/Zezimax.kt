@@ -32,11 +32,12 @@ class Zezimax(
         return true
     }
 
+    // Check to see if logged in
     override fun onLoop() {
         val player = Client.getLocalPlayer()
         if (Client.getGameState() != Client.GameState.LOGGED_IN || player == null || botState == BotState.IDLE) {
             println("Player not logged in or state is IDLE. Delaying execution.")
-            Execution.delay(random.nextLong(2500, 5500))
+            Execution.delay(random.nextLong(2500, 7500))
             return
         }
         when (botState) {
@@ -52,7 +53,7 @@ class Zezimax(
             }
             BotState.IDLE -> {
                 println("State: IDLE. Delaying execution.")
-                Execution.delay(random.nextLong(1500, 5000))
+                Execution.delay(random.nextLong(1500, 3000))
             }
         }
     }
