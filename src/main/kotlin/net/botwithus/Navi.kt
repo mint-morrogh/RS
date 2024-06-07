@@ -71,6 +71,34 @@ object Navi {
     )
     //////////////////////////////////
 
+    // Finding closest bank
+    private val bankAreas = listOf(
+        faladorWestBank,
+        faladorEastBank,
+        faladorSmithBank,
+        grandexchange,
+        varrockWestBank,
+        varrockEastBank,
+        lumbridgeTopFloopBank,
+        alkharidWestBank,
+        draynorBank,
+        edgevilleBank
+    )
+
+    fun getNearestBank(playerCoord: Coordinate): Area.Rectangular? {
+        return bankAreas.minByOrNull { it.center().distanceTo(playerCoord) }
+    }
+
+    private fun Area.Rectangular.center(): Coordinate {
+        val centerX = (topLeft.x + bottomRight.x) / 2
+        val centerY = (topLeft.y + bottomRight.y) / 2
+        return Coordinate(centerX, centerY, topLeft.z)
+    }
+
+    private fun Coordinate.distanceTo(other: Coordinate): Double {
+        return Math.sqrt(Math.pow((this.x - other.x).toDouble(), 2.0) + Math.pow((this.y - other.y).toDouble(), 2.0))
+    }
+
 
     // Define a utility function for walking to an area
     fun walkTo(area: Area.Rectangular): Boolean {
@@ -112,13 +140,53 @@ object Navi {
         return walkTo(faladorWestBank)
     }
 
-    fun walkToFaladorSmithBank(): Boolean {
+    fun walkToFaladorEastBank(): Boolean {
         botState = BotState.WALKING
-        return walkTo(faladorSmithBank)
+        return walkTo(faladorEastBank)
+    }
+
+    fun walkToVarrockWestBank(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(varrockWestBank)
+    }
+
+    fun walkToVarrockEastBank(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(varrockEastBank)
+    }
+
+    fun walkToDraynorBank(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(draynorBank)
+    }
+
+    fun walkToEdgevilleBank(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(edgevilleBank)
+    }
+
+    fun walkToAlkharidWestBank(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(alkharidWestBank)
+    }
+
+    fun walkToLumbridgeTopFloorBank(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(lumbridgeTopFloopBank)
+    }
+
+    fun walkToGrandExchange(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(grandexchange)
     }
 
     fun walkToMiningGuild(): Boolean {
         botState = BotState.WALKING
         return walkTo(faladorMiningGuild)
+    }
+
+    fun walkToFaladorSmithBank(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(faladorSmithBank)
     }
 }

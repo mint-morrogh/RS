@@ -42,6 +42,7 @@ class Zezimax(
 ) : LoopingScript(name, scriptConfig, scriptDefinition) {
 
     enum class ZezimaxBotState {
+        INITIALIZING,
         IDLE,
         MINING,
         NAVIGATING_TO_MINE,
@@ -49,14 +50,14 @@ class Zezimax(
         BANKING
     }
 
-    var botState: ZezimaxBotState = ZezimaxBotState.IDLE
+    var botState: ZezimaxBotState = ZezimaxBotState.INITIALIZING
     var someBoolean: Boolean = true
 
     override fun initialize(): Boolean {
         super.initialize()
         this.sgc = ZezimaxGraphicsContext(this, console)
-        botState = ZezimaxBotState.IDLE
-        println("Script initialized. State set to IDLE.")
+        botState = ZezimaxBotState.INITIALIZING
+        println("Script initialized. State set to INITIALIZING.")
         return true
     }
 
@@ -69,6 +70,11 @@ class Zezimax(
         }
 
         when (botState) {
+            ZezimaxBotState.INITIALIZING -> {
+                if (initializeBanking()) {
+                    botState = ZezimaxBotState.IDLE
+                }
+            }
             ZezimaxBotState.IDLE -> {
                 val miningLevel = Skills.MINING.level
                 if (miningLevel >= 60) {
@@ -103,6 +109,52 @@ class Zezimax(
         }
     }
 
+    private fun initializeBanking(): Boolean {
+        val player = Client.getLocalPlayer() ?: return false
+
+        val nearestBank = Navi.getNearestBank(player.coordinate) ?: return false
+
+        if (!nearestBank.contains(player.coordinate)) {
+            println("Walking to the nearest bank.")
+            val path = NavPath.resolve(nearestBank.randomWalkableCoordinate)
+            if (path != null && Movement.traverse(path) != TraverseEvent.State.NO_PATH) {
+                Execution.delay(Navi.random.nextLong(1000, 3000))
+                return false
+            }
+        }
+
+        if (!Bank.isOpen()) {
+            // Open the bank
+            val bankBooth: SceneObject? = SceneObjectQuery.newQuery().name("Bank booth", "Bank chest").results().nearest()
+            if (bankBooth != null && (bankBooth.interact("Bank") || bankBooth.interact("Use"))) {
+                println("Interacting with bank booth or chest.")
+                Execution.delayUntil(5000, Callable { Bank.isOpen() })
+            } else {
+                println("No bank booth or chest found or failed to interact.")
+                Execution.delay(Navi.random.nextLong(1500, 3000))
+                return false
+            }
+        }
+
+        // Deposit all items into the bank
+        if (Bank.isOpen()) {
+            println("Depositing all items.")
+            Execution.delay(Navi.random.nextLong(1000, 4000)) // Simulate deposit delay
+            Bank.depositAll()
+            Execution.delay(Navi.random.nextLong(1000, 4000)) // Simulate deposit delay
+
+            // Close the bank
+            Bank.close()
+            Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate bank closing delay
+            println("Initialization complete. Starting main script.")
+            return true
+        } else {
+            println("Bank is not open, retrying.")
+            Execution.delay(Navi.random.nextLong(1500, 3000))
+            return false
+        }
+    }
+
     inner class Mining {
         fun mine(player: LocalPlayer) {
             if (!Backpack.isFull()) {
@@ -123,7 +175,6 @@ class Zezimax(
             }
         }
     }
-
 
     inner class Banking {
         fun bank() {
@@ -149,16 +200,27 @@ class Zezimax(
             // Deposit all runite ore into the bank
             if (Bank.isOpen()) {
                 println("Depositing all runite ore.")
+                Execution.delay(Navi.random.nextLong(1000, 4000)) // Simulate deposit delay
                 Bank.depositAll("Runite ore")
                 Execution.delay(Navi.random.nextLong(1000, 4000)) // Simulate deposit delay
 
+                // Check the amount of Runite Ore in the bank
+                val runiteOreCount = Bank.getItems().filter { it.name == "Runite ore" }.sumBy { it.stackSize }
+                println("Runite ore count in bank: $runiteOreCount")
+
                 // Close the bank
                 Bank.close()
-                Execution.delay(Navi.random.nextLong(1000, 4000)) // Simulate bank closing delay
-                botState = ZezimaxBotState.NAVIGATING_TO_MINE
+                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate bank closing delay
+
+                if (runiteOreCount >= 300) {
+                    println("Collected 300 or more Runite Ore. Stopping script.")
+                    botState = ZezimaxBotState.IDLE
+                } else {
+                    botState = ZezimaxBotState.NAVIGATING_TO_MINE
+                }
             } else {
                 println("Bank is not open, retrying.")
-                Execution.delay(Navi.random.nextLong(1500, 4000))
+                Execution.delay(Navi.random.nextLong(1500, 3000))
             }
         }
     }
