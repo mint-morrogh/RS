@@ -66,8 +66,8 @@ object Navi {
         Coordinate(3094, 3499, 0)
     )
     val faladorMiningGuild = Area.Rectangular(
-        Coordinate(3029, 9733, 0),
-        Coordinate(3051, 9747, 0)
+        Coordinate(3022, 9735, 0),
+        Coordinate(3026, 9740, 0)
     )
     //////////////////////////////////
 
