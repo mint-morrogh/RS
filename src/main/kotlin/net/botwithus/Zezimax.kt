@@ -125,7 +125,7 @@ class Zezimax(
 
         if (!Bank.isOpen()) {
             // Open the bank
-            val bankBooth: SceneObject? = SceneObjectQuery.newQuery().name("Bank booth", "Bank chest").results().nearest()
+            val bankBooth: SceneObject? = SceneObjectQuery.newQuery().name("Bank booth", "Bank chest", "Counter").results().nearest()
             if (bankBooth != null && (bankBooth.interact("Bank") || bankBooth.interact("Use"))) {
                 println("Interacting with bank booth or chest.")
                 Execution.delayUntil(5000, Callable { Bank.isOpen() })
@@ -139,9 +139,9 @@ class Zezimax(
         // Deposit all items into the bank
         if (Bank.isOpen()) {
             println("Depositing all items.")
-            Execution.delay(Navi.random.nextLong(1000, 4000)) // Simulate deposit delay
+            Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
             Bank.depositAll()
-            Execution.delay(Navi.random.nextLong(1000, 4000)) // Simulate deposit delay
+            Execution.delay(Navi.random.nextLong(1000, 2000)) // Simulate deposit delay
 
             // Close the bank
             Bank.close()
@@ -186,7 +186,7 @@ class Zezimax(
 
             if (!Bank.isOpen()) {
                 // Open the bank
-                val bankBooth: SceneObject? = SceneObjectQuery.newQuery().name("Bank booth", "Bank chest").results().nearest()
+                val bankBooth: SceneObject? = SceneObjectQuery.newQuery().name("Bank booth", "Bank chest", "Counter").results().nearest()
                 if (bankBooth != null && (bankBooth.interact("Bank") || bankBooth.interact("Use"))) {
                     println("Interacting with bank booth or chest.")
                     Execution.delayUntil(5000, Callable { Bank.isOpen() })
@@ -200,17 +200,17 @@ class Zezimax(
             // Deposit all runite ore into the bank
             if (Bank.isOpen()) {
                 println("Depositing all runite ore.")
-                Execution.delay(Navi.random.nextLong(1000, 4000)) // Simulate deposit delay
+                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
                 Bank.depositAll("Runite ore")
-                Execution.delay(Navi.random.nextLong(1000, 4000)) // Simulate deposit delay
+                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
 
                 // Check the amount of Runite Ore in the bank
-                val runiteOreCount = Bank.getItems().filter { it.name == "Runite ore" }.sumBy { it.stackSize }
+                val runiteOreCount = Bank.getItems().filter { it.name == "Runite ore" }.sumOf { it.stackSize }
                 println("Runite ore count in bank: $runiteOreCount")
 
                 // Close the bank
                 Bank.close()
-                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate bank closing delay
+                Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
 
                 if (runiteOreCount >= 300) {
                     println("Collected 300 or more Runite Ore. Stopping script.")
