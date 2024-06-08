@@ -34,8 +34,8 @@ object Navi {
         Coordinate(3016, 3357, 0)
     )
     val faladorSmithBank = Area.Rectangular(
-        Coordinate(3058, 3337, 0),
-        Coordinate(3060, 3341, 0)
+        Coordinate(3059, 3338, 0),
+        Coordinate(3059, 3340, 0)
     )
     val grandexchange = Area.Rectangular(
         Coordinate(3162, 3481, 0),
@@ -66,8 +66,8 @@ object Navi {
         Coordinate(3094, 3499, 0)
     )
     val faladorMiningGuild = Area.Rectangular(
-        Coordinate(3022, 9735, 0),
-        Coordinate(3026, 9740, 0)
+        Coordinate(3022, 9737, 0),
+        Coordinate(3023, 9740, 0)
     )
     //////////////////////////////////
 
