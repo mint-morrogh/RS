@@ -44,13 +44,16 @@ class Zezimax(
     enum class ZezimaxBotState {
         INITIALIZING,
         IDLE,
+        START_MINING,
         MINING,
         NAVIGATING_TO_MINE,
         NAVIGATING_TO_BANK,
-        BANKING
+        MINING_BANKING,
+        START_SECOND_THING
     }
 
     var botState: ZezimaxBotState = ZezimaxBotState.INITIALIZING
+    private var decision: Int? = null
     var someBoolean: Boolean = true
 
     override fun initialize(): Boolean {
@@ -61,6 +64,12 @@ class Zezimax(
         return true
     }
 
+
+
+
+
+
+    // MAIN BOT LOOP //
     override fun onLoop() {
         val player = Client.getLocalPlayer()
         if (Client.getGameState() != Client.GameState.LOGGED_IN || player == null) {
@@ -77,15 +86,26 @@ class Zezimax(
             }
 
             ZezimaxBotState.IDLE -> {
-                val miningLevel = Skills.MINING.level
-                if (miningLevel >= 60) {
-                    botState = ZezimaxBotState.NAVIGATING_TO_MINE
-                } else {
-                    println("Mining level too low: $miningLevel")
-                    Execution.delay(Navi.random.nextLong(1500, 3000))
+                println("Bot state is IDLE. Decision: $decision")
+                when (decision) {
+                    0 ->
+                        // Mining
+                        botState = ZezimaxBotState.START_MINING
+                    1 ->
+                        // Something Else
+                        botState = ZezimaxBotState.IDLE
+                    else -> makeRandomDecision()
                 }
             }
 
+
+
+
+            // MINING STATES
+            ZezimaxBotState.START_MINING -> {
+                println("Decided to Mine....")
+                botState = ZezimaxBotState.NAVIGATING_TO_MINE
+            }
             ZezimaxBotState.NAVIGATING_TO_MINE -> {
                 if (Navi.walkToMiningGuild()) {
                     println("Reached mining guild.")
@@ -94,25 +114,40 @@ class Zezimax(
                     println("Walking to mining guild.")
                 }
             }
-
             ZezimaxBotState.NAVIGATING_TO_BANK -> {
                 if (Navi.walkToFaladorSmithBank()) {
                     println("Reached Falador smith bank.")
-                    botState = ZezimaxBotState.BANKING
+                    botState = ZezimaxBotState.MINING_BANKING
                 } else {
                     println("Walking to Falador smith bank.")
                 }
             }
-
             ZezimaxBotState.MINING -> {
                 Mining().mine(player)
             }
-
-            ZezimaxBotState.BANKING -> {
+            ZezimaxBotState.MINING_BANKING -> {
                 Banking().bank()
             }
+
+            ZezimaxBotState.START_SECOND_THING -> {
+                botState = ZezimaxBotState.INITIALIZING // decision tree here when ready
+                return
+            }
+
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     private fun initializeBanking(): Boolean {
         val player = Client.getLocalPlayer() ?: return false
@@ -156,6 +191,7 @@ class Zezimax(
             Bank.close()
             Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate bank closing delay
             println("Initialization complete. Starting main script.")
+            botState = ZezimaxBotState.IDLE
             return true
         } else {
             println("Bank is not open, retrying.")
@@ -163,16 +199,21 @@ class Zezimax(
             return false
         }
     }
-
     ///////////////////////////////////////////////////////////////
     //////////////// DECISION TREE IS HERE ////////////////////////
     private fun makeRandomDecision() {
-        val decision = Navi.random.nextInt(1) // Adjust range if more tasks are added
+        val decision = Navi.random.nextInt(2) // Adjust range if more tasks are added
+        println("Decision made: $decision")
         when (decision) {
             0 -> {
                 println("Selected task: Mining")
                 withdrawMiningSupplies()
-                botState = ZezimaxBotState.NAVIGATING_TO_MINE
+                botState = ZezimaxBotState.START_MINING
+            }
+            1 -> {
+                println("Selected task: Nothing... but made a random choice so thats cool.")
+                Execution.delay(Navi.random.nextLong(2500, 7500))
+                botState = ZezimaxBotState.START_SECOND_THING
             }
             // Add more cases for other tasks here
         }
@@ -209,6 +250,13 @@ class Zezimax(
             }
         }
     }
+
+
+
+
+
+
+
 
 
     inner class Mining {
@@ -321,9 +369,10 @@ class Zezimax(
                 Bank.close()
                 Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
 
-                if (runiteOreCount >= 300) {
-                    println("Collected 300 or more Runite Ore. Stopping script.")
-                    botState = ZezimaxBotState.IDLE // decision tree here when ready
+                if (runiteOreCount >= 100) {
+                    println("Collected 100 or more Runite Ore. Re-Initializing.")
+                    botState = ZezimaxBotState.INITIALIZING // decision tree here when ready
+                    return
                 } else {
                     botState = ZezimaxBotState.NAVIGATING_TO_MINE
                 }
