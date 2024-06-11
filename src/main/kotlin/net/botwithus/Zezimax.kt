@@ -34,7 +34,6 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.regex.Pattern
 
-
 class Zezimax(
     name: String,
     scriptConfig: ScriptConfig,
@@ -53,21 +52,14 @@ class Zezimax(
     }
 
     var botState: ZezimaxBotState = ZezimaxBotState.INITIALIZING
-    private var decision: Int? = null
     var someBoolean: Boolean = true
+    private var decision: Int? = null
 
     override fun initialize(): Boolean {
         super.initialize()
-        this.sgc = ZezimaxGraphicsContext(this, console)
-        botState = ZezimaxBotState.INITIALIZING
         println("Script initialized. State set to INITIALIZING.")
         return true
     }
-
-
-
-
-
 
     // MAIN BOT LOOP //
     override fun onLoop() {
@@ -87,23 +79,19 @@ class Zezimax(
 
             ZezimaxBotState.IDLE -> {
                 println("Bot state is IDLE. Decision: $decision")
-                when (decision) {
-                    0 ->
-                        // Mining
-                        botState = ZezimaxBotState.START_MINING
-                    1 ->
-                        // Something Else
-                        botState = ZezimaxBotState.IDLE
-                    else -> makeRandomDecision()
+                if (decision == null) {
+                    makeRandomDecision()
+                } else {
+                    when (decision) {
+                        0 -> botState = ZezimaxBotState.START_MINING
+                        1 -> botState = ZezimaxBotState.START_SECOND_THING
+                    }
                 }
             }
 
-
-
-
             // MINING STATES
             ZezimaxBotState.START_MINING -> {
-                println("Decided to Mine....")
+                println("Decided to Mine...")
                 botState = ZezimaxBotState.NAVIGATING_TO_MINE
             }
             ZezimaxBotState.NAVIGATING_TO_MINE -> {
@@ -112,6 +100,7 @@ class Zezimax(
                     botState = ZezimaxBotState.MINING
                 } else {
                     println("Walking to mining guild.")
+                    Execution.delay(Navi.random.nextLong(1000, 3000))
                 }
             }
             ZezimaxBotState.NAVIGATING_TO_BANK -> {
@@ -120,6 +109,7 @@ class Zezimax(
                     botState = ZezimaxBotState.MINING_BANKING
                 } else {
                     println("Walking to Falador smith bank.")
+                    Execution.delay(Navi.random.nextLong(1000, 3000))
                 }
             }
             ZezimaxBotState.MINING -> {
@@ -130,24 +120,12 @@ class Zezimax(
             }
 
             ZezimaxBotState.START_SECOND_THING -> {
+                println("Decided to do the second thing...")
                 botState = ZezimaxBotState.INITIALIZING // decision tree here when ready
                 return
             }
-
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     private fun initializeBanking(): Boolean {
         val player = Client.getLocalPlayer() ?: return false
@@ -191,7 +169,6 @@ class Zezimax(
             Bank.close()
             Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate bank closing delay
             println("Initialization complete. Starting main script.")
-            botState = ZezimaxBotState.IDLE
             return true
         } else {
             println("Bank is not open, retrying.")
@@ -199,19 +176,19 @@ class Zezimax(
             return false
         }
     }
+
     ///////////////////////////////////////////////////////////////
     //////////////// DECISION TREE IS HERE ////////////////////////
     private fun makeRandomDecision() {
-        val decision = Navi.random.nextInt(2) // Adjust range if more tasks are added
+        decision = Navi.random.nextInt(2) // Adjust range if more tasks are added
         println("Decision made: $decision")
         when (decision) {
             0 -> {
                 println("Selected task: Mining")
                 withdrawMiningSupplies()
-                botState = ZezimaxBotState.START_MINING
             }
             1 -> {
-                println("Selected task: Nothing... but made a random choice so thats cool.")
+                println("Selected task: Nothing... but made a random choice so that's cool.")
                 Execution.delay(Navi.random.nextLong(2500, 7500))
                 botState = ZezimaxBotState.START_SECOND_THING
             }
@@ -249,6 +226,8 @@ class Zezimax(
                 println("Could not find $itemName in the bank.")
             }
         }
+        // Move to start mining after withdrawing supplies
+        botState = ZezimaxBotState.START_MINING
     }
 
 
