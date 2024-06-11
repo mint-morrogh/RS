@@ -48,10 +48,14 @@ class Zezimax(
         NAVIGATING_TO_MINE,
         NAVIGATING_TO_BANK,
         MINING_BANKING,
-        START_SECOND_THING
+        START_SMITHING_ORE,
+        SMITHING_ORE
     }
 
-    var botState: ZezimaxBotState = ZezimaxBotState.INITIALIZING
+    companion object {
+        var botState: ZezimaxBotState = ZezimaxBotState.INITIALIZING
+    }
+
     var someBoolean: Boolean = true
     private var decision: Int? = null
 
@@ -84,7 +88,7 @@ class Zezimax(
                 } else {
                     when (decision) {
                         0 -> botState = ZezimaxBotState.START_MINING
-                        1 -> botState = ZezimaxBotState.START_SECOND_THING
+                        1 -> botState = ZezimaxBotState.START_SMITHING_ORE
                     }
                 }
             }
@@ -94,36 +98,47 @@ class Zezimax(
                 println("Decided to Mine...")
                 botState = ZezimaxBotState.NAVIGATING_TO_MINE
             }
+
             ZezimaxBotState.NAVIGATING_TO_MINE -> {
-                if (Navi.walkToMiningGuild()) {
-                    println("Reached mining guild.")
+                if (Navi.walkToFaladorLuminite()) {
+                    println("Reached Luminite.")
+                    println("Mining...")
                     botState = ZezimaxBotState.MINING
                 } else {
-                    println("Walking to mining guild.")
                     Execution.delay(Navi.random.nextLong(1000, 3000))
                 }
             }
+
             ZezimaxBotState.NAVIGATING_TO_BANK -> {
                 if (Navi.walkToFaladorSmithBank()) {
-                    println("Reached Falador smith bank.")
+                    println("Reached Falador Smith Bank.")
                     botState = ZezimaxBotState.MINING_BANKING
                 } else {
                     println("Walking to Falador smith bank.")
                     Execution.delay(Navi.random.nextLong(1000, 3000))
                 }
             }
+
             ZezimaxBotState.MINING -> {
-                Mining().mine(player)
-            }
-            ZezimaxBotState.MINING_BANKING -> {
-                Banking().bank()
+                Mining("Luminite rock", "Luminite", "Rune ore box").mine(player)
             }
 
-            ZezimaxBotState.START_SECOND_THING -> {
-                println("Decided to do the second thing...")
-                botState = ZezimaxBotState.INITIALIZING // decision tree here when ready
-                return
+            ZezimaxBotState.MINING_BANKING -> {
+                MiningBanking("Luminite", "Rune ore box", 300).bank()
             }
+
+            // SMITHING ORE STATES
+            ZezimaxBotState.START_SMITHING_ORE -> {
+                println("Decided to Smith Ore...")
+                depositOreInFurnace()
+                Execution.delay(Navi.random.nextLong(500, 2000))
+                botState = ZezimaxBotState.SMITHING_ORE
+            }
+
+            ZezimaxBotState.SMITHING_ORE -> {
+                smithOre()
+            }
+
         }
     }
 
@@ -133,7 +148,7 @@ class Zezimax(
         val nearestBank = Navi.getNearestBank(player.coordinate) ?: return false
 
         if (!nearestBank.contains(player.coordinate)) {
-            println("Walking to the nearest bank.")
+            println("Walking to the nearest bank...")
             val path = NavPath.resolve(nearestBank.randomWalkableCoordinate)
             if (path != null && Movement.traverse(path) != TraverseEvent.State.NO_PATH) {
                 Execution.delay(Navi.random.nextLong(1000, 3000))
@@ -180,185 +195,21 @@ class Zezimax(
     ///////////////////////////////////////////////////////////////
     //////////////// DECISION TREE IS HERE ////////////////////////
     private fun makeRandomDecision() {
-        decision = Navi.random.nextInt(2) // Adjust range if more tasks are added
+        decision = Navi.random.nextInt(1) // Adjust range if more tasks are added
         println("Decision made: $decision")
         when (decision) {
             0 -> {
                 println("Selected task: Mining")
-                withdrawMiningSupplies()
+                withdrawMiningSupplies("Rune ore box", 1)
             }
             1 -> {
-                println("Selected task: Nothing... but made a random choice so that's cool.")
-                Execution.delay(Navi.random.nextLong(2500, 7500))
-                botState = ZezimaxBotState.START_SECOND_THING
+                println("Selected task: Smithing Ore")
+                withdrawSmithingOreSupplies("Luminite" to null, "Runite ore" to null)
             }
             // Add more cases for other tasks here
         }
     }
-
-    private fun withdrawMiningSupplies() {
-        if (Bank.isOpen()) {
-            val itemName = "Rune ore box"
-            val quantity = 1
-
-            // Find the rune ore box in the bank
-            val runeOreBox = ComponentQuery.newQuery(517)
-                .itemName(itemName)
-                .results()
-                .firstOrNull()
-
-            if (runeOreBox != null) {
-                // Right-click the item and select "Withdraw-X"
-                val success = runeOreBox.interact("Withdraw-X")
-                println("Attempting Bank Withdraw for $itemName")
-
-                if (success) {
-                    // Type the quantity (1 in this case)
-                    Execution.delay(Navi.random.nextLong(1300, 2000)) // Short delay before typing
-                    GameInput.setTextInput(quantity.toString())
-                    Execution.delay(Navi.random.nextLong(1600, 2600)) // Simulate delay after typing
-
-                    println("Withdrew $quantity $itemName.")
-                } else {
-                    println("Failed to withdraw $itemName")
-                }
-            } else {
-                println("Could not find $itemName in the bank.")
-            }
-        }
-        // Move to start mining after withdrawing supplies
-        botState = ZezimaxBotState.START_MINING
-    }
-
-
-
-
-
-
-
-
-
-    inner class Mining {
-        private val oreBoxCapacity = 20 // for testing changed from 100
-        private var oresInBox = 0
-        val oreBox = InventoryItemQuery.newQuery().name("Rune ore box").results().firstOrNull()
-
-        fun mine(player: LocalPlayer) {
-            while (true) {
-                // Mining
-                while (!Backpack.isFull()) {
-                    val runeRock: SceneObject? = SceneObjectQuery.newQuery().name("Runite rock").results().nearest()
-                    if (runeRock != null && runeRock.interact("Mine")) {
-                        println("Mining rune rock...")
-                        Execution.delay(Navi.random.nextLong(6000, 14000)) // Simulate mining delay
-                    } else {
-                        println("No rune rock found or failed to interact.")
-                        Execution.delay(Navi.random.nextLong(1500, 3000))
-                    }
-                }
-
-                // Check if inventory is full during mining process
-                if (Backpack.isFull() && oreBox == null) {
-                    Execution.delay(Navi.random.nextLong(500, 1200))
-                    println("No ore box found, navigating to bank.")
-                    botState = ZezimaxBotState.NAVIGATING_TO_BANK
-                    return
-                } else {
-                    println("Found ore box: ${oreBox?.name}")
-                }
-
-
-                // Count the total number of runite ore in the inventory
-                if (Backpack.isFull() && oreBox != null && oresInBox < oreBoxCapacity) {
-                    val oresInInventory =
-                        InventoryItemQuery.newQuery().name("Runite ore").results().count { it.name == "Runite ore" }
-                    println("Ores in inventory: $oresInInventory")
-                    val oreBoxComponent =
-                        ComponentQuery.newQuery(1473).componentIndex(5).itemName(oreBox.name).option("Fill")
-                            .results().firstOrNull()
-                    if (oreBoxComponent != null && oreBoxComponent.interact("Fill")) {
-                        println("Filling ore box...")
-                        Execution.delay(Navi.random.nextLong(1500, 2200))
-                        oresInBox += oresInInventory
-                        println("Filled ore box. Total ores in box: $oresInBox / $oreBoxCapacity")
-                    }
-                } else {
-                    println("Ore box has reached known capacity.")
-                }
-                if (oreBox != null && oresInBox >= oreBoxCapacity && Backpack.isFull()) {
-                    println("Ore box and Backpack are full. Navigating to bank.")
-                    botState = ZezimaxBotState.NAVIGATING_TO_BANK
-                    return
-                }
-            }
-        }
-    }
-
-
-    inner class Banking {
-        fun bank() {
-            if (!Backpack.isFull()) {
-                println("Backpack is not full, should be mining.")
-                botState = ZezimaxBotState.NAVIGATING_TO_MINE
-                return
-            }
-
-            if (!Bank.isOpen()) {
-                // Open the bank
-                val bankBooth: SceneObject? =
-                    SceneObjectQuery.newQuery().name("Bank booth", "Bank chest", "Counter").results().nearest()
-                if (bankBooth != null && (bankBooth.interact("Bank") || bankBooth.interact("Use"))) {
-                    println("Interacting with bank booth or chest.")
-                    Execution.delayUntil(5000, Callable { Bank.isOpen() })
-                } else {
-                    println("No bank booth or chest found or failed to interact.")
-                    Execution.delay(Navi.random.nextLong(1500, 3000))
-                    return
-                }
-            }
-
-            // Deposit all runite ore and empty ore box into the bank
-            if (Bank.isOpen()) {
-                println("Depositing all runite ore.")
-                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
-                Bank.depositAll("Runite ore")
-                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
-
-                // Empty the ore box into the bank
-                val oreBox = InventoryItemQuery.newQuery().name("Rune ore box").results().firstOrNull()
-                if (oreBox != null) {
-                    val oreBoxComponent =
-                        ComponentQuery.newQuery(517).componentIndex(15).itemName(oreBox.name).option("Empty - ore")
-                            .results().firstOrNull()
-                    if (oreBoxComponent != null && oreBoxComponent.interact("Empty - ore")) {
-                        println("Emptying rune ore box.")
-                        Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate emptying delay
-                    } else {
-                        println("Failed to empty rune ore box.")
-                    }
-                } else {
-                    println("No rune ore box found in inventory.")
-                }
-
-                // Check the amount of Runite Ore in the bank
-                val runiteOreCount = Bank.getItems().filter { it.name == "Runite ore" }.sumOf { it.stackSize }
-                println("Runite ore count in bank: $runiteOreCount")
-
-                // Close the bank
-                Bank.close()
-                Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
-
-                if (runiteOreCount >= 100) {
-                    println("Collected 100 or more Runite Ore. Re-Initializing.")
-                    botState = ZezimaxBotState.INITIALIZING // decision tree here when ready
-                    return
-                } else {
-                    botState = ZezimaxBotState.NAVIGATING_TO_MINE
-                }
-            } else {
-                println("Bank is not open, retrying.")
-                Execution.delay(Navi.random.nextLong(1500, 3000))
-            }
-        }
-    }
 }
+
+
+

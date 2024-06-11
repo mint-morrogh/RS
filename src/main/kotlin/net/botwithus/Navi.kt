@@ -69,6 +69,14 @@ object Navi {
         Coordinate(3022, 9737, 0),
         Coordinate(3023, 9740, 0)
     )
+    val faladorLuminite = Area.Rectangular(
+        Coordinate(3038, 9761, 0),
+        Coordinate(3040, 9764, 0)
+    )
+    val faladorSmithingFurnace = Area.Rectangular(
+        Coordinate(3042, 3337, 0),
+        Coordinate(3047, 3338, 0)
+    )
     //////////////////////////////////
 
     // Finding closest bank
@@ -188,5 +196,13 @@ object Navi {
     fun walkToFaladorSmithBank(): Boolean {
         botState = BotState.WALKING
         return walkTo(faladorSmithBank)
+    }
+    fun walkToFaladorLuminite(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(faladorLuminite)
+    }
+    fun walkToFaladorSmithingFurnace(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(faladorSmithingFurnace)
     }
 }

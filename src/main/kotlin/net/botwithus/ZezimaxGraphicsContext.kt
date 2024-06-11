@@ -16,7 +16,7 @@ class ZezimaxGraphicsContext(
             if (ImGui.BeginTabBar("My bar", ImGuiWindowFlag.None.value)) {
                 if (ImGui.BeginTabItem("Settings", ImGuiWindowFlag.None.value)) {
                     ImGui.Text("Welcome to my script!")
-                    ImGui.Text("My script's state is: " + script.botState)
+                    ImGui.Text("My script's state is: " + Zezimax.botState)
                     ImGui.EndTabItem()
                 }
                 if (ImGui.BeginTabItem("Other", ImGuiWindowFlag.None.value)) {
