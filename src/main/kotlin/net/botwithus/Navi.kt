@@ -49,6 +49,10 @@ object Navi {
         Coordinate(3250, 3420, 0),
         Coordinate(3257, 3423, 0)
     )
+    val varrockEastMine = Area.Rectangular(
+        Coordinate(3287, 3364, 0),
+        Coordinate(3290, 3367, 0)
+    )
     val lumbridgeTopFloopBank = Area.Rectangular(
         Coordinate(3207, 3220, 2),
         Coordinate(3210, 3222, 2)
@@ -161,6 +165,11 @@ object Navi {
     fun walkToVarrockEastBank(): Boolean {
         botState = BotState.WALKING
         return walkTo(varrockEastBank)
+    }
+
+    fun walkToVarrockEastMine(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(varrockEastMine)
     }
 
     fun walkToDraynorBank(): Boolean {
