@@ -8,6 +8,7 @@ import net.botwithus.rs3.events.impl.SkillUpdateEvent
 import net.botwithus.rs3.game.Area
 import net.botwithus.rs3.game.Client
 import net.botwithus.rs3.game.Coordinate
+import net.botwithus.rs3.game.hud.interfaces.Interfaces
 import net.botwithus.rs3.game.minimenu.MiniMenu
 import net.botwithus.rs3.game.minimenu.actions.SelectableAction
 import net.botwithus.rs3.game.movement.Movement
@@ -57,7 +58,6 @@ class Zezimax(
     }
 
     var someBoolean: Boolean = true
-    private var decision: Int? = null
 
     override fun initialize(): Boolean {
         super.initialize()
@@ -82,33 +82,32 @@ class Zezimax(
             }
 
             ZezimaxBotState.IDLE -> {
-                println("Bot state is IDLE. Decision: $decision")
-                if (decision == null) {
-                    makeRandomDecision()
+                println("Bot state is IDLE. Decision: ${DecisionTree.decision}")
+                if (DecisionTree.decision == null) {
+                    DecisionTree.makeRandomDecision()
                 } else {
-                    when (decision) {
+                    when (DecisionTree.decision) {
                         0 -> botState = ZezimaxBotState.START_MINING
                         1 -> botState = ZezimaxBotState.START_SMITHING_ORE
                     }
                 }
             }
 
+
             // MINING STATES
             ZezimaxBotState.START_MINING -> {
                 println("Decided to Mine...")
                 botState = ZezimaxBotState.NAVIGATING_TO_MINE
             }
-
             ZezimaxBotState.NAVIGATING_TO_MINE -> {
-                if (Navi.walkToFaladorLuminite()) {
-                    println("Reached Luminite.")
+                if (Navi.walkToMiningGuild()) {
+                    println("Reached Rune.")
                     println("Mining...")
                     botState = ZezimaxBotState.MINING
                 } else {
                     Execution.delay(Navi.random.nextLong(1000, 3000))
                 }
             }
-
             ZezimaxBotState.NAVIGATING_TO_BANK -> {
                 if (Navi.walkToFaladorSmithBank()) {
                     println("Reached Falador Smith Bank.")
@@ -118,14 +117,13 @@ class Zezimax(
                     Execution.delay(Navi.random.nextLong(1000, 3000))
                 }
             }
-
             ZezimaxBotState.MINING -> {
-                Mining("Luminite rock", "Luminite", "Rune ore box").mine(player)
+                Mining("Runite rock", "Runite ore", "Rune ore box").mine(player)
+            }
+            ZezimaxBotState.MINING_BANKING -> {
+                MiningBanking("Runite ore", "Rune ore box", 150).bank()
             }
 
-            ZezimaxBotState.MINING_BANKING -> {
-                MiningBanking("Luminite", "Rune ore box", 300).bank()
-            }
 
             // SMITHING ORE STATES
             ZezimaxBotState.START_SMITHING_ORE -> {
@@ -138,20 +136,18 @@ class Zezimax(
             ZezimaxBotState.SMITHING_ORE -> {
                 smithOre()
             }
-
         }
     }
-
     private fun initializeBanking(): Boolean {
         val player = Client.getLocalPlayer() ?: return false
 
         val nearestBank = Navi.getNearestBank(player.coordinate) ?: return false
 
         if (!nearestBank.contains(player.coordinate)) {
-            println("Walking to the nearest bank...")
+            println("**INITIALIZING** Walking to the nearest Bank...")
             val path = NavPath.resolve(nearestBank.randomWalkableCoordinate)
             if (path != null && Movement.traverse(path) != TraverseEvent.State.NO_PATH) {
-                Execution.delay(Navi.random.nextLong(1000, 3000))
+                Execution.delay(Navi.random.nextLong(700, 1500))
                 return false
             }
         }
@@ -161,7 +157,7 @@ class Zezimax(
             val bankBooth: SceneObject? =
                 SceneObjectQuery.newQuery().name("Bank booth", "Bank chest", "Counter").results().nearest()
             if (bankBooth != null && (bankBooth.interact("Bank") || bankBooth.interact("Use"))) {
-                println("Interacting with bank booth or chest.")
+                println("**INITIALIZING** Pre Decision Tree Banking...")
                 Execution.delayUntil(5000, Callable { Bank.isOpen() })
             } else {
                 println("No bank booth or chest found or failed to interact.")
@@ -172,13 +168,13 @@ class Zezimax(
 
         // Deposit all items into the bank
         if (Bank.isOpen()) {
-            println("Depositing all items.")
+            println("**INITIALIZING** Depositing all items.")
             Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
             Bank.depositAll()
             Execution.delay(Navi.random.nextLong(2000, 4000)) // Simulate deposit delay
 
             // Make random decision on what to do next
-            makeRandomDecision()
+            DecisionTree.makeRandomDecision()
 
             // Close the bank
             Bank.close()
@@ -192,23 +188,105 @@ class Zezimax(
         }
     }
 
-    ///////////////////////////////////////////////////////////////
-    //////////////// DECISION TREE IS HERE ////////////////////////
-    private fun makeRandomDecision() {
-        decision = Navi.random.nextInt(1) // Adjust range if more tasks are added
-        println("Decision made: $decision")
-        when (decision) {
-            0 -> {
-                println("Selected task: Mining")
-                withdrawMiningSupplies("Rune ore box", 1)
+    fun smithOre() {
+        while (true) {
+            // Select bar in interface - component 37, 103, subcomponent 11 for "Rune bar"
+            val runeBarComponent = ComponentQuery.newQuery(37)
+                .componentIndex(103)
+                .subComponentIndex(11)
+                .results()
+                .firstOrNull()
+
+            if (runeBarComponent != null) {
+                Execution.delay(Navi.random.nextLong(400, 1000))
+                runeBarComponent.interact("Select Rune bar")
+                println("Selected Rune bar.")
+                Execution.delay(Navi.random.nextLong(400, 1000))
+            } else {
+                println("Rune bar component not found.")
             }
-            1 -> {
-                println("Selected task: Smithing Ore")
-                withdrawSmithingOreSupplies("Luminite" to null, "Runite ore" to null)
+
+            // Press begin project button - component 37, 163
+            val beginProjectButton = ComponentQuery.newQuery(37)
+                .componentIndex(163)
+                .results()
+                .firstOrNull()
+
+            if (beginProjectButton != null) {
+                Execution.delay(Navi.random.nextLong(400, 1000))
+                beginProjectButton.interact()
+                println("Pressed Begin Project button.")
+                Execution.delay(Navi.random.nextLong(3000, 6000))
+            } else {
+                println("Begin Project button not found.")
             }
-            // Add more cases for other tasks here
+
+            /*
+            // Check smithing interface, if still open, deposit materials and break out of this loop
+            val smithingInterface = ComponentQuery.newQuery(858) // 838 doesnt work
+                .results()
+                .firstOrNull()
+
+            if (smithingInterface != null) {
+             */
+
+            if (Interfaces.isOpen(37)) {
+                // Click deposit materials
+                val smithDepositAllButton = ComponentQuery.newQuery(37)
+                    .componentIndex(167) // Assuming component index for "Deposit All"
+                    .results()
+                    .firstOrNull()
+
+                if (smithDepositAllButton != null) {
+                    smithDepositAllButton.interact()
+                    println("Deposited all materials.")
+                    Execution.delay(Navi.random.nextLong(1500, 2500))
+                    println("Not enough materials to continue, returning to Decision Tree.")
+                    Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING // back to decision tree
+                    return
+                } else {
+                    println("Deposit All button not found.")
+                }
+
+            } else {
+                // WAIT FOR EXP INTERFACE TO GO AWAY
+                // Check exp interface
+                while (!ComponentQuery.newQuery(1251).results().isEmpty) {
+                    Execution.delay(Navi.random.nextLong(2000, 6000))
+                }
+            }
+
+            // Interact with furnace again to return bars
+            val furnace = SceneObjectQuery.newQuery()
+                .name("Furnace")
+                .results()
+                .nearest()
+
+            if (furnace != null) {
+                furnace.interact("Smelt")
+                println("Interacted with Furnace to Smelt.")
+                Execution.delay(Navi.random.nextLong(1200, 1900))
+            } else {
+                println("Furnace not found.")
+                Execution.delay(Navi.random.nextLong(1200, 1900))
+            }
+
+            // Click deposit materials again
+            val smithDepositAllButton2 = ComponentQuery.newQuery(37)
+                .componentIndex(167) // Assuming component index for "Deposit All"
+                .results()
+                .firstOrNull()
+
+            if (smithDepositAllButton2 != null) {
+                Execution.delay(Navi.random.nextLong(1500, 2500))
+                smithDepositAllButton2.interact()
+                println("Deposited all materials.")
+            } else {
+                println("Deposit All button not found.")
+            }
         }
     }
+// End of loop
 }
 
 

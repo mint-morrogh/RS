@@ -130,7 +130,7 @@ object Navi {
             return false
         }
 
-        val delay = random.nextLong(600, 3000) // Random delay between 1.5 to 4 seconds
+        val delay = random.nextLong(300, 1200) // Random delay
         println("Delaying for $delay milliseconds")
         Execution.delay(delay)
 

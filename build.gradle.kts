@@ -51,6 +51,7 @@ dependencies {
     "includeInJar"("net.botwithus.xapi.public:api:1.0.0-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation ("com.google.code.gson:gson:2.8.8")
     testImplementation(kotlin("test"))
 }
 
