@@ -53,6 +53,10 @@ object Navi {
         Coordinate(3287, 3364, 0),
         Coordinate(3290, 3367, 0)
     )
+    val varrockWestMine = Area.Rectangular(
+        Coordinate(3181, 3371, 0),
+        Coordinate(3184, 3375, 0)
+    )
     val lumbridgeTopFloopBank = Area.Rectangular(
         Coordinate(3207, 3220, 2),
         Coordinate(3210, 3222, 2)
@@ -112,6 +116,8 @@ object Navi {
     }
 
 
+
+
     // Define a utility function for walking to an area
     fun walkTo(area: Area.Rectangular): Boolean {
         val player = Client.getLocalPlayer() ?: return false
@@ -124,22 +130,25 @@ object Navi {
         val path = NavPath.resolve(targetCoord)
 
         if (path == null) {
-            println("Failed to find path to target area.")
+            Zezimax.Logger.log("Failed to find path to target area.")
             return false
         }
 
         val results = Movement.traverse(path)
         if (results == TraverseEvent.State.NO_PATH) {
-            println("Failed to traverse path to target area.")
+            Zezimax.Logger.log("Failed to traverse path to target area.")
             return false
         }
 
         val delay = random.nextLong(300, 1200) // Random delay
-        println("Delaying for $delay milliseconds")
+        Zezimax.Logger.log("**TRAVELLING** Delaying next input for $delay milliseconds")
         Execution.delay(delay)
 
         return area.contains(player.coordinate)
     }
+
+
+
 
     // Wrapper functions for walking to specific areas
     fun walkToFaladorCenter(): Boolean {
@@ -170,6 +179,11 @@ object Navi {
     fun walkToVarrockEastMine(): Boolean {
         botState = BotState.WALKING
         return walkTo(varrockEastMine)
+    }
+
+    fun walkToVarrockWestMine(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(varrockWestMine)
     }
 
     fun walkToDraynorBank(): Boolean {

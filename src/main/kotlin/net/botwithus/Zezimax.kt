@@ -29,6 +29,7 @@ import net.botwithus.rs3.imgui.NativeInteger
 import net.botwithus.rs3.input.GameInput
 import net.botwithus.rs3.script.Execution
 import net.botwithus.rs3.script.LoopingScript
+import net.botwithus.rs3.script.ScriptConsole
 import net.botwithus.rs3.script.config.ScriptConfig
 import net.botwithus.rs3.util.Regex
 import java.util.*
@@ -45,27 +46,37 @@ class Zezimax(
         INITIALIZING,
         IDLE,
         START_MINING,
-        MINING,
-        NAVIGATING_TO_MINE,
-        NAVIGATING_TO_BANK,
         MINING_BANKING,
         START_SMITHING_ORE,
         SMITHING_ORE
     }
 
+
+
     companion object {
         var botState: ZezimaxBotState = ZezimaxBotState.INITIALIZING
     }
-
     var someBoolean: Boolean = true
+    object Logger {
+        private var scriptConsole: ScriptConsole? = null
+        fun initialize(console: ScriptConsole) {
+            scriptConsole = console
+        }
+        fun log(message: String) {
+            scriptConsole?.addLineToConsole(message) ?: println(message)
+        }
+    }
+
+
 
     override fun initialize(): Boolean {
         super.initialize()
-        println("Script initialized. State set to INITIALIZING.")
+        val console = this.console // Assuming `this.console` gives you the ScriptConsole
+        Logger.initialize(console)
+        Logger.log("Script initialized. State set to INITIALIZING.")
         return true
     }
 
-    // MAIN BOT LOOP //
     override fun onLoop() {
         val player = Client.getLocalPlayer()
         if (Client.getGameState() != Client.GameState.LOGGED_IN || player == null) {
@@ -74,13 +85,13 @@ class Zezimax(
             return
         }
 
+        // IDLE AND INITIALIZING STATES
         when (botState) {
             ZezimaxBotState.INITIALIZING -> {
                 if (initializeBanking()) {
                     botState = ZezimaxBotState.IDLE
                 }
             }
-
             ZezimaxBotState.IDLE -> {
                 println("Bot state is IDLE. Decision: ${DecisionTree.decision}")
                 if (DecisionTree.decision == null) {
@@ -94,34 +105,17 @@ class Zezimax(
             }
 
 
+
+
             // MINING STATES
             ZezimaxBotState.START_MINING -> {
                 println("Decided to Mine...")
-                botState = ZezimaxBotState.NAVIGATING_TO_MINE
-            }
-            ZezimaxBotState.NAVIGATING_TO_MINE -> {
-                if (Navi.walkToMiningGuild()) {
-                    println("Reached Rune.")
-                    println("Mining...")
-                    botState = ZezimaxBotState.MINING
-                } else {
-                    Execution.delay(Navi.random.nextLong(1000, 3000))
-                }
-            }
-            ZezimaxBotState.NAVIGATING_TO_BANK -> {
-                if (Navi.walkToFaladorSmithBank()) {
-                    println("Reached Falador Smith Bank.")
-                    botState = ZezimaxBotState.MINING_BANKING
-                } else {
-                    println("Walking to Falador smith bank.")
-                    Execution.delay(Navi.random.nextLong(1000, 3000))
-                }
-            }
-            ZezimaxBotState.MINING -> {
-                Mining("Runite rock", "Runite ore", "Rune ore box").mine(player)
+                botState = ZezimaxBotState.MINING_BANKING
             }
             ZezimaxBotState.MINING_BANKING -> {
-                MiningBanking("Runite ore", "Rune ore box", 150).bank()
+                println("Mining${DecisionTree.oreToCollect} at Location: ${DecisionTree.mineLocation}...")
+                Mining(DecisionTree.mineLocation, DecisionTree.bankLocation, DecisionTree.rockToMine, DecisionTree.oreToCollect, DecisionTree.oreBoxName, 300).mine(player)
+                Mining(DecisionTree.mineLocation, DecisionTree.bankLocation, DecisionTree.rockToMine, DecisionTree.oreToCollect, DecisionTree.oreBoxName, 300).bank()
             }
 
 
@@ -139,9 +133,12 @@ class Zezimax(
         }
     }
 
+
+
+
+
     private fun initializeBanking(): Boolean {
         val player = Client.getLocalPlayer() ?: return false
-
         val nearestBank = Navi.getNearestBank(player.coordinate) ?: return false
 
         if (!nearestBank.contains(player.coordinate)) {
@@ -188,8 +185,4 @@ class Zezimax(
             return false
         }
     }
-
 }
-
-
-

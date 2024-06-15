@@ -1,15 +1,20 @@
 package net.botwithus
 
 import net.botwithus.api.game.hud.inventories.Bank
+import net.botwithus.rs3.game.hud.interfaces.Component
 import net.botwithus.rs3.game.hud.interfaces.Interfaces
 import net.botwithus.rs3.game.queries.builders.components.ComponentQuery
 import net.botwithus.rs3.game.queries.builders.objects.SceneObjectQuery
 import net.botwithus.rs3.game.scene.entities.`object`.SceneObject
+import net.botwithus.rs3.game.skills.Skills
+import net.botwithus.rs3.input.GameInput
 import net.botwithus.rs3.script.Execution
 import java.util.*
 
 
-fun withdrawSmithingOreSupplies(vararg items: Pair<String, Int?>) {
+
+
+fun withdrawSmithingOreSupplies(vararg items: Pair<Int, Int?>) {
     if (Bank.isOpen()) {
         val noteButton = ComponentQuery.newQuery(517)
             .componentIndex(127)
@@ -19,42 +24,65 @@ fun withdrawSmithingOreSupplies(vararg items: Pair<String, Int?>) {
         if (noteButton != null) {
             Execution.delay(Navi.random.nextLong(400, 1000))
             noteButton.interact()  // This interacts with the note button
-            println("Toggled to withdraw items as notes.")
+            Zezimax.Logger.log("Toggled to withdraw items as notes.")
             Execution.delay(Navi.random.nextLong(400, 1000))
-        } else {
-            println("Withdraw as notes button not found.")
         }
 
-        for ((itemName, quantity) in items) {
-            if (quantity == null) {
-                // Withdraw all instances of the item
-                val success = Bank.withdrawAll(itemName)
-                println("Attempting to withdraw all instances of $itemName")
+        for ((itemId, quantity) in items) {
+            val itemComponent = ComponentQuery.newQuery(517)
+                .item(itemId)
+                .results()
+                .firstOrNull()
 
-                if (success) {
-                    println("Successfully withdrew all instances of $itemName.")
-                    Execution.delay(Navi.random.nextLong(1300, 2000))
+            if (itemComponent != null) {
+                if (quantity == null) {
+                    // Withdraw all instances of the item
+                    val success = itemComponent.interact("Withdraw-All")
+                    Zezimax.Logger.log("Attempting to withdraw all instances of item ID: $itemId")
+
+                    if (success) {
+                        Zezimax.Logger.log("Successfully withdrew all instances of item ID: $itemId.")
+                        Execution.delay(Navi.random.nextLong(1300, 2000))
+                    } else {
+                        Zezimax.Logger.log("Failed to withdraw item ID: $itemId")
+                        Execution.delay(Navi.random.nextLong(1300, 2000))
+                    }
                 } else {
-                    println("Failed to withdraw $itemName")
-                    Execution.delay(Navi.random.nextLong(1300, 2000))
+                    // Withdraw a specific quantity
+                    val success = itemComponent.interact("Withdraw-X")
+                    Zezimax.Logger.log("Attempting to withdraw $quantity of item ID: $itemId")
+
+                    if (success) {
+                        // Type the quantity
+                        Execution.delay(Navi.random.nextLong(1300, 2000)) // Short delay before typing
+                        GameInput.setTextInput(quantity.toString())
+                        Execution.delay(Navi.random.nextLong(1600, 2600)) // Simulate delay after typing
+
+                        Zezimax.Logger.log("Withdrew $quantity of item ID: $itemId.")
+                    } else {
+                        Zezimax.Logger.log("Failed to withdraw item ID: $itemId")
+                    }
                 }
+            } else {
+                Zezimax.Logger.log("Could not find item ID: $itemId in the bank.")
             }
         }
     }
 }
 
+
 fun depositOreInFurnace() {
     // Navigate to the smithing furnace location
     val reachedFurnace = Navi.walkToFaladorSmithingFurnace()
     if (reachedFurnace) {
-        println("Reached Falador Smithing Furnace.")
+        Zezimax.Logger.log("Reached Falador Smithing Furnace.")
     } else {
-        println("Failed to reach Falador Smithing Furnace.")
+        Zezimax.Logger.log("Failed to reach Falador Smithing Furnace.")
     }
     val furnace: SceneObject? = SceneObjectQuery.newQuery().name("Furnace").results().nearest()
     if (furnace != null) {
         furnace.interact("Smelt")
-        println("Smelting ore at furnace...")
+        Zezimax.Logger.log("Smelting ore at furnace...")
         Execution.delay(Navi.random.nextLong(1300, 2000))
     }
     val smithDepositAllButton = ComponentQuery.newQuery(37)
@@ -64,32 +92,144 @@ fun depositOreInFurnace() {
 
     if (smithDepositAllButton != null) {
         Execution.delay(Navi.random.nextLong(400, 1000))
-        smithDepositAllButton.interact()  // This interacts with the note button
-        println("Deposited all ores into Furnace Inventory")
-        Execution.delay(Navi.random.nextLong(400, 1000))
+        smithDepositAllButton.interact()
+        Zezimax.Logger.log("Deposited all ores into Furnace Inventory")
+        Execution.delay(Navi.random.nextLong(1000, 1700))
     } else {
-        println("Couldn't Deposit all ores...")
+        Zezimax.Logger.log("Couldn't Deposit all ores...")
         Execution.delay(Navi.random.nextLong(400, 1000))
     }
     Zezimax.botState = Zezimax.ZezimaxBotState.START_SMITHING_ORE
 }
 
 fun smithOre() {
-    while (true) {
-        // Select bar in interface - component 37, 103, subcomponent 11 for "Rune bar"
-        val runeBarComponent = ComponentQuery.newQuery(37)
-            .componentIndex(103)
+
+    // Helper function to extract count from Furnace Interface Component
+    fun getCountFromComponent(component: Component?): Int {
+        return component?.itemAmount ?: 0
+    }
+
+    // WHILE INTERFACE OPEN DECIDE WHICH BAR TO SMELT
+    val copperore_Count = getCountFromComponent(
+        ComponentQuery.newQuery(37)
+            .componentIndex(52)
+            .subComponentIndex(1)
+            .results()
+            .firstOrNull()
+    )
+    val tinore_Count = getCountFromComponent(
+        ComponentQuery.newQuery(37)
+            .componentIndex(52)
+            .subComponentIndex(3)
+            .results()
+            .firstOrNull()
+    )
+    val ironore_Count = getCountFromComponent(
+        ComponentQuery.newQuery(37)
+            .componentIndex(52)
+            .subComponentIndex(5)
+            .results()
+            .firstOrNull()
+    )
+    val coal_Count = getCountFromComponent(
+        ComponentQuery.newQuery(37)
+            .componentIndex(52)
+            .subComponentIndex(7)
+            .results()
+            .firstOrNull()
+    )
+    val mithrilore_Count = getCountFromComponent(
+        ComponentQuery.newQuery(37)
+            .componentIndex(52)
+            .subComponentIndex(9)
+            .results()
+            .firstOrNull()
+    )
+    val adamantiteore_Count = getCountFromComponent(
+        ComponentQuery.newQuery(37)
+            .componentIndex(52)
             .subComponentIndex(11)
             .results()
             .firstOrNull()
+    )
+    val runiteore_Count = getCountFromComponent(
+        ComponentQuery.newQuery(37)
+            .componentIndex(52)
+            .subComponentIndex(15)
+            .results()
+            .firstOrNull()
+    )
+    val luminite_Count = getCountFromComponent(
+        ComponentQuery.newQuery(37)
+            .componentIndex(52)
+            .subComponentIndex(13)
+            .results()
+            .firstOrNull()
+    )
+    val goldore_Count = getCountFromComponent(
+        ComponentQuery.newQuery(37)
+            .componentIndex(52)
+            .subComponentIndex(33)
+            .results()
+            .firstOrNull()
+    )
+    val silverore_Count = getCountFromComponent(
+        ComponentQuery.newQuery(37)
+            .componentIndex(52)
+            .subComponentIndex(31)
+            .results()
+            .firstOrNull()
+    )
+    var barToSmelt = ""
+    var barSmeltButton = 0
+    val smithingLevel = Skills.SMITHING.level
+    if (smithingLevel >= 50 && runiteore_Count >= 1 && luminite_Count >= 1) {
+        barToSmelt = "Rune bar"
+        barSmeltButton = 11
+    }
+    else if (smithingLevel >= 40 && adamantiteore_Count >= 1 && luminite_Count >= 1) {
+        barToSmelt = "Adamant bar"
+        barSmeltButton = 9
+    }
+    else if (smithingLevel >= 30 && mithrilore_Count >= 1 && coal_Count >= 1) {
+        barToSmelt = "Mithril bar"
+        barSmeltButton = 7
+    }
+    else if (smithingLevel >= 20 && ironore_Count >= 1 && coal_Count >= 1) {
+        barToSmelt = "Steel bar"
+        barSmeltButton = 5
+    }
+    else if (smithingLevel >= 10 && ironore_Count >= 2) {
+        barToSmelt = "Iron bar"
+        barSmeltButton = 3
+    }
+    else if (copperore_Count >= 1 && tinore_Count>= 1) {
+        barToSmelt = "Bronze bar"
+        barSmeltButton = 1
+    }
+    else {
+        Execution.delay(Navi.random.nextLong(1500, 2500))
+        Zezimax.Logger.log("Not enough materials to continue, returning to Decision Tree.")
+        Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING // back to decision tree
+        return
+    }
 
-        if (runeBarComponent != null) {
+
+    while (true) {
+        // Select bar in interface - component 37, 103, subcomponent 11 for "Rune bar"
+        val barComponent = ComponentQuery.newQuery(37)
+            .componentIndex(103)
+            .subComponentIndex(barSmeltButton)
+            .results()
+            .firstOrNull()
+
+        if (barComponent != null) {
             Execution.delay(Navi.random.nextLong(400, 1000))
-            runeBarComponent.interact("Select Rune bar")
-            println("Selected Rune bar.")
+            barComponent.interact("Select $barToSmelt")
+            Zezimax.Logger.log("Selected $barToSmelt.")
             Execution.delay(Navi.random.nextLong(400, 1000))
         } else {
-            println("Rune bar component not found.")
+            Zezimax.Logger.log("$barToSmelt component not found.")
         }
 
         // Press begin project button - component 37, 163
@@ -101,10 +241,10 @@ fun smithOre() {
         if (beginProjectButton != null) {
             Execution.delay(Navi.random.nextLong(400, 1000))
             beginProjectButton.interact()
-            println("Pressed Begin Project button.")
+            Zezimax.Logger.log("Pressed Begin Project button.")
             Execution.delay(Navi.random.nextLong(3000, 6000))
         } else {
-            println("Begin Project button not found.")
+            Zezimax.Logger.log("Begin Project button not found.")
         }
             // IF INTERFACE IS STILL OPEN, INVALID MATERIALS, LEAVING LOOP
         if (Interfaces.isOpen(37)) {
@@ -116,13 +256,13 @@ fun smithOre() {
 
             if (smithDepositAllButton != null) {
                 smithDepositAllButton.interact()
-                println("Deposited all materials.")
+                Zezimax.Logger.log("Deposited all materials.")
                 Execution.delay(Navi.random.nextLong(1500, 2500))
-                println("Not enough materials to continue, returning to Decision Tree.")
+                Zezimax.Logger.log("Not enough materials to continue, returning to Decision Tree.")
                 Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING // back to decision tree
                 return
             } else {
-                println("Deposit All button not found.")
+                Zezimax.Logger.log("Deposit All button not found.")
             }
 
         } else {
@@ -141,10 +281,10 @@ fun smithOre() {
 
         if (furnace != null) {
             furnace.interact("Smelt")
-            println("Interacted with Furnace to Smelt.")
+            Zezimax.Logger.log("Interacted with Furnace to Smelt.")
             Execution.delay(Navi.random.nextLong(1200, 1900))
         } else {
-            println("Furnace not found.")
+            Zezimax.Logger.log("Furnace not found.")
             Execution.delay(Navi.random.nextLong(1200, 1900))
         }
 
@@ -157,9 +297,9 @@ fun smithOre() {
         if (smithDepositAllButton2 != null) {
             Execution.delay(Navi.random.nextLong(1500, 2500))
             smithDepositAllButton2.interact()
-            println("Deposited all materials.")
+            Zezimax.Logger.log("Deposited all materials.")
         } else {
-            println("Deposit All button not found.")
+            Zezimax.Logger.log("Deposit All button not found.")
         }
     }
 }
