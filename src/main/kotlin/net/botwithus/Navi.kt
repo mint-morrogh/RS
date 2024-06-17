@@ -26,28 +26,32 @@ object Navi {
         Coordinate(2971, 3386, 0)  // Top-right corner
     )
     val faladorWestBank = Area.Rectangular(
-        Coordinate(2943, 3369, 0),
-        Coordinate(2947, 3373, 0)
+        Coordinate(2945, 3368, 0),
+        Coordinate(2949, 3368, 0)
     )
     val faladorEastBank = Area.Rectangular(
-        Coordinate(3009, 3356, 0),
-        Coordinate(3016, 3357, 0)
+        Coordinate(3010, 3355, 0),
+        Coordinate(3015, 3355, 0)
+    )
+    val faladorSouthBank = Area.Rectangular(
+        Coordinate(2956, 3296, 0),
+        Coordinate(2956, 3297, 0)
     )
     val faladorSmithBank = Area.Rectangular(
-        Coordinate(3059, 3338, 0),
-        Coordinate(3059, 3340, 0)
+        Coordinate(3060, 3339, 0),
+        Coordinate(3060, 3340, 0)
     )
     val grandexchange = Area.Rectangular(
-        Coordinate(3162, 3481, 0),
-        Coordinate(3167, 3484, 0)
+        Coordinate(3163, 3484, 0),
+        Coordinate(3166, 3484, 0)
     )
     val varrockWestBank = Area.Rectangular(
-        Coordinate(3183, 3435, 0),
-        Coordinate(3188, 3444, 0)
+        Coordinate(3189, 3435, 0),
+        Coordinate(3189, 3443, 0)
     )
     val varrockEastBank = Area.Rectangular(
-        Coordinate(3250, 3420, 0),
-        Coordinate(3257, 3423, 0)
+        Coordinate(3251, 3420, 0),
+        Coordinate(3256, 3420, 0)
     )
     val varrockEastMine = Area.Rectangular(
         Coordinate(3287, 3364, 0),
@@ -57,21 +61,29 @@ object Navi {
         Coordinate(3181, 3371, 0),
         Coordinate(3184, 3375, 0)
     )
-    val lumbridgeTopFloopBank = Area.Rectangular(
-        Coordinate(3207, 3220, 2),
-        Coordinate(3210, 3222, 2)
+    val lumbridgeTopFloorBank = Area.Rectangular(
+        Coordinate(3208, 3219, 2),
+        Coordinate(3208, 3220, 2)
     )
     val alkharidWestBank = Area.Rectangular(
-        Coordinate(3269, 3165, 0),
-        Coordinate(3272, 3170, 0)
+        Coordinate(3268, 3168, 0),
+        Coordinate(3272, 3168, 0)
     )
     val draynorBank = Area.Rectangular(
-        Coordinate(3090, 3240, 0),
-        Coordinate(3095, 3246, 0)
+        Coordinate(3092, 3241, 0),
+        Coordinate(3092, 3245, 0)
     )
     val edgevilleBank = Area.Rectangular(
-        Coordinate(3091, 3490, 0),
-        Coordinate(3094, 3499, 0)
+        Coordinate(3094, 3489, 0),
+        Coordinate(3094, 3493, 0)
+    )
+    val burthorpeBank = Area.Rectangular(
+        Coordinate(2888, 3535, 0),
+        Coordinate(2887, 3536, 0)
+    )
+    val taverlyBank = Area.Rectangular(
+        Coordinate(2875, 3416, 0),
+        Coordinate(2875, 3418, 0)
     )
     val faladorMiningGuild = Area.Rectangular(
         Coordinate(3022, 9737, 0),
@@ -91,14 +103,17 @@ object Navi {
     private val bankAreas = listOf(
         faladorWestBank,
         faladorEastBank,
+        faladorSouthBank,
         faladorSmithBank,
         grandexchange,
         varrockWestBank,
         varrockEastBank,
-        lumbridgeTopFloopBank,
+        lumbridgeTopFloorBank,
         alkharidWestBank,
         draynorBank,
-        edgevilleBank
+        edgevilleBank,
+        burthorpeBank,
+        taverlyBank
     )
 
     fun getNearestBank(playerCoord: Coordinate): Area.Rectangular? {
@@ -124,6 +139,16 @@ object Navi {
         if (area.contains(player.coordinate)) {
             botState = BotState.STANDING
             return true
+        }
+
+        if (player.animationId != -1) {
+            // Walk to current player coordinates to break the animation
+            val currentCoord = player.coordinate
+            Zezimax.Logger.log("**TRAVELLING** Player is animating. Breaking animation...")
+
+            // Walk to the current tile without using the minimap
+            Movement.walkTo(currentCoord.x, currentCoord.y, false)
+            Execution.delay(random.nextLong(1000, 2000))
         }
 
         val targetCoord = area.randomWalkableCoordinate
@@ -166,6 +191,11 @@ object Navi {
         return walkTo(faladorEastBank)
     }
 
+    fun walkToFaladorSouthBank(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(faladorSouthBank)
+    }
+
     fun walkToVarrockWestBank(): Boolean {
         botState = BotState.WALKING
         return walkTo(varrockWestBank)
@@ -196,6 +226,16 @@ object Navi {
         return walkTo(edgevilleBank)
     }
 
+    fun walkToBurthorpeBank(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(burthorpeBank)
+    }
+
+    fun walkToTaverlyBank(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(taverlyBank)
+    }
+
     fun walkToAlkharidWestBank(): Boolean {
         botState = BotState.WALKING
         return walkTo(alkharidWestBank)
@@ -203,7 +243,7 @@ object Navi {
 
     fun walkToLumbridgeTopFloorBank(): Boolean {
         botState = BotState.WALKING
-        return walkTo(lumbridgeTopFloopBank)
+        return walkTo(lumbridgeTopFloorBank)
     }
 
     fun walkToGrandExchange(): Boolean {

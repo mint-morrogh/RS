@@ -140,15 +140,9 @@ class Mining(private val locationMine: String,
         navigateToBankLocation()
 
         if (!Bank.isOpen()) {
-            val bankBooth: SceneObject? = SceneObjectQuery.newQuery().name("Bank booth", "Bank chest", "Counter").results().nearest()
-            if (bankBooth != null && (bankBooth.interact("Bank") || bankBooth.interact("Use"))) {
-                Zezimax.Logger.log("Interacting with bank booth or chest.")
-                Execution.delayUntil(5000, Callable { Bank.isOpen() })
-            } else {
-                Zezimax.Logger.log("No bank booth or chest found or failed to interact.")
-                Execution.delay(Navi.random.nextLong(1500, 3000))
-                return
-            }
+            // Open the bank
+            Bank.open()
+            Execution.delay(Navi.random.nextLong(1500, 3000))
         }
 
         if (Bank.isOpen()) {

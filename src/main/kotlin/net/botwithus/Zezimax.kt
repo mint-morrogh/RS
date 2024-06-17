@@ -167,16 +167,8 @@ class Zezimax(
 
         if (!Bank.isOpen()) {
             // Open the bank
-            val bankBooth: SceneObject? =
-                SceneObjectQuery.newQuery().name("Bank booth", "Bank chest", "Counter").results().nearest()
-            if (bankBooth != null && (bankBooth.interact("Bank") || bankBooth.interact("Use"))) {
-                println("**INITIALIZING** Pre Decision Tree Banking...")
-                Execution.delayUntil(5000, Callable { Bank.isOpen() })
-            } else {
-                println("No bank booth or chest found or failed to interact.")
-                Execution.delay(Navi.random.nextLong(1500, 3000))
-                return false
-            }
+            Bank.open()
+            Execution.delay(Navi.random.nextLong(1500, 3000))
         }
 
         // Deposit all items into the bank
@@ -201,3 +193,5 @@ class Zezimax(
         }
     }
 }
+
+
