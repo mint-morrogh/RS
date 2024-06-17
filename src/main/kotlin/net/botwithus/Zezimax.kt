@@ -48,7 +48,9 @@ class Zezimax(
         START_MINING,
         MINING_BANKING,
         START_SMITHING_ORE,
-        SMITHING_ORE
+        SMITHING_ORE,
+        START_GEODE_CRACKER,
+        GEODE_CRACKER
     }
 
 
@@ -100,6 +102,7 @@ class Zezimax(
                     when (DecisionTree.decision) {
                         0 -> botState = ZezimaxBotState.START_MINING
                         1 -> botState = ZezimaxBotState.START_SMITHING_ORE
+                        2 -> botState = ZezimaxBotState.START_GEODE_CRACKER
                     }
                 }
             }
@@ -113,10 +116,11 @@ class Zezimax(
                 botState = ZezimaxBotState.MINING_BANKING
             }
             ZezimaxBotState.MINING_BANKING -> {
-                println("Mining${DecisionTree.oreToCollect} at Location: ${DecisionTree.mineLocation}...")
-                Mining(DecisionTree.mineLocation, DecisionTree.bankLocation, DecisionTree.rockToMine, DecisionTree.oreToCollect, DecisionTree.oreBoxName, 300).mine(player)
-                Mining(DecisionTree.mineLocation, DecisionTree.bankLocation, DecisionTree.rockToMine, DecisionTree.oreToCollect, DecisionTree.oreBoxName, 300).bank()
+                println("Mining ${DecisionTree.oreToCollect} at Location: ${DecisionTree.mineLocation}...")
+                Mining(DecisionTree.mineLocation, DecisionTree.bankLocation, DecisionTree.rockToMine, DecisionTree.oreToCollect, DecisionTree.oreBoxName, 200).mine(player)
             }
+
+
 
 
             // SMITHING ORE STATES
@@ -129,6 +133,17 @@ class Zezimax(
 
             ZezimaxBotState.SMITHING_ORE -> {
                 smithOre()
+            }
+
+
+
+            // GEODE CRACKING STATES
+            ZezimaxBotState.START_GEODE_CRACKER -> {
+                println("Decided to crack geodes...")
+                botState = ZezimaxBotState.GEODE_CRACKER
+            }
+            ZezimaxBotState.GEODE_CRACKER -> {
+                geodeCracker()
             }
         }
     }

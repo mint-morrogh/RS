@@ -136,13 +136,8 @@ class Mining(private val locationMine: String,
     }
 
     fun bank() {
-        navigateToBankLocation()
 
-        if (!Backpack.isFull()) {
-            Zezimax.Logger.log("Backpack is not full, should be mining.")
-            Zezimax.botState = Zezimax.ZezimaxBotState.START_MINING
-            return
-        }
+        navigateToBankLocation()
 
         if (!Bank.isOpen()) {
             val bankBooth: SceneObject? = SceneObjectQuery.newQuery().name("Bank booth", "Bank chest", "Counter").results().nearest()
@@ -188,8 +183,10 @@ class Mining(private val locationMine: String,
             } else {
                 Zezimax.Logger.log("Continuing to mine more $oreName.")
                 Zezimax.botState = Zezimax.ZezimaxBotState.START_MINING
+                return
             }
-        } else {
+        }
+        else {
             Zezimax.Logger.log("Bank is not open, retrying.")
             Execution.delay(Navi.random.nextLong(1500, 3000))
         }

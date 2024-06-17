@@ -1,5 +1,7 @@
 package net.botwithus
 
+import net.botwithus.Zezimax.Companion.botState
+import net.botwithus.Zezimax.ZezimaxBotState
 import net.botwithus.api.game.hud.inventories.Bank
 import net.botwithus.rs3.game.skills.Skills
 import net.botwithus.rs3.util.RandomGenerator
@@ -16,7 +18,9 @@ object DecisionTree {
 
 
     fun makeRandomDecision() {
-        decision = Navi.random.nextInt(2) // Adjust range if more tasks are added
+        decision = Navi.random.nextInt(3) // generates 0, 1, or 2
+        /* decision = 2
+         */
         Zezimax.Logger.log("Decision made: $decision")
 
         when (decision) {
@@ -167,6 +171,11 @@ object DecisionTree {
                     436 to null, // Copper ore
                     438 to null  // Tin ore
                 )
+
+            }
+            2 -> {
+                Zezimax.Logger.log("Selected Task: Cracking Geodes")
+                withdrawGeodes()
 
             }
             // Add more cases for other tasks here
