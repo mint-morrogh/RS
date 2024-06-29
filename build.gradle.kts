@@ -27,6 +27,7 @@ tasks.named<Jar>("jar") {
     from({
         configurations["includeInJar"].map { zipTree(it) }
     })
+    from("src/main/resources")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     finalizedBy(copyJar)
 }
@@ -51,7 +52,10 @@ dependencies {
     "includeInJar"("net.botwithus.xapi.public:api:1.0.0-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation ("com.github.kittinunf.fuel:fuel:2.3.1") // HTTP networking
+    implementation ("com.github.kittinunf.fuel:fuel-gson:2.3.1") // Gson support for Fuel
     implementation ("com.google.code.gson:gson:2.8.8")
+
     testImplementation(kotlin("test"))
 }
 

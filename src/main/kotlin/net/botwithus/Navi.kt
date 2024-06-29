@@ -45,6 +45,10 @@ object Navi {
         Coordinate(3163, 3484, 0),
         Coordinate(3166, 3484, 0)
     )
+    val grandexchangeEntrance = Area.Rectangular(
+        Coordinate(3163, 3452, 0),
+        Coordinate(3169, 3458, 0)
+    )
     val varrockWestBank = Area.Rectangular(
         Coordinate(3189, 3435, 0),
         Coordinate(3189, 3443, 0)
@@ -105,7 +109,7 @@ object Navi {
         faladorEastBank,
         faladorSouthBank,
         faladorSmithBank,
-        grandexchange,
+        // grandexchange, to avoid getting stuck in agility, only if members should this be valid
         varrockWestBank,
         varrockEastBank,
         lumbridgeTopFloorBank,
@@ -249,6 +253,11 @@ object Navi {
     fun walkToGrandExchange(): Boolean {
         botState = BotState.WALKING
         return walkTo(grandexchange)
+    }
+
+    fun walkToGrandExchangeEntrance(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(grandexchangeEntrance)
     }
 
     fun walkToMiningGuild(): Boolean {

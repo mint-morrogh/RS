@@ -96,6 +96,12 @@ class Zezimax(
             }
             ZezimaxBotState.IDLE -> {
                 println("Bot state is IDLE. Decision: ${DecisionTree.decision}")
+
+                // TESTING FUNCTIONS HERE
+                grandExchangeSell(451, "all")
+                Execution.delay(Navi.random.nextLong(25000, 75000))
+
+
                 if (DecisionTree.decision == null) {
                     DecisionTree.makeRandomDecision()
                 } else {

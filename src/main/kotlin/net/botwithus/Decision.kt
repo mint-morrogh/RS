@@ -18,9 +18,13 @@ object DecisionTree {
 
 
     fun makeRandomDecision() {
+
         decision = Navi.random.nextInt(3) // generates 0, 1, or 2
-        /* decision = 2
-         */
+/*
+         decision = 3
+
+ */
+
         Zezimax.Logger.log("Decision made: $decision")
 
         when (decision) {
@@ -178,7 +182,6 @@ object DecisionTree {
                 withdrawGeodes()
 
             }
-            // Add more cases for other tasks here
         }
     }
 }
