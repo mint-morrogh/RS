@@ -51,10 +51,130 @@ fun toggleWithdrawAsNotes() {
     if (noteButton != null) {
         Execution.delay(Navi.random.nextLong(400, 1000))
         noteButton.interact()
-        Zezimax.Logger.log("Toggled to withdraw items as notes.")
+        Zezimax.Logger.log("**GRAND EXCHANGE** Toggled to withdraw items as notes.")
         Execution.delay(Navi.random.nextLong(400, 1000))
     }
 }
+
+fun interactWithGEClerk() {
+    val clerk: Npc? = NpcQuery.newQuery()
+        .name("Grand Exchange clerk")
+        .results()
+        .nearest()
+
+    if (clerk != null) {
+        Execution.delay(Navi.random.nextLong(500, 1000))
+        clerk.interact("Exchange")
+        Zezimax.Logger.log("**GRAND EXCHANGE** Interacting with Grand Exchange Clerk.")
+        Execution.delay(Navi.random.nextLong(1000, 2000))
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** No Grand Exchange Clerk found.")
+    }
+}
+
+fun interactWithSellButton() {
+    if (Interfaces.isOpen(105)) {
+        val sellButton = ComponentQuery.newQuery(105)
+            .componentIndex(21)
+            .results()
+            .firstOrNull()
+
+        if (sellButton != null) {
+            Execution.delay(Navi.random.nextLong(400, 1000))
+            sellButton.interact()
+            Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the sell button in the first slot.")
+            Execution.delay(Navi.random.nextLong(1000, 2000))
+        } else {
+            Zezimax.Logger.log("**GRAND EXCHANGE** Sell button not found.")
+        }
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** Grand Exchange interface is not open.")
+    }
+}
+
+fun interactWithInventoryItem() {
+    val playerInventory = ComponentQuery.newQuery(107)
+        .componentIndex(7)
+        .subComponentIndex(0)
+        .results()
+        .firstOrNull()
+
+    if (playerInventory != null) {
+        Execution.delay(Navi.random.nextLong(400, 1000))
+        playerInventory.interact("Offer")
+        Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the item in the inventory.")
+        Execution.delay(Navi.random.nextLong(1500, 2500))
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** Item not found in the inventory.")
+    }
+}
+
+fun clickAllButton() {
+    if (Interfaces.isOpen(105)) {
+        val allButton = ComponentQuery.newQuery(105)
+            .componentIndex(268)
+            .results()
+            .firstOrNull()
+
+        if (allButton != null) {
+            Execution.delay(Navi.random.nextLong(400, 1000))
+            allButton.interact()
+            Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the 'All' button.")
+            Execution.delay(Navi.random.nextLong(1000, 2000))
+        } else {
+            Zezimax.Logger.log("**GRAND EXCHANGE** 'All' button not found.")
+        }
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** Grand Exchange interface is not open.")
+    }
+}
+
+fun minus10Percent() {
+    if (Interfaces.isOpen(105)) {
+        val minus5Button = ComponentQuery.newQuery(105)
+            .componentIndex(294)
+            .results()
+            .firstOrNull()
+
+        if (minus5Button != null) {
+            Execution.delay(Navi.random.nextLong(500, 800))
+            minus5Button.interact()
+            Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the -5% button.")
+            Execution.delay(Navi.random.nextLong(500, 800))
+            minus5Button.interact()
+            Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the -5% button again.")
+        } else {
+            Zezimax.Logger.log("**GRAND EXCHANGE** -5% button not found.")
+        }
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** Grand Exchange interface is not open.")
+    }
+}
+
+fun clickConfirmOfferButton() {
+    if (Interfaces.isOpen(105)) {
+        val confirmOfferButton = ComponentQuery.newQuery(105)
+            .componentIndex(325)
+            .results()
+            .firstOrNull()
+
+        if (confirmOfferButton != null) {
+            Execution.delay(Navi.random.nextLong(400, 1000))
+            confirmOfferButton.interact()
+            Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the Confirm Offer button.")
+        } else {
+            Zezimax.Logger.log("**GRAND EXCHANGE** Confirm Offer button not found.")
+        }
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** Grand Exchange interface is not open.")
+    }
+}
+
+
+
+
+
+
 
 fun grandExchangeSell(ItemID: Int, Quantity: String) {
     val player = Client.getLocalPlayer()
@@ -107,7 +227,7 @@ fun grandExchangeSell(ItemID: Int, Quantity: String) {
 
                     if (item != null) {
                         item.interact("Withdraw-X")
-                        Zezimax.Logger.log("Attempting Bank Withdraw for $ItemID")
+                        Zezimax.Logger.log("**GRAND EXCHANGE** Attempting Bank Withdraw for $ItemID")
                         Execution.delay(Navi.random.nextLong(1300, 2000)) // Short delay before typing
                         GameInput.setTextInput(Quantity)
                         Execution.delay(Navi.random.nextLong(1600, 2600)) // Simulate delay after typing
@@ -120,8 +240,23 @@ fun grandExchangeSell(ItemID: Int, Quantity: String) {
 
         Execution.delay(Navi.random.nextLong(1500, 3000))
         Bank.close()
-        Execution.delay(Navi.random.nextLong(100000, 200000))
+        Execution.delay(Navi.random.nextLong(1000, 2000))
     }
+    interactWithGEClerk()
+    Execution.delay(Navi.random.nextLong(1500, 2500))
+    interactWithSellButton()
+    Execution.delay(Navi.random.nextLong(1000, 2000))
+    interactWithInventoryItem()
+    Execution.delay(Navi.random.nextLong(1000, 2500))
+    clickAllButton()
+    Execution.delay(Navi.random.nextLong(800, 1900))
+    minus10Percent()
+    Execution.delay(Navi.random.nextLong(800, 1900))
+    clickConfirmOfferButton()
+    Execution.delay(Navi.random.nextLong(3000, 5500))
+
+
+
 
 
 
@@ -129,37 +264,21 @@ fun grandExchangeSell(ItemID: Int, Quantity: String) {
 
     /*
 
-Speak with GE NPC.interact(exchange)
-Wait 2 seconds
-If no GE interface {
-Go talk to GE tutor
-Return to grandexchangebank location
-Speak with GE NPC.interact(exchange)
-Wait 2 seconds
-}
-GrandExchangeInfo(itemID)
-Pull all info and save as vals here
-Zezimax.logger.log("Collecting price info on $name of item")
-Click on itemID in inventory
-Click on all button
-Input val of todays price of itemID into the sell amount text box, -5%
-Click Sell
-Wait 3 seconds
-if item sold in 3 seconds {
+if item sold in 4 seconds {
 Click to inventory
 Close GE interface
 }
-if item not sold in 3 seconds {
+if item not sold in 4 seconds {
 Wait 10-20 seconds
-if item sold {
-click to inventory
-Close GE interface
-}
-if item not not sold {
-Remove sell listing
-Click to bank button
-Close GE interface
-}
+    if item sold {
+    click to inventory
+    Close GE interface
+    }
+    if item not not sold {
+    click abort offer button
+    Click to bank button
+    Close GE interface
+    }
 }
      */
 
