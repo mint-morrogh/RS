@@ -82,6 +82,7 @@ fun getKeyCode(char: Char): Int? {
         '8' -> 56
         '9' -> 57
         ' ' -> 32
+        '+' -> 107
         else -> null
     }
 }
