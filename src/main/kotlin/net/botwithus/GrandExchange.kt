@@ -27,6 +27,7 @@ import net.botwithus.rs3.game.skills.Skills
 import net.botwithus.rs3.game.vars.VarManager
 import net.botwithus.rs3.imgui.NativeInteger
 import net.botwithus.rs3.input.GameInput
+import net.botwithus.rs3.input.KeyboardInput
 import net.botwithus.rs3.script.Execution
 import net.botwithus.rs3.script.LoopingScript
 import net.botwithus.rs3.script.ScriptConsole
@@ -41,6 +42,49 @@ val grandexchange = Area.Rectangular(
     Coordinate(3166, 3484, 0)
 )
 
+// Function to map characters to their key codes
+fun getKeyCode(char: Char): Int? {
+    return when (char) {
+        'a', 'A' -> 65
+        'b', 'B' -> 66
+        'c', 'C' -> 67
+        'd', 'D' -> 68
+        'e', 'E' -> 69
+        'f', 'F' -> 70
+        'g', 'G' -> 71
+        'h', 'H' -> 72
+        'i', 'I' -> 73
+        'j', 'J' -> 74
+        'k', 'K' -> 75
+        'l', 'L' -> 76
+        'm', 'M' -> 77
+        'n', 'N' -> 78
+        'o', 'O' -> 79
+        'p', 'P' -> 80
+        'q', 'Q' -> 81
+        'r', 'R' -> 82
+        's', 'S' -> 83
+        't', 'T' -> 84
+        'u', 'U' -> 85
+        'v', 'V' -> 86
+        'w', 'W' -> 87
+        'x', 'X' -> 88
+        'y', 'Y' -> 89
+        'z', 'Z' -> 90
+        '0' -> 48
+        '1' -> 49
+        '2' -> 50
+        '3' -> 51
+        '4' -> 52
+        '5' -> 53
+        '6' -> 54
+        '7' -> 55
+        '8' -> 56
+        '9' -> 57
+        ' ' -> 32
+        else -> null
+    }
+}
 
 fun toggleWithdrawAsNotes() {
     val noteButton = ComponentQuery.newQuery(517)
@@ -65,7 +109,7 @@ fun interactWithGEClerk() {
     if (clerk != null) {
         Execution.delay(Navi.random.nextLong(500, 1000))
         clerk.interact("Exchange")
-        Zezimax.Logger.log("**GRAND EXCHANGE** Interacting with Grand Exchange Clerk.")
+        Zezimax.Logger.log("**GRAND EXCHANGE** Interacting with Clerk.")
         Execution.delay(Navi.random.nextLong(1000, 2000))
     } else {
         Zezimax.Logger.log("**GRAND EXCHANGE** No Grand Exchange Clerk found.")
@@ -82,8 +126,7 @@ fun interactWithSellButton() {
         if (sellButton != null) {
             Execution.delay(Navi.random.nextLong(400, 1000))
             sellButton.interact()
-            Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the sell button in the first slot.")
-            Execution.delay(Navi.random.nextLong(1000, 2000))
+            Execution.delay(Navi.random.nextLong(1000, 1700))
         } else {
             Zezimax.Logger.log("**GRAND EXCHANGE** Sell button not found.")
         }
@@ -92,18 +135,83 @@ fun interactWithSellButton() {
     }
 }
 
+fun interactWithBuyButton() {
+    if (Interfaces.isOpen(105)) {
+        val buyButton = ComponentQuery.newQuery(105)
+            .componentIndex(15)
+            .results()
+            .firstOrNull()
+
+        if (buyButton != null) {
+            Execution.delay(Navi.random.nextLong(400, 1000))
+            buyButton.interact()
+            Execution.delay(Navi.random.nextLong(1000, 1700))
+        } else {
+            Zezimax.Logger.log("**GRAND EXCHANGE** Buy button not found.")
+        }
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** Grand Exchange interface is not open.")
+    }
+}
+
+fun typeItemName(Name: String) {
+    Execution.delay(Navi.random.nextLong(400, 1000))
+    // keycoded characters, since normal string keyboard input doesn't appear to work for GE interface
+    for (char in Name) {
+        val keyCode = getKeyCode(char)
+        if (keyCode != null) {
+            KeyboardInput.pressKey(keyCode)
+            Execution.delay(Navi.random.nextLong(70, 200))
+        }
+    }
+
+    Zezimax.Logger.log("**GRAND EXCHANGE** Typed out the item name: $Name")
+}
+
+fun interactWithGEItem() {
+    val geInventory = ComponentQuery.newQuery(105)
+        .componentIndex(342)
+        .subComponentIndex(11) // first item in GE slot
+        .results()
+        .firstOrNull()
+        Execution.delay(Navi.random.nextLong(400, 1000))
+    if (geInventory != null) {
+        geInventory.interact("Select")
+        Zezimax.Logger.log("**GRAND EXCHANGE** Selected item...")
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** Couldn't select item...")
+    }
+        Execution.delay(Navi.random.nextLong(900, 1800))
+}
+
+fun typeQuantity(Quantity: String) {
+    val geQt = ComponentQuery.newQuery(105)
+        .componentIndex(237)
+        .results()
+        .firstOrNull()
+    Execution.delay(Navi.random.nextLong(400, 1000))
+    if (geQt != null) {
+        geQt.interact()
+    }
+    Execution.delay(Navi.random.nextLong(900, 1800))
+    KeyboardInput.enter(Quantity)
+    Execution.delay(Navi.random.nextLong(300, 600))
+    // press enter
+    KeyboardInput.pressKey(13)
+    Execution.delay(Navi.random.nextLong(400, 1000))
+}
+
 fun interactWithInventoryItem() {
     val playerInventory = ComponentQuery.newQuery(107)
         .componentIndex(7)
-        .subComponentIndex(0)
+        .subComponentIndex(0) // first item in inventory
         .results()
         .firstOrNull()
 
     if (playerInventory != null) {
         Execution.delay(Navi.random.nextLong(400, 1000))
         playerInventory.interact("Offer")
-        Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the item in the inventory.")
-        Execution.delay(Navi.random.nextLong(1500, 2500))
+        Execution.delay(Navi.random.nextLong(900, 1800))
     } else {
         Zezimax.Logger.log("**GRAND EXCHANGE** Item not found in the inventory.")
     }
@@ -119,8 +227,6 @@ fun clickAllButton() {
         if (allButton != null) {
             Execution.delay(Navi.random.nextLong(400, 1000))
             allButton.interact()
-            Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the 'All' button.")
-            Execution.delay(Navi.random.nextLong(1000, 2000))
         } else {
             Zezimax.Logger.log("**GRAND EXCHANGE** 'All' button not found.")
         }
@@ -139,12 +245,32 @@ fun minus10Percent() {
         if (minus5Button != null) {
             Execution.delay(Navi.random.nextLong(500, 800))
             minus5Button.interact()
-            Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the -5% button.")
             Execution.delay(Navi.random.nextLong(500, 800))
             minus5Button.interact()
-            Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the -5% button again.")
+            Zezimax.Logger.log("**GRAND EXCHANGE** applied -10%...")
         } else {
             Zezimax.Logger.log("**GRAND EXCHANGE** -5% button not found.")
+        }
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** Grand Exchange interface is not open.")
+    }
+}
+
+fun plus10Percent() {
+    if (Interfaces.isOpen(105)) {
+        val plus5Button = ComponentQuery.newQuery(105)
+            .componentIndex(307)
+            .results()
+            .firstOrNull()
+
+        if (plus5Button != null) {
+            Execution.delay(Navi.random.nextLong(500, 800))
+            plus5Button.interact()
+            Execution.delay(Navi.random.nextLong(500, 800))
+            plus5Button.interact()
+            Zezimax.Logger.log("**GRAND EXCHANGE** applied +10%...")
+        } else {
+            Zezimax.Logger.log("**GRAND EXCHANGE** +5% button not found.")
         }
     } else {
         Zezimax.Logger.log("**GRAND EXCHANGE** Grand Exchange interface is not open.")
@@ -161,7 +287,6 @@ fun clickConfirmOfferButton() {
         if (confirmOfferButton != null) {
             Execution.delay(Navi.random.nextLong(400, 1000))
             confirmOfferButton.interact()
-            Zezimax.Logger.log("**GRAND EXCHANGE** Clicked on the Confirm Offer button.")
         } else {
             Zezimax.Logger.log("**GRAND EXCHANGE** Confirm Offer button not found.")
         }
@@ -171,6 +296,65 @@ fun clickConfirmOfferButton() {
 }
 
 
+fun clickToInventoryButton() {
+    val toInventoryButton = ComponentQuery.newQuery(651)
+        .componentIndex(6)
+        .results()
+        .firstOrNull()
+
+    if (toInventoryButton != null) {
+        Execution.delay(Navi.random.nextLong(800, 1500))
+        toInventoryButton.interact()
+        Zezimax.Logger.log("**GRAND EXCHANGE** Sent to inventory...")
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** 'To Inventory' button not found.")
+    }
+}
+
+fun clickToBankButton() {
+    val toBankButton = ComponentQuery.newQuery(651)
+        .componentIndex(14)
+        .results()
+        .firstOrNull()
+
+    if (toBankButton != null) {
+        Execution.delay(Navi.random.nextLong(800, 1500))
+        toBankButton.interact()
+        Zezimax.Logger.log("**GRAND EXCHANGE** Sent items to bank...")
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** 'To Bank' button not found.")
+    }
+}
+
+fun closeGEInterface() {
+    val closeButton = ComponentQuery.newQuery(1477)
+        .componentIndex(716)
+        .results()
+        .firstOrNull()
+
+    if (closeButton != null) {
+        Execution.delay(Navi.random.nextLong(1000, 2500))
+        KeyboardInput.pressKey(27)
+        Zezimax.Logger.log("**GRAND EXCHANGE** Pressed Escape to close Interface...")
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** Close button not found.")
+    }
+}
+
+fun clickAbortOfferButton() {
+    val abortButton = ComponentQuery.newQuery(105)
+        .componentIndex(9)
+        .results()
+        .firstOrNull()
+
+    if (abortButton != null) {
+        Execution.delay(Navi.random.nextLong(400, 1000))
+        abortButton.interact()
+        Zezimax.Logger.log("**GRAND EXCHANGE** Aborting offer...")
+    } else {
+        Zezimax.Logger.log("**GRAND EXCHANGE** 'Abort Offer' button not found.")
+    }
+}
 
 
 
@@ -178,7 +362,6 @@ fun clickConfirmOfferButton() {
 
 fun grandExchangeSell(ItemID: Int, Quantity: String) {
     val player = Client.getLocalPlayer()
-    Zezimax.Logger.log("**GRAND EXCHANGE** Walking to the Grand Exchange.")
     if (player == null || Client.getGameState() != Client.GameState.LOGGED_IN) {
         Zezimax.Logger.log("Player not logged in. Delaying execution.")
         Execution.delay(Navi.random.nextLong(2500, 7500))
@@ -192,7 +375,6 @@ fun grandExchangeSell(ItemID: Int, Quantity: String) {
             Zezimax.Logger.log("**GRAND EXCHANGE** Failed to walk to the Grand Exchange.")
         }
     }
-    Zezimax.Logger.log("**GRAND EXCHANGE** Player is at the Grand Exchange...")
     Execution.delay(Navi.random.nextLong(1000, 2000))
     if (!Bank.isOpen()) {
         // Open the bank
@@ -211,14 +393,13 @@ fun grandExchangeSell(ItemID: Int, Quantity: String) {
 
         when (Quantity) {
             "all" -> {
-                Zezimax.Logger.log("**GRAND EXCHANGE** Withdrawing all items as notes.")
+                Zezimax.Logger.log("**GRAND EXCHANGE** Withdrawing item for sale...")
                 Bank.withdrawAll(ItemID)
                 Execution.delay(Navi.random.nextLong(1200, 2300))
             }
             else -> {
                 val quantityInt = Quantity.toIntOrNull()
                 if (quantityInt != null) {
-                    Zezimax.Logger.log("**GRAND EXCHANGE** Withdrawing $quantityInt items as notes.")
 
                     val item = ComponentQuery.newQuery(517)
                         .item(ItemID)
@@ -227,7 +408,7 @@ fun grandExchangeSell(ItemID: Int, Quantity: String) {
 
                     if (item != null) {
                         item.interact("Withdraw-X")
-                        Zezimax.Logger.log("**GRAND EXCHANGE** Attempting Bank Withdraw for $ItemID")
+                        Zezimax.Logger.log("**GRAND EXCHANGE** Attempting Bank Withdraw for $ItemID...")
                         Execution.delay(Navi.random.nextLong(1300, 2000)) // Short delay before typing
                         GameInput.setTextInput(Quantity)
                         Execution.delay(Navi.random.nextLong(1600, 2600)) // Simulate delay after typing
@@ -255,32 +436,81 @@ fun grandExchangeSell(ItemID: Int, Quantity: String) {
     clickConfirmOfferButton()
     Execution.delay(Navi.random.nextLong(3000, 5500))
 
+    // Conditional logic after placing the offer
+    val editOfferButton = ComponentQuery.newQuery(105)
+        .componentIndex(9)
+        .results()
+        .firstOrNull()
 
-
-
-
-
-
-
-    /*
-
-if item sold in 4 seconds {
-Click to inventory
-Close GE interface
-}
-if item not sold in 4 seconds {
-Wait 10-20 seconds
-    if item sold {
-    click to inventory
-    Close GE interface
-    }
-    if item not not sold {
-    click abort offer button
-    Click to bank button
-    Close GE interface
+    if (editOfferButton == null) {
+        clickToInventoryButton()
+        closeGEInterface()
+    } else {
+        Execution.delay(Navi.random.nextLong(10000, 20000)) // Wait 10-20 seconds
+        if (editOfferButton != null) {
+            clickAbortOfferButton()
+            clickToBankButton()
+            closeGEInterface()
+        } else {
+            clickToInventoryButton()
+            closeGEInterface()
+        }
     }
 }
-     */
 
 
+fun grandExchangeBuy(ItemName: String, Quantity: String) {
+    val player = Client.getLocalPlayer()
+    if (player == null || Client.getGameState() != Client.GameState.LOGGED_IN) {
+        Zezimax.Logger.log("Player not logged in. Delaying execution.")
+        Execution.delay(Navi.random.nextLong(2500, 7500))
+        return
+    }
+    if (!grandexchange.contains(player.coordinate)) {
+        Navi.walkToGrandExchangeEntrance() // so it doesn't tele to edgeville if not member account, will get stuck trying agility
+        if (Navi.walkToGrandExchange()) {
+            Zezimax.Logger.log("**GRAND EXCHANGE** Arrived at the Grand Exchange.")
+        } else {
+            Zezimax.Logger.log("**GRAND EXCHANGE** Failed to walk to the Grand Exchange.")
+        }
+    }
+    interactWithGEClerk()
+    Execution.delay(Navi.random.nextLong(1500, 2500))
+    interactWithBuyButton()
+    Execution.delay(Navi.random.nextLong(1500, 2500))
+    typeItemName(ItemName)
+    Execution.delay(Navi.random.nextLong(2000, 3000))
+    interactWithGEItem()
+    Execution.delay(Navi.random.nextLong(1000, 2000))
+    typeQuantity(Quantity)
+    Execution.delay(Navi.random.nextLong(1000, 2000))
+    plus10Percent()
+    Execution.delay(Navi.random.nextLong(1000, 2000))
+    clickConfirmOfferButton()
+    Execution.delay(Navi.random.nextLong(3000, 5500))
+    // Conditional logic after placing the offer
+    val editOfferButton = ComponentQuery.newQuery(105)
+        .componentIndex(9)
+        .results()
+        .firstOrNull()
+
+    if (editOfferButton == null) {
+        clickToBankButton()
+        closeGEInterface()
+    } else {
+        Execution.delay(Navi.random.nextLong(10000, 20000)) // Wait 10-20 seconds
+        if (editOfferButton != null) {
+            clickAbortOfferButton()
+            clickToInventoryButton()
+            closeGEInterface()
+        } else {
+            clickToBankButton()
+            closeGEInterface()
+        }
+    }
 }
+
+
+/*
+only tested instant sells
+ */
