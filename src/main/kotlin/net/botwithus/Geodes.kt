@@ -49,12 +49,18 @@ fun geodeCracker() {
         Execution.delay(Navi.random.nextLong(2500, 7500))
         return
     }
-
+    val nearestBank = Navi.getNearestBank(player.coordinate)
+    if (nearestBank == null) {
+        Zezimax.Logger.log("No nearby bank found. Delaying execution.")
+        Execution.delay(Navi.random.nextLong(2500, 7500))
+        return
+    }
     if (!Bank.isOpen()) {
-        Zezimax.Logger.log("Walking to the nearest bank...")
-        val nearestBank = Navi.getNearestBank(player.coordinate) ?: return
-        Movement.traverse(NavPath.resolve(nearestBank.randomWalkableCoordinate))
-        Execution.delay(Navi.random.nextLong(1000, 3000))
+        if (!nearestBank.contains(player.coordinate)) {
+            Zezimax.Logger.log("Walking to the nearest bank...")
+            Movement.traverse(NavPath.resolve(nearestBank.randomWalkableCoordinate))
+            Execution.delay(Navi.random.nextLong(1000, 3000))
+        }
         Bank.open()
         Execution.delay(Navi.random.nextLong(1000, 2000))
     }

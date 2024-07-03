@@ -50,7 +50,11 @@ class Zezimax(
         START_SMITHING_ORE,
         SMITHING_ORE,
         START_GEODE_CRACKER,
-        GEODE_CRACKER
+        GEODE_CRACKER,
+        START_WOODCUTTING,
+        WOODCUTTING_BANKING,
+        START_FIREMAKING,
+        FIREMAKING_BANKING
     }
 
 
@@ -114,6 +118,8 @@ class Zezimax(
                         0 -> botState = ZezimaxBotState.START_MINING
                         1 -> botState = ZezimaxBotState.START_SMITHING_ORE
                         2 -> botState = ZezimaxBotState.START_GEODE_CRACKER
+                        3 -> botState = ZezimaxBotState.START_WOODCUTTING
+                        4 -> botState = ZezimaxBotState.START_FIREMAKING
                     }
                 }
             }
@@ -155,6 +161,27 @@ class Zezimax(
             }
             ZezimaxBotState.GEODE_CRACKER -> {
                 geodeCracker()
+            }
+
+
+            // WOODCUTTING STATES
+            ZezimaxBotState.START_WOODCUTTING -> {
+                println("Decided to do some Woodcutting...")
+                botState = ZezimaxBotState.WOODCUTTING_BANKING
+            }
+            ZezimaxBotState.WOODCUTTING_BANKING -> {
+                println("Woodcutting ${DecisionTree.logsToCollect} at Location: ${DecisionTree.woodcuttingLocation}...")
+                Woodcutting(DecisionTree.woodcuttingLocation, DecisionTree.bankLocation, DecisionTree.treeToChop, DecisionTree.logsToCollect, DecisionTree.woodBoxName, DecisionTree.startRand, DecisionTree.endRand, 200).woodcut(player)
+
+            }
+
+            // FIREMAKING STATES
+            ZezimaxBotState.START_FIREMAKING -> {
+                println("Decided to do some Firemaking...")
+                botState = ZezimaxBotState.FIREMAKING_BANKING
+            }
+            ZezimaxBotState.FIREMAKING_BANKING -> {
+                firemaking()
             }
         }
     }

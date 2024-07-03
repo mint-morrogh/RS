@@ -15,15 +15,22 @@ object DecisionTree {
     var oreToCollect: String = ""
     var rockToMine: String = ""
     var actionToMine: String = ""
+    var woodBoxName: String = ""
+    var woodcuttingLocation: String = ""
+    var logsToCollect: String = ""
+    var treeToChop: String = ""
+    var actionToChop: String = ""
+    var startRand: Long = 0
+    var endRand: Long = 0
+    var bonfireFuel: String = ""
 
 
     fun makeRandomDecision() {
-
-        decision = Navi.random.nextInt(3) // generates 0, 1, or 2
 /*
-         decision = 3
+        decision = Navi.random.nextInt(3) // generates 0, 1, or 2
 
  */
+         decision = 4
 
         Zezimax.Logger.log("Decision made: $decision")
 
@@ -154,7 +161,7 @@ object DecisionTree {
                 Zezimax.Logger.log("bank location: $bankLocation")
                 Zezimax.Logger.log("ore to collect: $oreToCollect")
                 Zezimax.Logger.log("rock to mine: $rockToMine")
-                Zezimax.Logger.log("rock to mine: $actionToMine")
+                Zezimax.Logger.log("action to mine: $actionToMine")
                 withdrawMiningSupplies(oreBoxName, 1)
             }
 
@@ -182,6 +189,105 @@ object DecisionTree {
                 withdrawGeodes()
 
             }
+
+
+            3 -> {
+
+                // WOODCUTTING
+                val willowCount = Bank.getItems().filter { it.name == "Willow logs" }.sumOf { it.stackSize }
+                val oakCount = Bank.getItems().filter { it.name == "Oak logs" }.sumOf { it.stackSize }
+                val logCount = Bank.getItems().filter { it.name == "Logs" }.sumOf { it.stackSize }
+                var taskAssigned = false
+                Zezimax.Logger.log("Selected Task: Woodcutting")
+                val woodcuttingLevel = Skills.WOODCUTTING.level
+                woodBoxName = "Willow wood box"
+
+                if (woodcuttingLevel >= 20 && !taskAssigned) {
+                    // Which Woodcutting Task Decided
+                    if (willowCount <= 300) {
+                        woodcuttingLocation = "DraynorWillows"
+                        bankLocation = "DraynorBank"
+                        logsToCollect = "Willow logs"
+                        treeToChop = "Willow"
+                        actionToChop = "Chop down"
+                        startRand = 11000
+                        endRand = 22000
+                        taskAssigned = true
+                    }
+                    else if (logCount <= 300) {
+                        woodcuttingLocation = "VarrockWestTrees"
+                        bankLocation = "VarrockWestBank"
+                        logsToCollect = "Logs"
+                        treeToChop = "Tree"
+                        actionToChop = "Chop down"
+                        startRand = 2500
+                        endRand = 6500
+                        taskAssigned = true
+                    }
+                }
+                if (woodcuttingLevel >= 10 && !taskAssigned) {
+                    // Which Woodcutting Task Decided
+                    if (oakCount <= 300) {
+                        woodcuttingLocation = "DraynorOaks"
+                        bankLocation = "DraynorBank"
+                        logsToCollect = "Oak logs"
+                        treeToChop = "Oak"
+                        actionToChop = "Chop down"
+                        startRand = 8500
+                        endRand = 19500
+                        taskAssigned = true
+                    }
+                    else if (logCount <= 300) {
+                        woodcuttingLocation = "VarrockWestTrees"
+                        bankLocation = "VarrockWestBank"
+                        logsToCollect = "Logs"
+                        treeToChop = "Tree"
+                        actionToChop = "Chop down"
+                        startRand = 2500
+                        endRand = 6500
+                        taskAssigned = true
+                    }
+                }
+                if (!taskAssigned){
+                    // Which Woodcutting Task Decided
+                    if (logCount <= 300) {
+                        woodcuttingLocation = "VarrockWestTrees"
+                        bankLocation = "VarrockWestBank"
+                        logsToCollect = "Logs"
+                        treeToChop = "Tree"
+                        actionToChop = "Chop down"
+                        startRand = 2500
+                        endRand = 6500
+                        taskAssigned = true
+
+                    }
+                    else if (logCount <= 500) {
+                        woodcuttingLocation = "VarrockWestTrees"
+                        bankLocation = "VarrockWestBank"
+                        logsToCollect = "Logs"
+                        treeToChop = "Tree"
+                        actionToChop = "Chop down"
+                        startRand = 2500
+                        endRand = 6500
+                        taskAssigned = true
+                    }
+                }
+
+                Zezimax.Logger.log("Woodcutting Location: $woodcuttingLocation")
+                Zezimax.Logger.log("bank location: $bankLocation")
+                Zezimax.Logger.log("logs to collect: $logsToCollect")
+                Zezimax.Logger.log("tree to chop: $treeToChop")
+                Zezimax.Logger.log("action to chop: $actionToChop")
+                withdrawWoodcuttingSupplies(woodBoxName, 1)
+            }
+
+            4 -> {
+
+                //FIREMAKING
+                Zezimax.Logger.log("Selected Task: Firemaking")
+                startFiremaking()
+            }
+
         }
     }
 }

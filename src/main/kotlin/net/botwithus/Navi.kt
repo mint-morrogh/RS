@@ -65,6 +65,10 @@ object Navi {
         Coordinate(3181, 3371, 0),
         Coordinate(3184, 3375, 0)
     )
+    val varrockWestTrees = Area.Rectangular(
+        Coordinate(3134, 3420, 0),
+        Coordinate(3147, 3443, 0)
+    )
     val lumbridgeTopFloorBank = Area.Rectangular(
         Coordinate(3208, 3219, 2),
         Coordinate(3208, 3220, 2)
@@ -77,9 +81,21 @@ object Navi {
         Coordinate(3092, 3241, 0),
         Coordinate(3092, 3245, 0)
     )
+    val draynorOaks = Area.Rectangular(
+        Coordinate(3074, 3288, 0),
+        Coordinate(3102, 3303, 0)
+    )
+    val draynorWillows = Area.Rectangular(
+        Coordinate(3079, 3240, 0),
+        Coordinate(3096, 3226, 0)
+    )
     val edgevilleBank = Area.Rectangular(
         Coordinate(3094, 3489, 0),
         Coordinate(3094, 3493, 0)
+    )
+    val edgevilleFiremaking = Area.Rectangular(
+        Coordinate(3085, 3494, 0),
+        Coordinate(3087, 3498, 0)
     )
     val burthorpeBank = Area.Rectangular(
         Coordinate(2888, 3535, 0),
@@ -220,14 +236,34 @@ object Navi {
         return walkTo(varrockWestMine)
     }
 
+    fun walkToVarrockWestTrees(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(varrockWestTrees)
+    }
+
     fun walkToDraynorBank(): Boolean {
         botState = BotState.WALKING
         return walkTo(draynorBank)
     }
 
+    fun walkToDraynorOaks(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(draynorOaks)
+    }
+
+    fun walkToDraynorWillows(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(draynorWillows)
+    }
+
     fun walkToEdgevilleBank(): Boolean {
         botState = BotState.WALKING
         return walkTo(edgevilleBank)
+    }
+
+    fun walkToEdgevilleFiremaking(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(edgevilleFiremaking)
     }
 
     fun walkToBurthorpeBank(): Boolean {
