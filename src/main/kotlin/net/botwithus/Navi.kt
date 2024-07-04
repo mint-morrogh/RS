@@ -37,6 +37,10 @@ object Navi {
         Coordinate(2956, 3296, 0),
         Coordinate(2956, 3297, 0)
     )
+    val faladorSouthFiremaking = Area.Rectangular(
+        Coordinate(2959, 3292, 0),
+        Coordinate(2963, 3298, 0)
+    )
     val faladorSmithBank = Area.Rectangular(
         Coordinate(3060, 3339, 0),
         Coordinate(3060, 3340, 0)
@@ -77,6 +81,10 @@ object Navi {
         Coordinate(3268, 3168, 0),
         Coordinate(3272, 3168, 0)
     )
+    val alkharidWestFishing = Area.Rectangular(
+        Coordinate(3260, 3175, 0),
+        Coordinate(3257, 3178, 0)
+    )
     val draynorBank = Area.Rectangular(
         Coordinate(3092, 3241, 0),
         Coordinate(3092, 3245, 0)
@@ -116,6 +124,14 @@ object Navi {
     val faladorSmithingFurnace = Area.Rectangular(
         Coordinate(3042, 3337, 0),
         Coordinate(3047, 3338, 0)
+    )
+    val portSarimFIshingShop = Area.Rectangular(
+        Coordinate(3015, 3222, 0),
+        Coordinate(3013, 3224, 0)
+    )
+    val barbarianVillageFishing = Area.Rectangular(
+        Coordinate(3107, 3434, 0),
+        Coordinate(3105, 3431, 0)
     )
     //////////////////////////////////
 
@@ -216,6 +232,11 @@ object Navi {
         return walkTo(faladorSouthBank)
     }
 
+    fun walkToFaladorSouthFiremaking(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(faladorSouthFiremaking)
+    }
+
     fun walkToVarrockWestBank(): Boolean {
         botState = BotState.WALKING
         return walkTo(varrockWestBank)
@@ -281,6 +302,11 @@ object Navi {
         return walkTo(alkharidWestBank)
     }
 
+    fun walkToAlkharidWestFishing(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(alkharidWestFishing)
+    }
+
     fun walkToLumbridgeTopFloorBank(): Boolean {
         botState = BotState.WALKING
         return walkTo(lumbridgeTopFloorBank)
@@ -312,5 +338,13 @@ object Navi {
     fun walkToFaladorSmithingFurnace(): Boolean {
         botState = BotState.WALKING
         return walkTo(faladorSmithingFurnace)
+    }
+    fun walkToPortSarimFishingShop(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(portSarimFIshingShop)
+    }
+    fun walkToBarbarianVillageFishing(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(barbarianVillageFishing)
     }
 }

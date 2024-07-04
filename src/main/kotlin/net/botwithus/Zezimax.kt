@@ -203,6 +203,10 @@ class Zezimax(
             }
         }
 
+        val goldInventorySlot = InventoryItemQuery.newQuery(623).ids(995).results()
+        val gp = goldInventorySlot.sumOf {it.stackSize}
+        println(gp)
+
         if (!Bank.isOpen()) {
             // Open the bank
             Bank.open()

@@ -13,6 +13,7 @@ object DecisionTree {
     var mineLocation: String = ""
     var bankLocation: String = ""
     var oreToCollect: String = ""
+    var stoneSpirit: String = ""
     var rockToMine: String = ""
     var actionToMine: String = ""
     var woodBoxName: String = ""
@@ -26,11 +27,11 @@ object DecisionTree {
 
 
     fun makeRandomDecision() {
-/*
-        decision = Navi.random.nextInt(3) // generates 0, 1, or 2
+        decision = Navi.random.nextInt(5) // generates 0, 1, or 2
 
- */
-         decision = 4
+        /*
+         decision = 0
+         */
 
         Zezimax.Logger.log("Decision made: $decision")
 
@@ -41,14 +42,22 @@ object DecisionTree {
             0 -> {
 
                 // MINING
-                val runeCount = Bank.getItems().filter { it.name == "Runite ore" }.sumOf { it.stackSize }
-                val luminiteCount = Bank.getItems().filter { it.name == "Luminite" }.sumOf { it.stackSize }
-                val adamantiteCount = Bank.getItems().filter { it.name == "Adamantite ore" }.sumOf { it.stackSize }
-                val mithrilCount = Bank.getItems().filter { it.name == "Mithril ore" }.sumOf { it.stackSize }
-                val coalCount = Bank.getItems().filter { it.name == "Coal" }.sumOf { it.stackSize }
-                val ironCount = Bank.getItems().filter { it.name == "Iron ore" }.sumOf { it.stackSize }
-                val tinCount = Bank.getItems().filter { it.name == "Tin ore" }.sumOf { it.stackSize }
-                val copperCount = Bank.getItems().filter { it.name == "Copper ore" }.sumOf { it.stackSize }
+                val runeCount = Bank.getItems().filter { it.id == 451 }.sumOf { it.stackSize }
+                val runeStoneSpirit = Bank.getItems().filter { it.id == 44808}.sumOf { it.stackSize }
+                val luminiteCount = Bank.getItems().filter { it.id == 44820 }.sumOf { it.stackSize }
+                val luminiteStoneSpirit = Bank.getItems().filter { it.id == 44806}.sumOf { it.stackSize }
+                val adamantiteCount = Bank.getItems().filter { it.id == 449 }.sumOf { it.stackSize }
+                val adamantiteStoneSpirit = Bank.getItems().filter { it.id == 44807 }.sumOf { it.stackSize }
+                val mithrilCount = Bank.getItems().filter { it.id == 447 }.sumOf { it.stackSize }
+                val mithrilStoneSpirit = Bank.getItems().filter { it.id == 44805 }.sumOf { it.stackSize }
+                val coalCount = Bank.getItems().filter { it.id == 453 }.sumOf { it.stackSize }
+                val coalStoneSpirit = Bank.getItems().filter { it.id == 44804 }.sumOf { it.stackSize }
+                val ironCount = Bank.getItems().filter { it.id == 441 }.sumOf { it.stackSize }
+                val ironStoneSpirit = Bank.getItems().filter { it.id == 44801 }.sumOf { it.stackSize }
+                val tinCount = Bank.getItems().filter { it.id == 438 }.sumOf { it.stackSize }
+                val tinStoneSpirit = Bank.getItems().filter { it.id == 44800 }.sumOf { it.stackSize }
+                val copperCount = Bank.getItems().filter { it.id == 436 }.sumOf { it.stackSize }
+                val copperStoneSpirit = Bank.getItems().filter { it.id == 44799 }.sumOf { it.stackSize }
                 var taskAssigned = false
                 Zezimax.Logger.log("Selected Task: Mining")
                 val miningLevel = Skills.MINING.level
@@ -60,6 +69,7 @@ object DecisionTree {
                         mineLocation = "MiningGuild"
                         bankLocation = "FaladorSmithBank"
                         oreToCollect = "Runite ore"
+                        stoneSpirit = "Runite stone spirit"
                         rockToMine = "Runite rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -68,6 +78,7 @@ object DecisionTree {
                         mineLocation = "FaladorLuminite"
                         bankLocation = "FaladorSmithBank"
                         oreToCollect = "Luminite"
+                        stoneSpirit = "Luminite stone spirit"
                         rockToMine = "Luminite rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -210,8 +221,8 @@ object DecisionTree {
                         logsToCollect = "Willow logs"
                         treeToChop = "Willow"
                         actionToChop = "Chop down"
-                        startRand = 11000
-                        endRand = 22000
+                        startRand = 8000
+                        endRand = 15000
                         taskAssigned = true
                     }
                     else if (logCount <= 300) {
@@ -233,8 +244,8 @@ object DecisionTree {
                         logsToCollect = "Oak logs"
                         treeToChop = "Oak"
                         actionToChop = "Chop down"
-                        startRand = 8500
-                        endRand = 19500
+                        startRand = 6500
+                        endRand = 15000
                         taskAssigned = true
                     }
                     else if (logCount <= 300) {

@@ -100,7 +100,7 @@ fun firemaking() {
         }
     }
 
-    Navi.walkToEdgevilleFiremaking()
+    Navi.walkToFaladorSouthFiremaking()
     Execution.delay(Navi.random.nextLong(700, 1400))
 
     if (logID != 0) {

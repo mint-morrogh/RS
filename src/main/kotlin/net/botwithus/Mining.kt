@@ -13,19 +13,20 @@ import net.botwithus.rs3.script.ScriptConsole
 import java.util.concurrent.Callable
 
 
+
 fun withdrawMiningSupplies(itemName: String, quantity: Int) {
 
 
     if (Bank.isOpen()) {
         // Find the item in the bank
-        val item = ComponentQuery.newQuery(517)
+        val orebox = ComponentQuery.newQuery(517)
             .itemName(itemName)
             .results()
             .firstOrNull()
 
-        if (item != null) {
+        if (orebox != null) {
             // Right-click the item and select "Withdraw-X"
-            val success = item.interact("Withdraw-X")
+            val success = orebox.interact("Withdraw-X")
             Zezimax.Logger.log("Attempting Bank Withdraw for $itemName")
 
 
