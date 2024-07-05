@@ -24,14 +24,23 @@ object DecisionTree {
     var startRand: Long = 0
     var endRand: Long = 0
     var bonfireFuel: String = ""
-
+    var fishingLocation: String = ""
+    var fishToCollect: String = ""
+    var spotToFish: String = ""
+    var actionToFish: String = ""
+    var feathersNeeded: Boolean = false
+    var baitNeeded: Boolean = false
 
     fun makeRandomDecision() {
-        decision = Navi.random.nextInt(5) // generates 0, 1, or 2
+
+
+        decision = Navi.random.nextInt(6) // bound starts at 0
 
         /*
-         decision = 0
+         decision = 5
+
          */
+
 
         Zezimax.Logger.log("Decision made: $decision")
 
@@ -297,6 +306,92 @@ object DecisionTree {
                 //FIREMAKING
                 Zezimax.Logger.log("Selected Task: Firemaking")
                 startFiremaking()
+            }
+
+            5 -> {
+
+                // FISHING
+                val baitCount = Bank.getItems().filter { it.id == 313 }.sumOf { it.stackSize }
+                val featherCount = Bank.getItems().filter { it.id == 314 }.sumOf { it.stackSize }
+                val rawShrimpCount= Bank.getItems().filter { it.id == 36222 }.sumOf { it.stackSize }
+                val rawAnchoviesCount= Bank.getItems().filter { it.id == 43849 }.sumOf { it.stackSize }
+                val rawSardineCount= Bank.getItems().filter { it.id == 43866 }.sumOf { it.stackSize }
+                val rawHerringCount= Bank.getItems().filter { it.id == 345 }.sumOf { it.stackSize }
+                val rawTroutCount= Bank.getItems().filter { it.id == 43871 }.sumOf { it.stackSize }
+                val rawSalmonCount= Bank.getItems().filter { it.id == 331 }.sumOf { it.stackSize }
+                val rawPikeCount= Bank.getItems().filter { it.id == 349 }.sumOf { it.stackSize }
+                val rawTunaCount= Bank.getItems().filter { it.id == 359 }.sumOf { it.stackSize }
+                val rawLobsterCount= Bank.getItems().filter { it.id == 337 }.sumOf { it.stackSize }
+                val rawSwordfishCount= Bank.getItems().filter { it.id == 43870 }.sumOf { it.stackSize }
+                var taskAssigned = false
+                Zezimax.Logger.log("Selected Task: Fishing")
+                val fishingLevel = Skills.FISHING.level
+
+                if (fishingLevel >= 30 && !taskAssigned) {
+                    // Which FIshing Task Decided
+                    if (rawSalmonCount <= 150) {
+                        if (featherCount <= 100) {
+                            grandExchangeBuy("feather", "200")
+                        }
+                        fishingLocation = "BarbarianVillageFishing"
+                        bankLocation = "EdgevilleBank"
+                        fishToCollect = "Raw salmon"
+                        spotToFish = "Fishing spot"
+                        actionToFish = "Lure"
+                        feathersNeeded = true
+                        baitNeeded = false
+                        taskAssigned = true
+
+                    }
+                    else if (rawTroutCount <= 150) {
+                        if (featherCount <= 100) {
+                            grandExchangeBuy("feather", "200")
+                        }
+                        fishingLocation = "BarbarianVillageFishing"
+                        bankLocation = "EdgevilleBank"
+                        fishToCollect = "Raw trout"
+                        spotToFish = "Fishing spot"
+                        actionToFish = "Lure"
+                        feathersNeeded = true
+                        baitNeeded = false
+                        taskAssigned = true
+                    }
+                }
+                if (fishingLevel >= 20 && !taskAssigned) {
+                    // Which FIshing Task Decided
+                    if (rawTroutCount <= 150) {
+                        if (featherCount <= 100) {
+                            grandExchangeBuy("feather", "200")
+                        }
+                        fishingLocation = "BarbarianVillageFishing"
+                        bankLocation = "EdgevilleBank"
+                        fishToCollect = "Raw trout"
+                        spotToFish = "Fishing spot"
+                        actionToFish = "Lure"
+                        feathersNeeded = true
+                        baitNeeded = false
+                        taskAssigned = true
+                    }
+                    else if (rawAnchoviesCount <= 150) {
+                        fishingLocation = "AlkharidWestFishing"
+                        bankLocation = "AlkharidWestBank"
+                        fishToCollect = "Raw anchovies"
+                        spotToFish = "Fishing spot"
+                        actionToFish = "Net"
+                        feathersNeeded = false
+                        baitNeeded = false
+                        taskAssigned = true
+                    }
+                }
+
+
+                Zezimax.Logger.log("Fishing Location: $fishingLocation")
+                Zezimax.Logger.log("bank location: $bankLocation")
+                Zezimax.Logger.log("fish to collect: $fishToCollect")
+                Zezimax.Logger.log("spot to fish: $spotToFish")
+                Zezimax.Logger.log("action to fish: $actionToFish")
+                withdrawFishingSupplies()
+
             }
 
         }

@@ -54,7 +54,9 @@ class Zezimax(
         START_WOODCUTTING,
         WOODCUTTING_BANKING,
         START_FIREMAKING,
-        FIREMAKING_BANKING
+        FIREMAKING_BANKING,
+        START_FISHING,
+        FISHING_BANKING
     }
 
 
@@ -120,6 +122,7 @@ class Zezimax(
                         2 -> botState = ZezimaxBotState.START_GEODE_CRACKER
                         3 -> botState = ZezimaxBotState.START_WOODCUTTING
                         4 -> botState = ZezimaxBotState.START_FIREMAKING
+                        5 -> botState = ZezimaxBotState.START_FISHING
                     }
                 }
             }
@@ -183,6 +186,17 @@ class Zezimax(
             ZezimaxBotState.FIREMAKING_BANKING -> {
                 firemaking()
             }
+
+            // FISHING STATES
+            ZezimaxBotState.START_FISHING -> {
+                println("Decided to Fish...")
+                botState = ZezimaxBotState.FISHING_BANKING
+            }
+            ZezimaxBotState.FISHING_BANKING -> {
+                println("Fishing ${DecisionTree.fishToCollect} at Location: ${DecisionTree.fishingLocation}...")
+                Fishing(DecisionTree.fishingLocation, DecisionTree.bankLocation, DecisionTree.spotToFish, DecisionTree.fishToCollect, 200).fish(player)
+            }
+
         }
     }
 
@@ -224,7 +238,9 @@ class Zezimax(
             DecisionTree.makeRandomDecision()
 
             // Close the bank
-            Bank.close()
+            if (Bank.isOpen()) {
+                Bank.close()
+            }
             Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate bank closing delay
             println("Initialization complete. Starting main script.")
             return true
