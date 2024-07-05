@@ -30,16 +30,19 @@ object DecisionTree {
     var actionToFish: String = ""
     var feathersNeeded: Boolean = false
     var baitNeeded: Boolean = false
+    var fishToCook: String = ""
+    var rangeLocation: String = ""
 
     fun makeRandomDecision() {
 
-
-        decision = Navi.random.nextInt(6) // bound starts at 0
+        decision = Navi.random.nextInt(7) // bound starts at 0
 
         /*
-         decision = 5
+         decision = 6
 
          */
+
+
 
 
         Zezimax.Logger.log("Decision made: $decision")
@@ -47,10 +50,9 @@ object DecisionTree {
         when (decision) {
 
 
-
+// MINING
             0 -> {
 
-                // MINING
                 val runeCount = Bank.getItems().filter { it.id == 451 }.sumOf { it.stackSize }
                 val runeStoneSpirit = Bank.getItems().filter { it.id == 44808}.sumOf { it.stackSize }
                 val luminiteCount = Bank.getItems().filter { it.id == 44820 }.sumOf { it.stackSize }
@@ -188,9 +190,8 @@ object DecisionTree {
 
 
 
-
-
-            1 -> { // SMIHTING ORE
+// SMIHTING ORE
+            1 -> {
                 Zezimax.Logger.log("Selected Task: Smithing Ore")
                 withdrawSmithingOreSupplies(
                     44820 to null, // Luminite
@@ -204,6 +205,11 @@ object DecisionTree {
                 )
 
             }
+
+
+
+
+// GEODES
             2 -> {
                 Zezimax.Logger.log("Selected Task: Cracking Geodes")
                 withdrawGeodes()
@@ -211,9 +217,10 @@ object DecisionTree {
             }
 
 
+
+// WOODCUTTING
             3 -> {
 
-                // WOODCUTTING
                 val willowCount = Bank.getItems().filter { it.name == "Willow logs" }.sumOf { it.stackSize }
                 val oakCount = Bank.getItems().filter { it.name == "Oak logs" }.sumOf { it.stackSize }
                 val logCount = Bank.getItems().filter { it.name == "Logs" }.sumOf { it.stackSize }
@@ -301,28 +308,35 @@ object DecisionTree {
                 withdrawWoodcuttingSupplies(woodBoxName, 1)
             }
 
+
+
+
+//FIREMAKING
+
             4 -> {
 
-                //FIREMAKING
                 Zezimax.Logger.log("Selected Task: Firemaking")
                 startFiremaking()
             }
 
+
+
+// FISHING
             5 -> {
 
-                // FISHING
                 val baitCount = Bank.getItems().filter { it.id == 313 }.sumOf { it.stackSize }
                 val featherCount = Bank.getItems().filter { it.id == 314 }.sumOf { it.stackSize }
-                val rawShrimpCount= Bank.getItems().filter { it.id == 36222 }.sumOf { it.stackSize }
-                val rawAnchoviesCount= Bank.getItems().filter { it.id == 43849 }.sumOf { it.stackSize }
-                val rawSardineCount= Bank.getItems().filter { it.id == 43866 }.sumOf { it.stackSize }
+                val rawCrayfishCount= Bank.getItems().filter { it.id == 13435 }.sumOf { it.stackSize }
+                val rawShrimpCount= Bank.getItems().filter { it.id == 2514 }.sumOf { it.stackSize }
+                val rawAnchoviesCount= Bank.getItems().filter { it.id == 321 }.sumOf { it.stackSize }
+                val rawSardineCount= Bank.getItems().filter { it.id == 327 }.sumOf { it.stackSize }
                 val rawHerringCount= Bank.getItems().filter { it.id == 345 }.sumOf { it.stackSize }
-                val rawTroutCount= Bank.getItems().filter { it.id == 43871 }.sumOf { it.stackSize }
+                val rawTroutCount= Bank.getItems().filter { it.id == 335 }.sumOf { it.stackSize }
                 val rawSalmonCount= Bank.getItems().filter { it.id == 331 }.sumOf { it.stackSize }
                 val rawPikeCount= Bank.getItems().filter { it.id == 349 }.sumOf { it.stackSize }
                 val rawTunaCount= Bank.getItems().filter { it.id == 359 }.sumOf { it.stackSize }
                 val rawLobsterCount= Bank.getItems().filter { it.id == 337 }.sumOf { it.stackSize }
-                val rawSwordfishCount= Bank.getItems().filter { it.id == 43870 }.sumOf { it.stackSize }
+                val rawSwordfishCount= Bank.getItems().filter { it.id == 371 }.sumOf { it.stackSize }
                 var taskAssigned = false
                 Zezimax.Logger.log("Selected Task: Fishing")
                 val fishingLevel = Skills.FISHING.level
@@ -393,6 +407,112 @@ object DecisionTree {
                 withdrawFishingSupplies()
 
             }
+
+
+
+// COOKING
+            6 -> {
+
+                val rawCrayfishCount= Bank.getItems().filter { it.id == 13435 }.sumOf { it.stackSize }
+                val rawShrimpCount= Bank.getItems().filter { it.id == 2514 }.sumOf { it.stackSize }
+                val rawAnchoviesCount= Bank.getItems().filter { it.id == 321 }.sumOf { it.stackSize }
+                val rawSardineCount= Bank.getItems().filter { it.id == 327 }.sumOf { it.stackSize }
+                val rawHerringCount= Bank.getItems().filter { it.id == 345 }.sumOf { it.stackSize }
+                val rawTroutCount= Bank.getItems().filter { it.id == 335 }.sumOf { it.stackSize }
+                val rawSalmonCount= Bank.getItems().filter { it.id == 331 }.sumOf { it.stackSize }
+                val rawPikeCount= Bank.getItems().filter { it.id == 349 }.sumOf { it.stackSize }
+                val rawTunaCount= Bank.getItems().filter { it.id == 359 }.sumOf { it.stackSize }
+                val rawLobsterCount= Bank.getItems().filter { it.id == 337 }.sumOf { it.stackSize }
+                val rawSwordfishCount= Bank.getItems().filter { it.id == 371 }.sumOf { it.stackSize }
+                var taskAssigned = false
+                Zezimax.Logger.log("Selected Task: Cooking")
+                val cookingLevel = Skills.COOKING.level
+
+                if (cookingLevel >= 25 && !taskAssigned) {
+                    // Which Cooking Task Decided
+                    if (rawSalmonCount >= 150) {
+                        fishToCook = "Raw salmon"
+                        bankLocation = "AlkharidWestBank"
+                        rangeLocation = "AlkharidWestRange"
+                        taskAssigned = true
+
+                    }
+                    else if (rawPikeCount >= 150) {
+                        fishToCook = "Raw pike"
+                        bankLocation = "AlkharidWestBank"
+                        rangeLocation = "AlkharidWestRange"
+                        taskAssigned = true
+                    }
+                }
+                if (cookingLevel >= 20 && !taskAssigned) {
+                    // Which Cooking Task Decided
+                    if (rawPikeCount >= 150) {
+                        fishToCook = "Raw pike"
+                        bankLocation = "AlkharidWestBank"
+                        rangeLocation = "AlkharidWestRange"
+                        taskAssigned = true
+
+                    }
+                    else if (rawTroutCount >= 150) {
+                        fishToCook = "Raw trout"
+                        bankLocation = "AlkharidWestBank"
+                        rangeLocation = "AlkharidWestRange"
+                        taskAssigned = true
+                    }
+                }
+                if (cookingLevel >= 15 && !taskAssigned) {
+                    // Which Cooking Task Decided
+                    if (rawTroutCount >= 150) {
+                        fishToCook = "Raw trout"
+                        bankLocation = "AlkharidWestBank"
+                        rangeLocation = "AlkharidWestRange"
+                        taskAssigned = true
+
+                    }
+                    else if (rawHerringCount >= 150) {
+                        fishToCook = "Raw herring"
+                        bankLocation = "AlkharidWestBank"
+                        rangeLocation = "AlkharidWestRange"
+                        taskAssigned = true
+                    }
+                }
+                if (!taskAssigned) {
+                    // Which Cooking Task Decided
+                    if (rawAnchoviesCount >= 150) {
+                        fishToCook = "Raw anchovies"
+                        bankLocation = "AlkharidWestBank"
+                        rangeLocation = "AlkharidWestRange"
+                        taskAssigned = true
+
+                    }
+                    else if (rawSardineCount >= 150) {
+                        fishToCook = "Raw sardine"
+                        bankLocation = "AlkharidWestBank"
+                        rangeLocation = "AlkharidWestRange"
+                        taskAssigned = true
+                    }
+                    else if (rawShrimpCount >= 150) {
+                        fishToCook = "Raw shrimps"
+                        bankLocation = "AlkharidWestBank"
+                        rangeLocation = "AlkharidWestRange"
+                        taskAssigned = true
+                    }
+                    else if (rawCrayfishCount >= 150) {
+                        fishToCook = "Raw crayfish"
+                        bankLocation = "AlkharidWestBank"
+                        rangeLocation = "AlkharidWestRange"
+                        taskAssigned = true
+                    }
+                }
+                Zezimax.Logger.log("Fish to cook: $fishToCook")
+
+
+
+
+            }
+
+
+
 
         }
     }

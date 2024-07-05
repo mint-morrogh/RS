@@ -85,6 +85,10 @@ object Navi {
         Coordinate(3260, 3175, 0),
         Coordinate(3257, 3178, 0)
     )
+    val alkharidWestRange = Area.Rectangular(
+        Coordinate(3269, 3182, 0),
+        Coordinate(3269, 3184, 0)
+    )
     val draynorBank = Area.Rectangular(
         Coordinate(3092, 3241, 0),
         Coordinate(3092, 3245, 0)
@@ -305,6 +309,11 @@ object Navi {
     fun walkToAlkharidWestFishing(): Boolean {
         botState = BotState.WALKING
         return walkTo(alkharidWestFishing)
+    }
+
+    fun walkToAlkharidWestRange(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(alkharidWestRange)
     }
 
     fun walkToLumbridgeTopFloorBank(): Boolean {

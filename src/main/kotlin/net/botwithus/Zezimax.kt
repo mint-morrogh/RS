@@ -56,7 +56,10 @@ class Zezimax(
         START_FIREMAKING,
         FIREMAKING_BANKING,
         START_FISHING,
-        FISHING_BANKING
+        FISHING_BANKING,
+        START_COOKING,
+        COOKING_RANGE,
+        COOKING_BANKING
     }
 
 
@@ -123,6 +126,7 @@ class Zezimax(
                         3 -> botState = ZezimaxBotState.START_WOODCUTTING
                         4 -> botState = ZezimaxBotState.START_FIREMAKING
                         5 -> botState = ZezimaxBotState.START_FISHING
+                        6 -> botState = ZezimaxBotState.START_COOKING
                     }
                 }
             }
@@ -157,6 +161,7 @@ class Zezimax(
 
 
 
+
             // GEODE CRACKING STATES
             ZezimaxBotState.START_GEODE_CRACKER -> {
                 println("Decided to crack geodes...")
@@ -165,6 +170,9 @@ class Zezimax(
             ZezimaxBotState.GEODE_CRACKER -> {
                 geodeCracker()
             }
+
+
+
 
 
             // WOODCUTTING STATES
@@ -178,6 +186,9 @@ class Zezimax(
 
             }
 
+
+
+
             // FIREMAKING STATES
             ZezimaxBotState.START_FIREMAKING -> {
                 println("Decided to do some Firemaking...")
@@ -186,6 +197,10 @@ class Zezimax(
             ZezimaxBotState.FIREMAKING_BANKING -> {
                 firemaking()
             }
+
+
+
+
 
             // FISHING STATES
             ZezimaxBotState.START_FISHING -> {
@@ -197,10 +212,29 @@ class Zezimax(
                 Fishing(DecisionTree.fishingLocation, DecisionTree.bankLocation, DecisionTree.spotToFish, DecisionTree.fishToCollect, 200).fish(player)
             }
 
+
+
+
+            // COOKING STATES
+            ZezimaxBotState.START_COOKING -> {
+                println("Decided to Cook...")
+                botState = ZezimaxBotState.COOKING_BANKING
+            }
+            ZezimaxBotState.COOKING_RANGE -> {
+                println("Cooking at Range...")
+                Cooking(DecisionTree.fishToCook, DecisionTree.bankLocation, DecisionTree.rangeLocation).cook(player)
+            }
+            ZezimaxBotState.COOKING_BANKING -> {
+                Cooking(DecisionTree.fishToCook, DecisionTree.bankLocation, DecisionTree.rangeLocation).bank()
+            }
+
+
+
+
+
         }
+
     }
-
-
 
 
 
@@ -216,10 +250,6 @@ class Zezimax(
                 return false
             }
         }
-
-        val goldInventorySlot = InventoryItemQuery.newQuery(623).ids(995).results()
-        val gp = goldInventorySlot.sumOf {it.stackSize}
-        println(gp)
 
         if (!Bank.isOpen()) {
             // Open the bank
