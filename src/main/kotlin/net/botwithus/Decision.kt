@@ -32,15 +32,22 @@ object DecisionTree {
     var baitNeeded: Boolean = false
     var fishToCook: String = ""
     var rangeLocation: String = ""
+    var logToBurn: Int = 0
+    var logToFletch: Int = 0
 
     fun makeRandomDecision() {
 
-        decision = Navi.random.nextInt(7) // bound starts at 0
+
+        decision = Navi.random.nextInt(8) // bound starts at 0
+
 
         /*
-         decision = 6
+         decision = 7
 
          */
+
+
+
 
 
 
@@ -315,7 +322,47 @@ object DecisionTree {
 
             4 -> {
 
+                val willowCount = Bank.getItems().filter { it.id == 1519 }.sumOf { it.stackSize }
+                val oakCount = Bank.getItems().filter { it.id == 1521 }.sumOf { it.stackSize }
+                val logCount = Bank.getItems().filter { it.id == 1511 }.sumOf { it.stackSize }
+                var taskAssigned = false
                 Zezimax.Logger.log("Selected Task: Firemaking")
+                val firemakingLevel = Skills.FIREMAKING.level
+
+                if (firemakingLevel >= 30 && !taskAssigned) {
+                    // Which Firemaking Task Decided
+                    if (willowCount >= 150) {
+                        logToBurn = 1519
+                        taskAssigned = true
+
+                    }
+                    else if (oakCount >= 150) {
+                        logToBurn = 1521
+                        taskAssigned = true
+                    }
+                }
+                if (firemakingLevel >= 15 && !taskAssigned) {
+                    // Which Firemaking Task Decided
+                    if (oakCount >= 150) {
+                        logToBurn = 1521
+                        taskAssigned = true
+
+                    }
+                    else if (logCount >= 150) {
+                        logToBurn = 1511
+                        taskAssigned = true
+                    }
+                }
+                if (!taskAssigned) {
+                    // Which Firemaking Task Decided
+                    if (logCount >= 150) {
+                        logToBurn = 1511
+                        taskAssigned = true
+
+                    }
+                }
+
+                Zezimax.Logger.log("Logs for Bonfire: $logToBurn")
                 startFiremaking()
             }
 
@@ -512,7 +559,55 @@ object DecisionTree {
             }
 
 
+// FLETCHING
+            7 -> {
+                val willowCount = Bank.getItems().filter { it.id == 1519 }.sumOf { it.stackSize }
+                val oakCount = Bank.getItems().filter { it.id == 1521 }.sumOf { it.stackSize }
+                val logCount = Bank.getItems().filter { it.id == 1511 }.sumOf { it.stackSize }
+                var taskAssigned = false
+                Zezimax.Logger.log("Selected Task: Fletching")
+                val fletchingLevel = Skills.FLETCHING.level
 
+                if (fletchingLevel >= 35 && !taskAssigned) {
+                    // Which Fletching Task Decided
+                    if (willowCount >= 150) {
+                        logToFletch = 1519
+                        taskAssigned = true
+
+                    }
+                    else if (oakCount >= 150) {
+                        logToFletch = 1521
+                        taskAssigned = true
+                    }
+                }
+                if (fletchingLevel >= 20 && !taskAssigned) {
+                    // Which Fletching Task Decided
+                    if (oakCount >= 150) {
+                        logToFletch = 1519
+                        taskAssigned = true
+
+                    }
+                    else if (logCount >= 150) {
+                        logToFletch = 1521
+                        taskAssigned = true
+                    }
+                }
+                if (!taskAssigned) {
+                    // Which Fletching Task Decided
+                    if (logCount >= 150) {
+                        logToFletch = 1519
+                        taskAssigned = true
+
+                    }
+                }
+                Zezimax.Logger.log("Logs for Fletching: $logToFletch")
+                startFletching()
+
+
+
+
+
+            }
 
         }
     }

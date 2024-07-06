@@ -58,7 +58,7 @@ class Cooking(private val fishName: String,
     }
 
     fun bank() {
-
+        Execution.delay(Navi.random.nextLong(1000, 2000))
         navigateToBankLocation()
 
         if (!Bank.isOpen()) {
@@ -68,9 +68,12 @@ class Cooking(private val fishName: String,
         }
 
         if (Bank.isOpen()) {
-            Zezimax.Logger.log("Deposit all...")
-            Bank.depositAll()
-            Execution.delay(Navi.random.nextLong(1000, 2000))
+            if (!Backpack.isEmpty()) {
+                Execution.delay(Navi.random.nextLong(1000, 2000))
+                Zezimax.Logger.log("Deposit all...")
+                Bank.depositAll()
+                Execution.delay(Navi.random.nextLong(1000, 2000))
+            }
             Zezimax.Logger.log("Withdrawing all $fishName.")
 
             val fishCount = Bank.getItems().filter { it.name == fishName }.sumOf { it.stackSize }
@@ -94,6 +97,7 @@ class Cooking(private val fishName: String,
 
     fun cook(player: LocalPlayer) {
 
+        Execution.delay(Navi.random.nextLong(1000, 2000))
         navigateToCookLocation()
         Execution.delay(Navi.random.nextLong(500, 1500))
 

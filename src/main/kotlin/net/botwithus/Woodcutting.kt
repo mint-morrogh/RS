@@ -141,10 +141,12 @@ class Woodcutting(private val locationWoodcutting: String,
         }
 
         if (Bank.isOpen()) {
-            Zezimax.Logger.log("Depositing all $logName.")
-            Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
-            Bank.depositAll(logName)
-            Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
+            if (!Backpack.isEmpty()) {
+                Zezimax.Logger.log("Depositing all $logName.")
+                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
+                Bank.depositAll(logName)
+                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
+            }
 
             val woodBox = InventoryItemQuery.newQuery().name(woodBoxName).results().firstOrNull()
             if (woodBox != null) {

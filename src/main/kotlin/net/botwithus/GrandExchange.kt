@@ -35,6 +35,7 @@ import net.botwithus.rs3.script.config.ScriptConfig
 import net.botwithus.rs3.util.Regex
 import java.util.*
 import java.util.concurrent.Callable
+import java.util.function.BiFunction
 import java.util.regex.Pattern
 
 val grandexchange = Area.Rectangular(
@@ -169,21 +170,43 @@ fun typeItemName(Name: String) {
     Zezimax.Logger.log("**GRAND EXCHANGE** Typed out the item name: $Name")
 }
 
-fun interactWithGEItem() {
-    val geInventory = ComponentQuery.newQuery(105)
+fun interactWithGEItem(Name: String) {
+    // Define the BiFunction for case-insensitive string comparison
+    val stringEquals: BiFunction<String, CharSequence, Boolean> = BiFunction { s1, s2 -> s1.equals(s2.toString(), ignoreCase = true) }
+    // Find the subcomponent with the text matching Name, this is always 1 subcomponent higher than the clickable object
+    val geInventoryText = ComponentQuery.newQuery(105)
         .componentIndex(342)
-        .subComponentIndex(11) // first item in GE slot
+        .text(Name, stringEquals)
         .results()
         .firstOrNull()
+
+    // If the component is found, proceed to read the subcomponent int
+    if (geInventoryText != null) {
+        // Subtract 1 from the subcomponent index to get the interactable subcomponent
+        val interactableSubComponentIndex = geInventoryText.subComponentIndex - 1
+
+        // Find the interactable component using the calculated index
+        val geInventory = ComponentQuery.newQuery(105)
+            .componentIndex(342)
+            .subComponentIndex(interactableSubComponentIndex)
+            .results()
+            .firstOrNull()
+
         Execution.delay(Navi.random.nextLong(400, 1000))
-    if (geInventory != null) {
-        geInventory.interact("Select")
-        Zezimax.Logger.log("**GRAND EXCHANGE** Selected item...")
+
+        if (geInventory != null) {
+            geInventory.interact("Select")
+            Zezimax.Logger.log("**GRAND EXCHANGE** Selected item...")
+        } else {
+            Zezimax.Logger.log("**GRAND EXCHANGE** Couldn't select item...")
+        }
     } else {
-        Zezimax.Logger.log("**GRAND EXCHANGE** Couldn't select item...")
+        Zezimax.Logger.log("**GRAND EXCHANGE** Couldn't find the item text...")
     }
-        Execution.delay(Navi.random.nextLong(900, 1800))
+
+    Execution.delay(Navi.random.nextLong(900, 1800))
 }
+
 
 fun typeQuantity(Quantity: String) {
     val geQt = ComponentQuery.newQuery(105)
@@ -491,7 +514,7 @@ fun grandExchangeBuy(ItemName: String, Quantity: String) {
     Execution.delay(Navi.random.nextLong(1500, 2500))
     typeItemName(ItemName)
     Execution.delay(Navi.random.nextLong(2000, 3000))
-    interactWithGEItem()
+    interactWithGEItem(ItemName)
     Execution.delay(Navi.random.nextLong(1000, 2000))
     typeQuantity(Quantity)
     Execution.delay(Navi.random.nextLong(1000, 2000))

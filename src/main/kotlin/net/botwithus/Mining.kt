@@ -86,6 +86,7 @@ class Mining(private val locationMine: String,
 
     fun mine(player: LocalPlayer) {
 
+        Execution.delay(Navi.random.nextLong(1000, 2000))
         navigateToMineLocation()
 
         while (true) {
@@ -138,6 +139,7 @@ class Mining(private val locationMine: String,
 
     fun bank() {
 
+        Execution.delay(Navi.random.nextLong(1000, 2000))
         navigateToBankLocation()
 
         if (!Bank.isOpen()) {
@@ -147,10 +149,14 @@ class Mining(private val locationMine: String,
         }
 
         if (Bank.isOpen()) {
-            Zezimax.Logger.log("Depositing all $oreName.")
-            Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
-            Bank.depositAll(oreName)
-            Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
+            if (!Backpack.isEmpty()) {
+                Zezimax.Logger.log("Depositing all...")
+                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
+                Bank.depositAll(oreName)
+                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
+            }
+            Execution.delay(Navi.random.nextLong(1000, 2000)) // Simulate deposit delay
+
 
             val oreBox = InventoryItemQuery.newQuery().name(oreBoxName).results().firstOrNull()
             if (oreBox != null) {

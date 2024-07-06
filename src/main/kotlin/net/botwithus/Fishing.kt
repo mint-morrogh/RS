@@ -120,6 +120,7 @@ class Fishing(private val locationFish: String,
     }
 
     fun fish(player: LocalPlayer) {
+        Execution.delay(Navi.random.nextLong(1000, 2000))
         navigateToFishingLocation()
 
         while (true) {
@@ -175,7 +176,7 @@ class Fishing(private val locationFish: String,
 
 
     fun bank() {
-
+        Execution.delay(Navi.random.nextLong(1000, 2000))
         navigateToBankLocation()
 
         if (!Bank.isOpen()) {
@@ -185,10 +186,13 @@ class Fishing(private val locationFish: String,
         }
 
         if (Bank.isOpen()) {
-            Zezimax.Logger.log("Depositing all fish.")
-            Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
-            Bank.depositAll()
-            Execution.delay(Navi.random.nextLong(2000, 4000)) // Simulate deposit delay
+            if (!Backpack.isEmpty()) {
+                Zezimax.Logger.log("Depositing all...")
+                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
+                Bank.depositAll()
+                Execution.delay(Navi.random.nextLong(2000, 4000)) // Simulate deposit delay
+            }
+            Execution.delay(Navi.random.nextLong(1000, 2000)) // Simulate deposit delay
 
             // Withdraw feathers if needed
 

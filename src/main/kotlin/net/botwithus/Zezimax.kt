@@ -59,7 +59,9 @@ class Zezimax(
         FISHING_BANKING,
         START_COOKING,
         COOKING_RANGE,
-        COOKING_BANKING
+        COOKING_BANKING,
+        START_FLETCHING,
+        FLETCHING_BANKING
     }
 
 
@@ -109,9 +111,11 @@ class Zezimax(
 
 
                 // TESTING FUNCTIONS HERE
-                /*
-                Execution.delay(Navi.random.nextLong(25000, 75000))
-                 */
+/*
+                Execution.delay(Navi.random.nextLong(250000, 750000))
+
+ */
+
 
 
 
@@ -127,6 +131,7 @@ class Zezimax(
                         4 -> botState = ZezimaxBotState.START_FIREMAKING
                         5 -> botState = ZezimaxBotState.START_FISHING
                         6 -> botState = ZezimaxBotState.START_COOKING
+                        7 -> botState = ZezimaxBotState.START_FLETCHING
                     }
                 }
             }
@@ -228,6 +233,15 @@ class Zezimax(
                 Cooking(DecisionTree.fishToCook, DecisionTree.bankLocation, DecisionTree.rangeLocation).bank()
             }
 
+            // COOKING STATES
+            ZezimaxBotState.START_FLETCHING -> {
+                println("Decided to Fletch...")
+                botState = ZezimaxBotState.FLETCHING_BANKING
+            }
+            ZezimaxBotState.FLETCHING_BANKING -> {
+                fletching()
+            }
+
 
 
 
@@ -246,7 +260,7 @@ class Zezimax(
             println("**INITIALIZING** Walking to the nearest Bank...")
             val path = NavPath.resolve(nearestBank.randomWalkableCoordinate)
             if (path != null && Movement.traverse(path) != TraverseEvent.State.NO_PATH) {
-                Execution.delay(Navi.random.nextLong(700, 1500))
+                Execution.delay(Navi.random.nextLong(600, 1100))
                 return false
             }
         }
@@ -254,15 +268,17 @@ class Zezimax(
         if (!Bank.isOpen()) {
             // Open the bank
             Bank.open()
-            Execution.delay(Navi.random.nextLong(1500, 3000))
+            Execution.delay(Navi.random.nextLong(1500, 2400))
         }
 
         // Deposit all items into the bank
         if (Bank.isOpen()) {
-            println("**INITIALIZING** Depositing all items.")
-            Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
-            Bank.depositAll()
-            Execution.delay(Navi.random.nextLong(2000, 4000)) // Simulate deposit delay
+            if (!Backpack.isEmpty()) {
+                println("**INITIALIZING** Depositing all items.")
+                Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
+                Bank.depositAll()
+                Execution.delay(Navi.random.nextLong(2000, 4000)) // Simulate deposit delay
+            }
 
             // Make random decision on what to do next
             DecisionTree.makeRandomDecision()
