@@ -3,6 +3,7 @@ package net.botwithus
 import net.botwithus.api.game.hud.inventories.Backpack
 import net.botwithus.api.game.hud.inventories.Bank
 import net.botwithus.internal.scripts.ScriptDefinition
+import kotlin.random.Random
 import net.botwithus.rs3.events.impl.InventoryUpdateEvent
 import net.botwithus.rs3.events.impl.SkillUpdateEvent
 import net.botwithus.rs3.game.Area
@@ -64,7 +65,9 @@ class Zezimax(
         FLETCHING_BANKING
     }
 
-
+    var randomNumberMining: Int = 0
+    var randomNumberWoodcutting: Int = 0
+    var randomNumberFishing: Int = 0
 
     companion object {
         var botState: ZezimaxBotState = ZezimaxBotState.INITIALIZING
@@ -141,12 +144,13 @@ class Zezimax(
 
             // MINING STATES
             ZezimaxBotState.START_MINING -> {
+                val randomNumberMining = Random.nextInt(80, 250)
                 println("Decided to Mine...")
                 botState = ZezimaxBotState.MINING_BANKING
             }
             ZezimaxBotState.MINING_BANKING -> {
                 println("Mining ${DecisionTree.oreToCollect} at Location: ${DecisionTree.mineLocation}...")
-                Mining(DecisionTree.mineLocation, DecisionTree.bankLocation, DecisionTree.rockToMine, DecisionTree.oreToCollect, DecisionTree.oreBoxName, 200).mine(player)
+                Mining(DecisionTree.mineLocation, DecisionTree.bankLocation, DecisionTree.rockToMine, DecisionTree.oreToCollect, DecisionTree.oreBoxName, randomNumberMining).mine(player)
             }
 
 
@@ -182,12 +186,13 @@ class Zezimax(
 
             // WOODCUTTING STATES
             ZezimaxBotState.START_WOODCUTTING -> {
+                val randomNumberWoodcutting = Random.nextInt(80, 250)
                 println("Decided to do some Woodcutting...")
                 botState = ZezimaxBotState.WOODCUTTING_BANKING
             }
             ZezimaxBotState.WOODCUTTING_BANKING -> {
                 println("Woodcutting ${DecisionTree.logsToCollect} at Location: ${DecisionTree.woodcuttingLocation}...")
-                Woodcutting(DecisionTree.woodcuttingLocation, DecisionTree.bankLocation, DecisionTree.treeToChop, DecisionTree.logsToCollect, DecisionTree.woodBoxName, DecisionTree.startRand, DecisionTree.endRand, 200).woodcut(player)
+                Woodcutting(DecisionTree.woodcuttingLocation, DecisionTree.bankLocation, DecisionTree.treeToChop, DecisionTree.logsToCollect, DecisionTree.woodBoxName, DecisionTree.startRand, DecisionTree.endRand, randomNumberWoodcutting).woodcut(player)
 
             }
 
@@ -209,12 +214,13 @@ class Zezimax(
 
             // FISHING STATES
             ZezimaxBotState.START_FISHING -> {
+                val randomNumberFishing = Random.nextInt(80, 250)
                 println("Decided to Fish...")
                 botState = ZezimaxBotState.FISHING_BANKING
             }
             ZezimaxBotState.FISHING_BANKING -> {
                 println("Fishing ${DecisionTree.fishToCollect} at Location: ${DecisionTree.fishingLocation}...")
-                Fishing(DecisionTree.fishingLocation, DecisionTree.bankLocation, DecisionTree.spotToFish, DecisionTree.fishToCollect, 200).fish(player)
+                Fishing(DecisionTree.fishingLocation, DecisionTree.bankLocation, DecisionTree.spotToFish, DecisionTree.fishToCollect, randomNumberFishing).fish(player)
             }
 
 
