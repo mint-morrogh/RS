@@ -137,6 +137,14 @@ object Navi {
         Coordinate(3107, 3434, 0),
         Coordinate(3105, 3431, 0)
     )
+    val portSarimPayFare = Area.Rectangular(
+        Coordinate(3025, 3215, 0),
+        Coordinate(3029, 3220, 0)
+    )
+    val portSarimFishing = Area.Rectangular(
+        Coordinate(2924, 3180, 0),
+        Coordinate(2925, 3175, 0)
+    )
     //////////////////////////////////
 
     // Finding closest bank
@@ -355,5 +363,13 @@ object Navi {
     fun walkToBarbarianVillageFishing(): Boolean {
         botState = BotState.WALKING
         return walkTo(barbarianVillageFishing)
+    }
+    fun walkToPortSarimPayFare(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(portSarimPayFare)
+    }
+    fun walkToPortSarimFishing(): Boolean {
+        botState = BotState.WALKING
+        return walkTo(portSarimFishing)
     }
 }

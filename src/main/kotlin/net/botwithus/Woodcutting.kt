@@ -168,7 +168,7 @@ class Woodcutting(private val locationWoodcutting: String,
             Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
 
             if (logCount >= woodcutUntil) {
-                Zezimax.Logger.log("Collected $woodcutUntil or more $logName. Re-Initializing.")
+                Zezimax.Logger.log("Collected enough $logName. Re-Initializing.")
                 Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
                 return
             } else {

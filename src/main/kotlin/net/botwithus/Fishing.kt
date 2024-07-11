@@ -105,6 +105,7 @@ class Fishing(private val locationFish: String,
         when (locationFish) {
             "BarbarianVillageFishing" -> Navi.walkToBarbarianVillageFishing()
             "AlkharidWestFishing" -> Navi.walkToAlkharidWestFishing()
+            "PortSarimFIshing" -> Navi.walkToPortSarimFishing()
             // Add more cases as needed
             else -> throw IllegalArgumentException("Unknown location: $locationFish")
         }
@@ -114,6 +115,8 @@ class Fishing(private val locationFish: String,
         when (locationBank) {
             "EdgevilleBank" -> Navi.walkToEdgevilleBank()
             "AlkharidWestBank" -> Navi.walkToAlkharidWestBank()
+            "DraynorBank" -> Navi.walkToDraynorBank()
+            "FaladorSouthBank" -> Navi.walkToFaladorSouthBank()
             // Add more cases as needed
             else -> throw IllegalArgumentException("Unknown bank location: $locationBank")
         }

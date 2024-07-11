@@ -38,13 +38,13 @@ object DecisionTree {
     fun makeRandomDecision() {
 
 
+        /*
         decision = Navi.random.nextInt(8) // bound starts at 0
 
 
-        /*
-         decision = 7
-
          */
+
+         decision = 5
 
 
 
@@ -388,6 +388,50 @@ object DecisionTree {
                 Zezimax.Logger.log("Selected Task: Fishing")
                 val fishingLevel = Skills.FISHING.level
 
+
+                // Needs help getting to Karamja...
+
+                // Navi.walkToPortSarimPayFare
+                // NPC Captain Tobias
+                // interact(Pay fare)
+                // wait for dialogue window
+                // Dialogue next is 1184,15
+                // yes please is 1188, 8
+                // dialogue next is 1191, 15
+                // cutscene is about 20 seconds long (wait from 25-30 seconds here)
+
+
+
+                /*
+                if (fishingLevel >= 40 && !taskAssigned) {
+                    // Which FIshing Task Decided
+                    if (rawLobsterCount <= 150) {
+                        fishingLocation = "PortSarimFishing"
+                        bankLocation = "FaladorSouthBank"
+                        fishToCollect = "Raw lobster"
+                        spotToFish = "Fishing spot"
+                        actionToFish = "Cage"
+                        feathersNeeded = false
+                        baitNeeded = false
+                        taskAssigned = true
+
+                    }
+                    else if (rawSalmonCount <= 150) {
+                            if (featherCount <= 100) {
+                                grandExchangeBuy("feather", "200")
+                            }
+                            fishingLocation = "BarbarianVillageFishing"
+                            bankLocation = "EdgevilleBank"
+                            fishToCollect = "Raw salmon"
+                            spotToFish = "Fishing spot"
+                            actionToFish = "Lure"
+                            feathersNeeded = true
+                            baitNeeded = false
+                            taskAssigned = true
+                    }
+                }
+
+                 */
                 if (fishingLevel >= 30 && !taskAssigned) {
                     // Which FIshing Task Decided
                     if (rawSalmonCount <= 150) {
