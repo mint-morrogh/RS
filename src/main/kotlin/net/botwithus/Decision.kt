@@ -38,13 +38,17 @@ object DecisionTree {
     fun makeRandomDecision() {
 
 
-        /*
+
         decision = Navi.random.nextInt(8) // bound starts at 0
 
 
-         */
 
+
+/*
          decision = 5
+
+ */
+
 
 
 
@@ -186,11 +190,7 @@ object DecisionTree {
                     }
                 }
 
-                Zezimax.Logger.log("Mine Location: $mineLocation")
-                Zezimax.Logger.log("bank location: $bankLocation")
                 Zezimax.Logger.log("ore to collect: $oreToCollect")
-                Zezimax.Logger.log("rock to mine: $rockToMine")
-                Zezimax.Logger.log("action to mine: $actionToMine")
                 withdrawMiningSupplies(oreBoxName, 1)
             }
 
@@ -307,11 +307,7 @@ object DecisionTree {
                     }
                 }
 
-                Zezimax.Logger.log("Woodcutting Location: $woodcuttingLocation")
-                Zezimax.Logger.log("bank location: $bankLocation")
                 Zezimax.Logger.log("logs to collect: $logsToCollect")
-                Zezimax.Logger.log("tree to chop: $treeToChop")
-                Zezimax.Logger.log("action to chop: $actionToChop")
                 withdrawWoodcuttingSupplies(woodBoxName, 1)
             }
 
@@ -490,11 +486,8 @@ object DecisionTree {
                 }
 
 
-                Zezimax.Logger.log("Fishing Location: $fishingLocation")
-                Zezimax.Logger.log("bank location: $bankLocation")
+
                 Zezimax.Logger.log("fish to collect: $fishToCollect")
-                Zezimax.Logger.log("spot to fish: $spotToFish")
-                Zezimax.Logger.log("action to fish: $actionToFish")
                 withdrawFishingSupplies()
 
             }

@@ -65,14 +65,14 @@ class Zezimax(
         FLETCHING_BANKING
     }
 
-    var randomNumberMining: Int = 0
-    var randomNumberWoodcutting: Int = 0
-    var randomNumberFishing: Int = 0
 
     companion object {
         var botState: ZezimaxBotState = ZezimaxBotState.INITIALIZING
     }
     var someBoolean: Boolean = true
+    var randomAmount: Int = 0
+
+
     object Logger {
         private var scriptConsole: ScriptConsole? = null
         fun initialize(console: ScriptConsole) {
@@ -90,6 +90,7 @@ class Zezimax(
         val console = this.console // Assuming `this.console` gives you the ScriptConsole
         Logger.initialize(console)
         Logger.log("Script initialized. State set to INITIALIZING.")
+
         return true
     }
 
@@ -109,7 +110,7 @@ class Zezimax(
                 }
             }
             ZezimaxBotState.IDLE -> {
-                println("Bot state is IDLE. Decision: ${DecisionTree.decision}")
+                randomAmount = Random.nextInt(80, 220)
 
 
 
@@ -144,13 +145,13 @@ class Zezimax(
 
             // MINING STATES
             ZezimaxBotState.START_MINING -> {
-                val randomNumberMining = Random.nextInt(80, 250)
                 println("Decided to Mine...")
                 botState = ZezimaxBotState.MINING_BANKING
             }
             ZezimaxBotState.MINING_BANKING -> {
+                println("Mining until ${randomAmount} ${DecisionTree.oreToCollect} have been banked...")
                 println("Mining ${DecisionTree.oreToCollect} at Location: ${DecisionTree.mineLocation}...")
-                Mining(DecisionTree.mineLocation, DecisionTree.bankLocation, DecisionTree.rockToMine, DecisionTree.oreToCollect, DecisionTree.oreBoxName, randomNumberMining).mine(player)
+                Mining(DecisionTree.mineLocation, DecisionTree.bankLocation, DecisionTree.rockToMine, DecisionTree.oreToCollect, DecisionTree.oreBoxName, randomAmount).mine(player)
             }
 
 
@@ -186,13 +187,13 @@ class Zezimax(
 
             // WOODCUTTING STATES
             ZezimaxBotState.START_WOODCUTTING -> {
-                val randomNumberWoodcutting = Random.nextInt(80, 250)
                 println("Decided to do some Woodcutting...")
                 botState = ZezimaxBotState.WOODCUTTING_BANKING
             }
             ZezimaxBotState.WOODCUTTING_BANKING -> {
+                println("Woodcutting until ${randomAmount} ${DecisionTree.logsToCollect} have been banked...")
                 println("Woodcutting ${DecisionTree.logsToCollect} at Location: ${DecisionTree.woodcuttingLocation}...")
-                Woodcutting(DecisionTree.woodcuttingLocation, DecisionTree.bankLocation, DecisionTree.treeToChop, DecisionTree.logsToCollect, DecisionTree.woodBoxName, DecisionTree.startRand, DecisionTree.endRand, randomNumberWoodcutting).woodcut(player)
+                Woodcutting(DecisionTree.woodcuttingLocation, DecisionTree.bankLocation, DecisionTree.treeToChop, DecisionTree.logsToCollect, DecisionTree.woodBoxName, DecisionTree.startRand, DecisionTree.endRand, randomAmount).woodcut(player)
 
             }
 
@@ -214,13 +215,13 @@ class Zezimax(
 
             // FISHING STATES
             ZezimaxBotState.START_FISHING -> {
-                val randomNumberFishing = Random.nextInt(80, 250)
                 println("Decided to Fish...")
                 botState = ZezimaxBotState.FISHING_BANKING
             }
             ZezimaxBotState.FISHING_BANKING -> {
+                println("Fishing until ${randomAmount} ${DecisionTree.fishToCollect} have been banked...")
                 println("Fishing ${DecisionTree.fishToCollect} at Location: ${DecisionTree.fishingLocation}...")
-                Fishing(DecisionTree.fishingLocation, DecisionTree.bankLocation, DecisionTree.spotToFish, DecisionTree.fishToCollect, randomNumberFishing).fish(player)
+                Fishing(DecisionTree.fishingLocation, DecisionTree.bankLocation, DecisionTree.spotToFish, DecisionTree.fishToCollect, randomAmount).fish(player)
             }
 
 
@@ -239,7 +240,9 @@ class Zezimax(
                 Cooking(DecisionTree.fishToCook, DecisionTree.bankLocation, DecisionTree.rangeLocation).bank()
             }
 
-            // COOKING STATES
+
+
+            // FLETCHING STATES
             ZezimaxBotState.START_FLETCHING -> {
                 println("Decided to Fletch...")
                 botState = ZezimaxBotState.FLETCHING_BANKING

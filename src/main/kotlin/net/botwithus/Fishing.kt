@@ -159,7 +159,7 @@ class Fishing(private val locationFish: String,
                 val fishSpot: Npc? = NpcQuery.newQuery().name(spotName).results().nearest()
                 if (fishSpot != null && fishSpot.interact(DecisionTree.actionToFish)) {
                     Zezimax.Logger.log("Fishing $spotName...")
-                    Execution.delay(Navi.random.nextLong(10000, 24000)) // Simulate fishing delay
+                    Execution.delay(Navi.random.nextLong(10000, 24000))
                 } else {
                     Zezimax.Logger.log("No $spotName found or failed to interact.")
                     Execution.delay(Navi.random.nextLong(1500, 3000))
@@ -240,7 +240,7 @@ class Fishing(private val locationFish: String,
                 Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
                 return
             } else {
-                Zezimax.Logger.log("Continuing to fish more $fishName.")
+                Zezimax.Logger.log("Haven't collected $fishUntil or more $fishName, Continuing to fish more $fishName.")
                 Zezimax.botState = Zezimax.ZezimaxBotState.START_FISHING
                 return
             }
