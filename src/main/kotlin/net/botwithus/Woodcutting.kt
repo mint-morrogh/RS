@@ -9,6 +9,9 @@ import net.botwithus.rs3.game.scene.entities.characters.player.LocalPlayer
 import net.botwithus.rs3.game.scene.entities.`object`.SceneObject
 import net.botwithus.rs3.input.GameInput
 import net.botwithus.rs3.script.Execution
+import net.botwithus.rs3.game.scene.entities.characters.player.Player
+import net.botwithus.rs3.game.queries.builders.characters.PlayerQuery
+import java.util.stream.Collectors
 
 
 fun withdrawWoodcuttingSupplies(itemName: String, quantity: Int) {
@@ -78,19 +81,67 @@ class Woodcutting(private val locationWoodcutting: String,
         }
     }
 
-    fun woodcut(player: LocalPlayer) {
 
+    fun findNextAvailableTree(player: LocalPlayer): SceneObject? {
+        val currentPosition = player.coordinate
+
+        // Query to find trees that match the criteria
+        val trees = SceneObjectQuery.newQuery()
+            .name(treeName)
+            .option("Chop down")
+            .hidden(false)
+            .results()
+            .stream()
+            .filter { (it.coordinate?.distanceTo(currentPosition) ?: Double.MAX_VALUE) <= 15 } // Filter trees within 15 spaces
+            .sorted { o1, o2 ->
+                val distance1 = o1.coordinate?.distanceTo(currentPosition) ?: Double.MAX_VALUE
+                val distance2 = o2.coordinate?.distanceTo(currentPosition) ?: Double.MAX_VALUE
+                distance1.compareTo(distance2)
+            }
+            .collect(Collectors.toList())
+
+        // Check for the first tree without players nearby animating
+        for (tree in trees) {
+            val treePosition = tree.coordinate
+            val nearbyPlayers = PlayerQuery.newQuery().results().stream()
+                .filter { it.coordinate != null && treePosition?.let { it1 -> it.coordinate!!.distanceTo(it1) }!! <= 1 && it.name != player.name && it.animationId != -1 }
+                .collect(Collectors.toList())
+
+            if (nearbyPlayers.isEmpty()) {
+                Zezimax.Logger.log("Found free tree within 15 spaces")
+                return tree
+            }
+        }
+
+        // If all trees within 10 spaces have players nearby animating, return the nearest tree regardless
+        Zezimax.Logger.log("Could not find a free tree within 10 spaces, choosing the nearest tree regardless")
+        return SceneObjectQuery.newQuery().name(treeName).option("Chop down").hidden(false).results().nearest()
+    }
+
+
+    fun woodcut(player: LocalPlayer) {
         navigateToWoodcuttingLocation()
+        var currentTree: SceneObject? = null
 
         while (true) {
-            // Woodcutting
             while (!Backpack.isFull()) {
-                val tree: SceneObject? = SceneObjectQuery.newQuery().name(treeName).option("Chop down").hidden(false).results().nearest()
-                if (tree != null && tree.interact("Chop down")) {
-                    Zezimax.Logger.log("Woodcutting $treeName...")
+                // Log names of nearby players excluding the local player
+                val currentPosition = player.coordinate
+
+                // Check if we need to find a new tree
+                if (currentTree == null || player.animationId == -1 || (currentTree.coordinate?.distanceTo(
+                        currentPosition
+                    ) ?: Double.MAX_VALUE) > 1
+                ) {
+                    currentTree = findNextAvailableTree(player)
+                }
+
+                // Attempt to interact with the current tree
+                if (currentTree != null && currentTree.interact("Chop down")) {
+                    Zezimax.Logger.log("Woodcutting ${currentTree.name}...")
                     Execution.delay(Navi.random.nextLong(randStart, randEnd)) // Simulate chopping delay
                 } else {
-                    Zezimax.Logger.log("No $treeName found or failed to interact.")
+                    Zezimax.Logger.log("No ${currentTree?.name} found or failed to interact.")
                     Execution.delay(Navi.random.nextLong(1500, 3000))
                 }
             }
@@ -105,7 +156,7 @@ class Woodcutting(private val locationWoodcutting: String,
                 Zezimax.Logger.log("Found wood box: ${woodBox?.name}")
             }
 
-            // Count the total number of specified ore in the inventory
+            // Count the total number of specified wood in the inventory
             if (Backpack.isFull() && woodBox != null && woodInBox < woodBoxCapacity) {
                 val logsInInventory =
                     InventoryItemQuery.newQuery().name(logName).results().count { it.name == logName }

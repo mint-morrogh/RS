@@ -17,12 +17,14 @@ import net.botwithus.rs3.game.movement.NavPath
 import net.botwithus.rs3.game.movement.TraverseEvent
 import net.botwithus.rs3.game.queries.builders.animations.SpotAnimationQuery
 import net.botwithus.rs3.game.queries.builders.characters.NpcQuery
+import net.botwithus.rs3.game.queries.builders.characters.PlayerQuery
 import net.botwithus.rs3.game.queries.builders.components.ComponentQuery
 import net.botwithus.rs3.game.queries.builders.items.InventoryItemQuery
 import net.botwithus.rs3.game.queries.builders.objects.SceneObjectQuery
 import net.botwithus.rs3.game.scene.entities.animation.SpotAnimation
 import net.botwithus.rs3.game.scene.entities.characters.npc.Npc
 import net.botwithus.rs3.game.scene.entities.characters.player.LocalPlayer
+import net.botwithus.rs3.game.scene.entities.characters.player.Player
 import net.botwithus.rs3.game.scene.entities.`object`.SceneObject
 import net.botwithus.rs3.game.skills.Skills
 import net.botwithus.rs3.game.vars.VarManager
@@ -143,14 +145,18 @@ fun firemaking() {
 
                         // While loop to check if there are logs in the inventory and if fire exists nearby
                         while (true) {
-                            val fireNearby = SceneObjectQuery.newQuery().name("Fire").results().nearestTo(initialPosition)
-                                ?.coordinate?.let { it.distanceTo(initialPosition) <= 1 } == true
-                            val hasLogs = !InventoryItemQuery.newQuery().ids(logID).results().isEmpty
-                            val fireSpiritNearby = NpcQuery.newQuery().name("Fire spirit").results().nearestTo(initialPosition)
-                                ?.coordinate?.let { it.distanceTo(initialPosition) <= 1 } == true
+                            val currentPosition = player.coordinate
+                            val fireNearby = SceneObjectQuery.newQuery().name("Fire").results().nearestTo(currentPosition)
+                                ?.coordinate?.let { it.distanceTo(currentPosition) <= 1 } == true
+                            val hasLogs = !InventoryItemQuery.newQuery()
+                                .ids(logID)
+                                .results()
+                                .isEmpty
+                            val fireSpiritNearby = NpcQuery.newQuery().name("Fire spirit").results().nearestTo(currentPosition)
+                                ?.coordinate?.let { it.distanceTo(currentPosition) <= 2 } == true
 
                             if (fireSpiritNearby) {
-                                val fireSpirit = NpcQuery.newQuery().name("Fire spirit").results().nearestTo(initialPosition)
+                                val fireSpirit = NpcQuery.newQuery().name("Fire spirit").results().nearestTo(currentPosition)
                                 Execution.delay(Navi.random.nextLong(5000, 9000))
                                 fireSpirit?.interact("Collect reward")
                                 Zezimax.Logger.log("Collected reward from Fire spirit.")
@@ -158,7 +164,7 @@ fun firemaking() {
                             }
                             if (fireNearby && hasLogs) {
                                 Zezimax.Logger.log("Bonfire is still active and logs are available.")
-                                Execution.delay(Navi.random.nextLong(10000, 12000)) // Wait 10 seconds
+                                Execution.delay(Navi.random.nextLong(10000, 12000))
                             } else if (!fireNearby && hasLogs) {
                                 Zezimax.Logger.log("Bonfire went out.")
                                 Execution.delay(Navi.random.nextLong(2000, 10000))

@@ -38,16 +38,17 @@ object DecisionTree {
     fun makeRandomDecision() {
 
 
-
+/*
         decision = Navi.random.nextInt(8) // bound starts at 0
 
-
-
-
-/*
-         decision = 5
-
  */
+
+
+
+
+         decision = 3
+
+
 
 
 
