@@ -66,14 +66,14 @@ fun ToolBelt() {
         )
 
         if (!hatchetList.contains(hatchetName) && coinPouch >= 100000) {
-            grandExchangeBuy("Rune hatchet", "1")
+            grandExchangeBuy("Rune hatchet", "1", "50")
             Bank.open()
             Bank.withdrawAll(1359)
             equipItemToToolbelt("Rune hatchet")
         }
 
         if (!pickaxeList.contains(pickaxeName) && coinPouch >= 100000) {
-            grandExchangeBuy("Rune pickaxe", "1")
+            grandExchangeBuy("Rune pickaxe", "1", "50")
             Bank.open()
             Bank.withdrawAll(45548)
             equipItemToToolbelt("Rune pickaxe")

@@ -260,7 +260,7 @@ fun clickAllButton() {
     }
 }
 
-fun minus10Percent() {
+fun minusPercent(percentage: Int) {
     if (Interfaces.isOpen(105)) {
         val minus5Button = ComponentQuery.newQuery(105)
             .componentIndex(294)
@@ -268,12 +268,13 @@ fun minus10Percent() {
             .firstOrNull()
 
         if (minus5Button != null) {
+            val presses = percentage / 5
+            for (i in 1..presses) {
+                Execution.delay(Navi.random.nextLong(500, 800))
+                minus5Button.interact()
+            }
             Execution.delay(Navi.random.nextLong(500, 800))
-            minus5Button.interact()
-            Execution.delay(Navi.random.nextLong(500, 800))
-            minus5Button.interact()
-            Execution.delay(Navi.random.nextLong(500, 800))
-            Zezimax.Logger.log("**GRAND EXCHANGE** applied -10%...")
+            Zezimax.Logger.log("**GRAND EXCHANGE** applied -${presses * 5}%...")
         } else {
             Zezimax.Logger.log("**GRAND EXCHANGE** -5% button not found.")
         }
@@ -282,7 +283,7 @@ fun minus10Percent() {
     }
 }
 
-fun plus10Percent() {
+fun plusPercent(percentage: Int) {
     if (Interfaces.isOpen(105)) {
         val plus5Button = ComponentQuery.newQuery(105)
             .componentIndex(307)
@@ -290,12 +291,13 @@ fun plus10Percent() {
             .firstOrNull()
 
         if (plus5Button != null) {
+            val presses = percentage / 5
+            for (i in 1..presses) {
+                Execution.delay(Navi.random.nextLong(500, 800))
+                plus5Button.interact()
+            }
             Execution.delay(Navi.random.nextLong(500, 800))
-            plus5Button.interact()
-            Execution.delay(Navi.random.nextLong(500, 800))
-            plus5Button.interact()
-            Execution.delay(Navi.random.nextLong(500, 800))
-            Zezimax.Logger.log("**GRAND EXCHANGE** applied +10%...")
+            Zezimax.Logger.log("**GRAND EXCHANGE** applied +${presses * 5}%...")
         } else {
             Zezimax.Logger.log("**GRAND EXCHANGE** +5% button not found.")
         }
@@ -391,61 +393,63 @@ fun clickAbortOfferButton() {
 
 
 
-fun grandExchangeSell(ItemID: Int, Quantity: String) {
+fun grandExchangeSell(ItemID: Int, Quantity: String, PercentageDecrease: String) {
     val player = Client.getLocalPlayer()
     if (player == null || Client.getGameState() != Client.GameState.LOGGED_IN) {
         Zezimax.Logger.log("Player not logged in. Delaying execution.")
         Execution.delay(Navi.random.nextLong(2500, 7500))
         return
     }
+
     if (!grandexchange.contains(player.coordinate)) {
-        Navi.walkToGrandExchangeEntrance() // so it doesn't tele to edgeville if not member account, will get stuck trying agility
+        Navi.walkToGrandExchangeEntrance()
         if (Navi.walkToGrandExchange()) {
             Zezimax.Logger.log("**GRAND EXCHANGE** Arrived at the Grand Exchange.")
         } else {
             Zezimax.Logger.log("**GRAND EXCHANGE** Failed to walk to the Grand Exchange.")
+            return
         }
     }
+
     Execution.delay(Navi.random.nextLong(1000, 2000))
+
     if (!Bank.isOpen()) {
-        // Open the bank
         Bank.open()
         Execution.delay(Navi.random.nextLong(1500, 3000))
     }
-    // Deposit all items into the bank
+
     if (Bank.isOpen()) {
         Zezimax.Logger.log("**GRAND EXCHANGE** Depositing all items.")
         Execution.delay(Navi.random.nextLong(1000, 3000))
         Bank.depositAll()
         Execution.delay(Navi.random.nextLong(2000, 4000))
     }
-    if (ItemID != null) {
+
+    val item = ComponentQuery.newQuery(517)
+        .item(ItemID)
+        .results()
+        .firstOrNull()
+
+    if (item != null) {
         toggleWithdrawAsNotes()
 
         when (Quantity) {
             "all" -> {
-                Zezimax.Logger.log("**GRAND EXCHANGE** Withdrawing item for sale...")
+                Zezimax.Logger.log("**GRAND EXCHANGE** Withdrawing all items for sale...")
                 Bank.withdrawAll(ItemID)
                 Execution.delay(Navi.random.nextLong(1200, 2300))
             }
             else -> {
                 val quantityInt = Quantity.toIntOrNull()
                 if (quantityInt != null) {
-
-                    val item = ComponentQuery.newQuery(517)
-                        .item(ItemID)
-                        .results()
-                        .firstOrNull()
-
-                    if (item != null) {
-                        item.interact("Withdraw-X")
-                        Zezimax.Logger.log("**GRAND EXCHANGE** Attempting Bank Withdraw for $ItemID...")
-                        Execution.delay(Navi.random.nextLong(1300, 2000)) // Short delay before typing
-                        GameInput.setTextInput(Quantity)
-                        Execution.delay(Navi.random.nextLong(1600, 2600)) // Simulate delay after typing
-                    }
+                    item.interact("Withdraw-X")
+                    Zezimax.Logger.log("**GRAND EXCHANGE** Attempting Bank Withdraw for $ItemID...")
+                    Execution.delay(Navi.random.nextLong(1300, 2000)) // Short delay before typing
+                    GameInput.setTextInput(Quantity)
+                    Execution.delay(Navi.random.nextLong(1600, 2600)) // Simulate delay after typing
                 } else {
                     Zezimax.Logger.log("**GRAND EXCHANGE** Invalid quantity provided.")
+                    return
                 }
             }
         }
@@ -454,6 +458,7 @@ fun grandExchangeSell(ItemID: Int, Quantity: String) {
         Bank.close()
         Execution.delay(Navi.random.nextLong(1000, 2000))
     }
+
     interactWithGEClerk()
     Execution.delay(Navi.random.nextLong(1500, 2500))
     interactWithSellButton()
@@ -462,29 +467,32 @@ fun grandExchangeSell(ItemID: Int, Quantity: String) {
     Execution.delay(Navi.random.nextLong(1000, 2500))
     clickAllButton()
     Execution.delay(Navi.random.nextLong(800, 1900))
-    minus10Percent()
+    minusPercent(PercentageDecrease.toInt())
     Execution.delay(Navi.random.nextLong(800, 1900))
     clickConfirmOfferButton()
     Execution.delay(Navi.random.nextLong(3000, 5500))
 
-    // Conditional logic after placing the offer
-    val editOfferButton = ComponentQuery.newQuery(105)
-        .componentIndex(9)
+    val editOfferBox = ComponentQuery.newQuery(105)
+        .componentIndex(7)
+        .subComponentIndex(5)
         .results()
         .firstOrNull()
+        ?.text
 
-    if (editOfferButton == null) {
-        clickToInventoryButton()
-        closeGEInterface()
-    } else {
-        Execution.delay(Navi.random.nextLong(10000, 20000)) // Wait 10-20 seconds
-        if (editOfferButton != null) {
-            clickAbortOfferButton()
-            clickToBankButton()
-            closeGEInterface()
-            Zezimax.Logger.log("Couldn't sell item to Grand Exchange, Reinitializing...")
-            Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
-            return
+    if (editOfferBox != null) {
+        if (editOfferBox.contains("/")) {
+            Execution.delay(Navi.random.nextLong(10000, 20000))
+            if (editOfferBox.contains("/")) {
+                clickAbortOfferButton()
+                clickToBankButton()
+                closeGEInterface()
+                Zezimax.Logger.log("Couldn't sell item to Grand Exchange, Reinitializing...")
+                Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
+                return
+            } else {
+                clickToInventoryButton()
+                closeGEInterface()
+            }
         } else {
             clickToInventoryButton()
             closeGEInterface()
@@ -493,7 +501,9 @@ fun grandExchangeSell(ItemID: Int, Quantity: String) {
 }
 
 
-fun grandExchangeBuy(ItemName: String, Quantity: String) {
+
+
+fun grandExchangeBuy(ItemName: String, Quantity: String, PercentageIncrease: String) {
     val player = Client.getLocalPlayer()
     if (player == null || Client.getGameState() != Client.GameState.LOGGED_IN) {
         Zezimax.Logger.log("Player not logged in. Delaying execution.")
@@ -511,35 +521,39 @@ fun grandExchangeBuy(ItemName: String, Quantity: String) {
     interactWithGEClerk()
     Execution.delay(Navi.random.nextLong(1500, 2500))
     interactWithBuyButton()
-    Execution.delay(Navi.random.nextLong(1500, 2500))
+    Execution.delay(Navi.random.nextLong(1000, 2500))
     typeItemName(ItemName)
     Execution.delay(Navi.random.nextLong(2000, 3000))
     interactWithGEItem(ItemName)
     Execution.delay(Navi.random.nextLong(1000, 2000))
     typeQuantity(Quantity)
     Execution.delay(Navi.random.nextLong(1000, 2000))
-    plus10Percent()
+    plusPercent(PercentageIncrease.toInt())
     Execution.delay(Navi.random.nextLong(1000, 2000))
     clickConfirmOfferButton()
     Execution.delay(Navi.random.nextLong(3000, 5500))
-    // Conditional logic after placing the offer
-    val editOfferButton = ComponentQuery.newQuery(105)
-        .componentIndex(9)
+    // Conditional logic checks if box is a green bar with no text, or has text containing a "/"
+    val editOfferBox = ComponentQuery.newQuery(105)
+        .componentIndex(7)
+        .subComponentIndex(5)
         .results()
         .firstOrNull()
+        ?.text
 
-    if (editOfferButton == null) {
-        clickToBankButton()
-        closeGEInterface()
-    } else {
-        Execution.delay(Navi.random.nextLong(10000, 20000)) // Wait 10-20 seconds
-        if (editOfferButton != null) {
-            clickAbortOfferButton()
-            clickToInventoryButton()
-            closeGEInterface()
-            Zezimax.Logger.log("Couldn't purchase item from Grand Exchange, Reinitializing...")
-            Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
-            return
+    if (editOfferBox != null) {
+        if (editOfferBox.contains("/")) {
+            Execution.delay(Navi.random.nextLong(10000, 20000)) // Wait 10-20 seconds
+            if (editOfferBox.contains("/")) {
+                clickAbortOfferButton()
+                clickToInventoryButton()
+                closeGEInterface()
+                Zezimax.Logger.log("Couldn't purchase item from Grand Exchange, Reinitializing...")
+                Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
+                return
+            } else {
+                clickToBankButton()
+                closeGEInterface()
+            }
         } else {
             clickToBankButton()
             closeGEInterface()

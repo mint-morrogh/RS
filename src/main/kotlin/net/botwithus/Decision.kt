@@ -37,15 +37,17 @@ object DecisionTree {
 
     fun makeRandomDecision() {
 
-
+/*
         decision = Navi.random.nextInt(8) // bound starts at 0
 
 
-
-
-/*
-         decision = 3
  */
+
+
+
+
+         decision = 5
+
 
 
 
@@ -432,7 +434,7 @@ object DecisionTree {
                     // Which FIshing Task Decided
                     if (rawSalmonCount <= 150) {
                         if (featherCount <= 100) {
-                            grandExchangeBuy("feather", "200")
+                            grandExchangeBuy("feather", "200", "20")
                         }
                         fishingLocation = "BarbarianVillageFishing"
                         bankLocation = "EdgevilleBank"
@@ -446,7 +448,7 @@ object DecisionTree {
                     }
                     else if (rawTroutCount <= 150) {
                         if (featherCount <= 100) {
-                            grandExchangeBuy("feather", "200")
+                            grandExchangeBuy("feather", "200", "20")
                         }
                         fishingLocation = "BarbarianVillageFishing"
                         bankLocation = "EdgevilleBank"
@@ -462,7 +464,7 @@ object DecisionTree {
                     // Which FIshing Task Decided
                     if (rawTroutCount <= 150) {
                         if (featherCount <= 100) {
-                            grandExchangeBuy("feather", "200")
+                            grandExchangeBuy("feather", "200", "20")
                         }
                         fishingLocation = "BarbarianVillageFishing"
                         bankLocation = "EdgevilleBank"
@@ -607,7 +609,7 @@ object DecisionTree {
 
                 if (fletchingLevel >= 35 && !taskAssigned) {
                     // Which Fletching Task Decided
-                    if (willowCount >= 50) {
+                    if (willowCount >= 150) {
                         logToFletch = 1519
                         taskAssigned = true
 

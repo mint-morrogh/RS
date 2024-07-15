@@ -105,24 +105,26 @@ class Zezimax(
         // IDLE AND INITIALIZING STATES
         when (botState) {
             ZezimaxBotState.INITIALIZING -> {
+
+
+
+
+                // TESTING FUNCTIONS HERE
+                ////////////////////////////
+                /*
+                Execution.delay(Navi.random.nextLong(250000, 750000))
+                 */
+                ////////////////////////////
+
+
+
+
                 if (initializeBanking()) {
                     botState = ZezimaxBotState.IDLE
                 }
             }
             ZezimaxBotState.IDLE -> {
                 randomAmount = Random.nextInt(80, 220)
-
-
-
-                // TESTING FUNCTIONS HERE
-/*
-                Execution.delay(Navi.random.nextLong(250000, 750000))
-
- */
-
-
-
-
 
                 if (DecisionTree.decision == null) {
                     DecisionTree.makeRandomDecision()
