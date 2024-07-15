@@ -58,7 +58,7 @@ class Mining(private val locationMine: String,
 ) {
     private val oreBoxCapacity = 100
     private var oresInBox = 0
-    private val oreBox = InventoryItemQuery.newQuery().name(oreBoxName).results().firstOrNull()
+    private val oreBox = InventoryItemQuery.newQuery(93).name(oreBoxName).results().firstOrNull()
 
 
     // LOCATIONS
@@ -115,7 +115,7 @@ class Mining(private val locationMine: String,
             // Count the total number of specified ore in the inventory
             if (Backpack.isFull() && oreBox != null && oresInBox < oreBoxCapacity) {
                 val oresInInventory =
-                    InventoryItemQuery.newQuery().name(oreName).results().count { it.name == oreName }
+                    InventoryItemQuery.newQuery(93).name(oreName).results().count { it.name == oreName }
                 Zezimax.Logger.log("Ores in inventory: $oresInInventory")
                 val oreBoxComponent =
                     ComponentQuery.newQuery(1473).componentIndex(5).itemName(oreBox.name).option("Fill")
@@ -158,7 +158,7 @@ class Mining(private val locationMine: String,
             Execution.delay(Navi.random.nextLong(1000, 2000)) // Simulate deposit delay
 
 
-            val oreBox = InventoryItemQuery.newQuery().name(oreBoxName).results().firstOrNull()
+            val oreBox = InventoryItemQuery.newQuery(93).name(oreBoxName).results().firstOrNull()
             if (oreBox != null) {
                 val oreBoxComponent = ComponentQuery.newQuery(517).componentIndex(15).itemName(oreBox.name).option("Empty - ore").results().firstOrNull()
                 if (oreBoxComponent != null && oreBoxComponent.interact("Empty - ore")) {

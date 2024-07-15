@@ -59,7 +59,7 @@ class Woodcutting(private val locationWoodcutting: String,
 ) {
     private val woodBoxCapacity = 90
     private var woodInBox = 0
-    private val woodBox = InventoryItemQuery.newQuery().name(woodBoxName).results().firstOrNull()
+    private val woodBox = InventoryItemQuery.newQuery(93).name(woodBoxName).results().firstOrNull()
 
 
     // LOCATIONS
@@ -159,7 +159,7 @@ class Woodcutting(private val locationWoodcutting: String,
             // Count the total number of specified wood in the inventory
             if (Backpack.isFull() && woodBox != null && woodInBox < woodBoxCapacity) {
                 val logsInInventory =
-                    InventoryItemQuery.newQuery().name(logName).results().count { it.name == logName }
+                    InventoryItemQuery.newQuery(93).name(logName).results().count { it.name == logName }
                 Zezimax.Logger.log("Logs in inventory: $logsInInventory")
                 val woodBoxComponent =
                     ComponentQuery.newQuery(1473).componentIndex(5).itemName(woodBox.name).option("Fill")
@@ -199,7 +199,7 @@ class Woodcutting(private val locationWoodcutting: String,
                 Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
             }
 
-            val woodBox = InventoryItemQuery.newQuery().name(woodBoxName).results().firstOrNull()
+            val woodBox = InventoryItemQuery.newQuery(93).name(woodBoxName).results().firstOrNull()
             if (woodBox != null) {
                 val woodBoxComponent = ComponentQuery.newQuery(517).componentIndex(15).itemName(woodBox.name).option("Empty - logs and bird's nests").results().firstOrNull()
                 if (woodBoxComponent != null && woodBoxComponent.interact("Empty - logs and bird's nests")) {

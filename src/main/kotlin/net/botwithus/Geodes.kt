@@ -77,22 +77,32 @@ fun geodeCracker() {
             val geodeComponent = ComponentQuery.newQuery(1473)
                 .componentIndex(5)
                 .item(44816)
-                .option("Open-all")
+                .option("Open")
                 .results()
                 .firstOrNull()
 
-            if (geodeComponent != null && geodeComponent.interact("Open-all")) {
-                Zezimax.Logger.log("Opening all geodes...")
-                Execution.delay(Navi.random.nextLong(1000, 3000))
-                // Wait until either backpack is full or no more geodes in inventory
+            if (geodeComponent != null && geodeComponent.interact("Open")) {
+                Zezimax.Logger.log("Opening geodes...");
+
+                // Wait a random time between 100 and 400 ms
+                Execution.delay(Navi.random.nextLong(300, 800));
+
+                // While the backpack is not full and there are still geodes in the inventory
                 while (!Backpack.isFull() && Backpack.getItems().any { it.id == 44816 }) {
-                    Execution.delay(Navi.random.nextLong(2000, 6000))
+                    // Interact with the geode to open it
+                    if (geodeComponent.interact("Open")) {
+                        Execution.delay(Navi.random.nextLong(180, 400));
+                    } else {
+                        Zezimax.Logger.log("Couldn't open geode...");
+                        break;
+                    }
                 }
             } else {
-                Zezimax.Logger.log("Couldn't open all geodes...")
+                Zezimax.Logger.log("Couldn't open geode...");
             }
 
             // Check for specific items in the inventory and process gems
+            Execution.delay(Navi.random.nextLong(1000, 3000))
             processGemsInInventory()
 
             if (!Bank.isOpen()) {
@@ -169,7 +179,7 @@ fun processGem(item: net.botwithus.rs3.game.Item, gemId: Int) {
             if (cutComponent != null && cutComponent.interact()) {
                 Execution.delay(Navi.random.nextLong(2000, 4000))
 
-                while (!ComponentQuery.newQuery(1251).results().isEmpty) {
+                while (Interfaces.isOpen(1251)) {
                     Execution.delay(Navi.random.nextLong(1000, 2400))
                 }
             }

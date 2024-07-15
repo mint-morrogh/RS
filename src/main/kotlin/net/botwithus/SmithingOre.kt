@@ -268,7 +268,7 @@ fun smithOre() {
         } else {
             // WAIT FOR EXP INTERFACE TO GO AWAY
             // Check exp interface
-            while (!ComponentQuery.newQuery(1251).results().isEmpty) {
+            while (Interfaces.isOpen(1251)) {
                 Execution.delay(Navi.random.nextLong(2000, 6000))
             }
         }

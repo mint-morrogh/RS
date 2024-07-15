@@ -141,7 +141,7 @@ if (logComponent != null && logComponent.interact("Craft")) {
                 while (true) {
                     val hasLogs = !InventoryItemQuery.newQuery().ids(logID).results().isEmpty
 
-                    while (!ComponentQuery.newQuery(1251).results().isEmpty) {
+                    while (Interfaces.isOpen(1251)) {
                         Zezimax.Logger.log("Still fletching...")
                         Execution.delay(Navi.random.nextLong(2000, 6400))
                     }

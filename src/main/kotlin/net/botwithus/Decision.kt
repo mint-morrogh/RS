@@ -38,15 +38,14 @@ object DecisionTree {
     fun makeRandomDecision() {
 
 
-/*
         decision = Navi.random.nextInt(8) // bound starts at 0
 
+
+
+
+/*
+         decision = 3
  */
-
-
-
-
-         decision = 4
 
 
 
@@ -608,7 +607,7 @@ object DecisionTree {
 
                 if (fletchingLevel >= 35 && !taskAssigned) {
                     // Which Fletching Task Decided
-                    if (willowCount >= 150) {
+                    if (willowCount >= 50) {
                         logToFletch = 1519
                         taskAssigned = true
 
@@ -626,14 +625,14 @@ object DecisionTree {
 
                     }
                     else if (logCount >= 150) {
-                        logToFletch = 1521
+                        logToFletch = 1511
                         taskAssigned = true
                     }
                 }
                 if (!taskAssigned) {
                     // Which Fletching Task Decided
                     if (logCount >= 150) {
-                        logToFletch = 1519
+                        logToFletch = 1511
                         taskAssigned = true
 
                     }
