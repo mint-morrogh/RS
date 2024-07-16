@@ -8,6 +8,8 @@ import net.botwithus.rs3.events.impl.SkillUpdateEvent
 import net.botwithus.rs3.game.Area
 import net.botwithus.rs3.game.Client
 import net.botwithus.rs3.game.Coordinate
+import net.botwithus.api.game.hud.Dialog
+import net.botwithus.rs3.game.hud.interfaces.Dialog as DialogNext
 import net.botwithus.rs3.game.hud.interfaces.Interfaces
 import net.botwithus.rs3.game.minimenu.MiniMenu
 import net.botwithus.rs3.game.minimenu.actions.SelectableAction
@@ -35,7 +37,6 @@ import net.botwithus.rs3.util.Regex
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.regex.Pattern
-
 
 
 val featherId = 314
@@ -105,7 +106,24 @@ class Fishing(private val locationFish: String,
         when (locationFish) {
             "BarbarianVillageFishing" -> Navi.walkToBarbarianVillageFishing()
             "AlkharidWestFishing" -> Navi.walkToAlkharidWestFishing()
-            "PortSarimFIshing" -> Navi.walkToPortSarimFishing()
+            "PortSarimFishing" -> {
+                // If location is Port Sarim, handle fare payment and navigation
+                Navi.walkToPortSarimPayFare()
+                Navi.random.nextLong(2000, 3000)
+                val tobias: Npc? = NpcQuery.newQuery().option("Pay fare").results().nearest()
+                if (tobias != null && tobias.interact("Pay fare")) {
+                        Zezimax.Logger.log("Paying for boat ride...")
+                        Navi.random.nextLong(4000, 6400)
+                }
+                Navi.random.nextLong(1000, 2400)
+                DialogNext.next()
+                Navi.random.nextLong(1000, 2400)
+                Dialog.interact("Yes please.")
+                Navi.random.nextLong(1000, 2400)
+                DialogNext.next()
+                Navi.random.nextLong(25000, 30000) // Wait for the cutscene to finish
+                Navi.walkToPortSarimFishing()
+            }
             // Add more cases as needed
             else -> throw IllegalArgumentException("Unknown location: $locationFish")
         }
@@ -156,12 +174,12 @@ class Fishing(private val locationFish: String,
                     }
                 }
 
-                val fishSpot: Npc? = NpcQuery.newQuery().name(spotName).results().nearest()
+                val fishSpot: Npc? = NpcQuery.newQuery().name(spotName).option(DecisionTree.actionToFish).results().nearest()
                 if (fishSpot != null && fishSpot.interact(DecisionTree.actionToFish)) {
-                    Zezimax.Logger.log("Fishing $spotName...")
+                    Zezimax.Logger.log("Fishing $spotName with ${DecisionTree.actionToFish}...")
                     Execution.delay(Navi.random.nextLong(10000, 24000))
                 } else {
-                    Zezimax.Logger.log("No $spotName found or failed to interact.")
+                    Zezimax.Logger.log("No $spotName found with ${DecisionTree.actionToFish} action or failed to interact.")
                     Execution.delay(Navi.random.nextLong(1500, 3000))
                 }
             }

@@ -49,7 +49,7 @@ object DecisionTree {
 
 
 
-         decision = 0
+         decision = 5
 
 
 
@@ -410,23 +410,35 @@ object DecisionTree {
                 Zezimax.Logger.log("Selected Task: Fishing")
                 val fishingLevel = Skills.FISHING.level
 
+                if (fishingLevel >= 50 && !taskAssigned) {
+                    // Which Fishing Task Decided
+                    if (rawSwordfishCount <= 150) {
+                        fishingLocation = "PortSarimFishing"
+                        bankLocation = "FaladorSouthBank"
+                        fishToCollect = "Raw swordfish"
+                        spotToFish = "Fishing spot"
+                        actionToFish = "Harpoon"
+                        feathersNeeded = false
+                        baitNeeded = false
+                        taskAssigned = true
 
-                // Needs help getting to Karamja...
-
-                // Navi.walkToPortSarimPayFare
-                // NPC Captain Tobias
-                // interact(Pay fare)
-                // wait for dialogue window
-                // Dialogue next is 1184,15
-                // yes please is 1188, 8
-                // dialogue next is 1191, 15
-                // cutscene is about 20 seconds long (wait from 25-30 seconds here)
-
-
-
-                /*
+                    }
+                    else if (rawSalmonCount <= 150) {
+                        if (featherCount <= 100) {
+                            grandExchangeBuy("feather", "200", "20")
+                        }
+                        fishingLocation = "BarbarianVillageFishing"
+                        bankLocation = "EdgevilleBank"
+                        fishToCollect = "Raw salmon"
+                        spotToFish = "Fishing spot"
+                        actionToFish = "Lure"
+                        feathersNeeded = true
+                        baitNeeded = false
+                        taskAssigned = true
+                    }
+                }
                 if (fishingLevel >= 40 && !taskAssigned) {
-                    // Which FIshing Task Decided
+                    // Which Fishing Task Decided
                     if (rawLobsterCount <= 150) {
                         fishingLocation = "PortSarimFishing"
                         bankLocation = "FaladorSouthBank"
@@ -440,7 +452,7 @@ object DecisionTree {
                     }
                     else if (rawSalmonCount <= 150) {
                             if (featherCount <= 100) {
-                                grandExchangeBuy("feather", "200")
+                                grandExchangeBuy("feather", "200", "20")
                             }
                             fishingLocation = "BarbarianVillageFishing"
                             bankLocation = "EdgevilleBank"
@@ -452,10 +464,8 @@ object DecisionTree {
                             taskAssigned = true
                     }
                 }
-
-                 */
                 if (fishingLevel >= 30 && !taskAssigned) {
-                    // Which FIshing Task Decided
+                    // Which Fishing Task Decided
                     if (rawSalmonCount <= 150 && gp >= 50000) {
                         if (featherCount <= 100) {
                             grandExchangeBuy("feather", "200", "20")
@@ -485,7 +495,7 @@ object DecisionTree {
                     }
                 }
                 if (fishingLevel >= 20 && !taskAssigned) {
-                    // Which FIshing Task Decided
+                    // Which Fishing Task Decided
                     if (rawTroutCount <= 150 && gp >= 50000) {
                         if (featherCount <= 100) {
                             grandExchangeBuy("feather", "200", "20")
