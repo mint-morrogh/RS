@@ -3,6 +3,7 @@ package net.botwithus
 import net.botwithus.Zezimax.Companion.botState
 import net.botwithus.Zezimax.ZezimaxBotState
 import net.botwithus.api.game.hud.inventories.Bank
+import net.botwithus.rs3.game.queries.builders.items.InventoryItemQuery
 import net.botwithus.rs3.game.skills.Skills
 import net.botwithus.rs3.util.RandomGenerator
 
@@ -37,16 +38,18 @@ object DecisionTree {
 
     fun makeRandomDecision() {
 
-/*
-        decision = Navi.random.nextInt(8) // bound starts at 0
+        // GET GP COUNT IN INVENTORY
+        val goldInventorySlot = InventoryItemQuery.newQuery(623).ids(995).results()
+        val gp = goldInventorySlot.sumOf {it.stackSize}
+
+        /*
+                decision = Navi.random.nextInt(8) // bound starts at 0
+         */
 
 
- */
 
 
-
-
-         decision = 5
+         decision = 0
 
 
 
@@ -90,6 +93,9 @@ object DecisionTree {
                 if (miningLevel >= 50 && !taskAssigned) {
                     // Which Mine Task Decided
                     if (runeCount <= 300) {
+                        if (runeStoneSpirit <= 50 && gp >= 2000000) {
+                            grandExchangeBuy("Runite stone spirit", "250", "30")
+                        }
                         mineLocation = "MiningGuild"
                         bankLocation = "FaladorSmithBank"
                         oreToCollect = "Runite ore"
@@ -99,6 +105,9 @@ object DecisionTree {
                         taskAssigned = true
                     }
                     else if (luminiteCount <= 300) {
+                        if (luminiteStoneSpirit <= 50 && gp >= 2000000) {
+                            grandExchangeBuy("Luminite stone spirit", "250", "30")
+                        }
                         mineLocation = "FaladorLuminite"
                         bankLocation = "FaladorSmithBank"
                         oreToCollect = "Luminite"
@@ -111,17 +120,25 @@ object DecisionTree {
                 if (miningLevel >= 40 && !taskAssigned) {
                     // Which Mine Task Decided
                     if (adamantiteCount <= 300) {
+                        if (adamantiteStoneSpirit <= 50 && gp >= 2000000) {
+                            grandExchangeBuy("Adamantite stone spirit", "250", "30")
+                        }
                         mineLocation = "VarrockEastMine"
                         bankLocation = "VarrockEastBank"
                         oreToCollect = "Adamantite ore"
+                        stoneSpirit = "Adamantite stone spirit"
                         rockToMine = "Adamantite rock"
                         actionToMine = "Mine"
                         taskAssigned = true
                     }
                     else if (luminiteCount <= 300) {
+                        if (luminiteStoneSpirit <= 50 && gp >= 2000000) {
+                            grandExchangeBuy("Luminite stone spirit", "250", "30")
+                        }
                         mineLocation = "FaladorLuminite"
                         bankLocation = "FaladorSmithBank"
                         oreToCollect = "Luminite"
+                        stoneSpirit = "Luminite stone spirit"
                         rockToMine = "Luminite rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -133,6 +150,7 @@ object DecisionTree {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
                         oreToCollect = "Mithril ore"
+                        stoneSpirit = ""
                         rockToMine = "Mithril rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -141,6 +159,7 @@ object DecisionTree {
                         mineLocation = "MiningGuild"
                         bankLocation = "FaladorSmithBank"
                         oreToCollect = "Coal"
+                        stoneSpirit = ""
                         rockToMine = "Coal rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -152,6 +171,7 @@ object DecisionTree {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
                         oreToCollect = "Iron ore"
+                        stoneSpirit = ""
                         rockToMine = "Iron rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -160,6 +180,7 @@ object DecisionTree {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
                         oreToCollect = "Copper ore"
+                        stoneSpirit = ""
                         rockToMine = "Copper rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -168,6 +189,7 @@ object DecisionTree {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
                         oreToCollect = "Tin ore"
+                        stoneSpirit = ""
                         rockToMine = "Tin rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -179,6 +201,7 @@ object DecisionTree {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
                         oreToCollect = "Copper ore"
+                        stoneSpirit = ""
                         rockToMine = "Copper rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -186,6 +209,7 @@ object DecisionTree {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
                         oreToCollect = "Tin ore"
+                        stoneSpirit = ""
                         rockToMine = "Tin rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -193,7 +217,7 @@ object DecisionTree {
                 }
 
                 Zezimax.Logger.log("ore to collect: $oreToCollect")
-                withdrawMiningSupplies(oreBoxName, 1)
+                withdrawMiningSupplies(oreBoxName, stoneSpirit,1)
             }
 
 
@@ -432,7 +456,7 @@ object DecisionTree {
                  */
                 if (fishingLevel >= 30 && !taskAssigned) {
                     // Which FIshing Task Decided
-                    if (rawSalmonCount <= 150) {
+                    if (rawSalmonCount <= 150 && gp >= 50000) {
                         if (featherCount <= 100) {
                             grandExchangeBuy("feather", "200", "20")
                         }
@@ -446,7 +470,7 @@ object DecisionTree {
                         taskAssigned = true
 
                     }
-                    else if (rawTroutCount <= 150) {
+                    else if (rawTroutCount <= 150 && gp >= 50000) {
                         if (featherCount <= 100) {
                             grandExchangeBuy("feather", "200", "20")
                         }
@@ -462,7 +486,7 @@ object DecisionTree {
                 }
                 if (fishingLevel >= 20 && !taskAssigned) {
                     // Which FIshing Task Decided
-                    if (rawTroutCount <= 150) {
+                    if (rawTroutCount <= 150 && gp >= 50000) {
                         if (featherCount <= 100) {
                             grandExchangeBuy("feather", "200", "20")
                         }

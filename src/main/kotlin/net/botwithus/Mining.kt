@@ -14,9 +14,13 @@ import java.util.concurrent.Callable
 
 
 
-fun withdrawMiningSupplies(itemName: String, quantity: Int) {
+fun withdrawMiningSupplies(itemName: String, stoneSpirit: String, quantity: Int) {
 
-
+    if (!Bank.isOpen()) {
+        Execution.delay(Navi.random.nextLong(1000, 2000))
+        Bank.open()
+        Execution.delay(Navi.random.nextLong(1000, 2000))
+    }
     if (Bank.isOpen()) {
         // Find the item in the bank
         val orebox = ComponentQuery.newQuery(517)
@@ -28,7 +32,6 @@ fun withdrawMiningSupplies(itemName: String, quantity: Int) {
             // Right-click the item and select "Withdraw-X"
             val success = orebox.interact("Withdraw-X")
             Zezimax.Logger.log("Attempting Bank Withdraw for $itemName")
-
 
             if (success) {
                 // Type the quantity
@@ -42,6 +45,28 @@ fun withdrawMiningSupplies(itemName: String, quantity: Int) {
             }
         } else {
             Zezimax.Logger.log("Could not find $itemName in the bank.")
+        }
+
+        if (stoneSpirit.isNotEmpty()) {
+            val spirit = ComponentQuery.newQuery(517)
+                .itemName(stoneSpirit)
+                .results()
+                .firstOrNull()
+
+            if (spirit != null) {
+                // Withdraw all stone spirits
+                val success = spirit.interact("Withdraw-All")
+                Zezimax.Logger.log("Attempting Bank Withdraw for $stoneSpirit")
+                Execution.delay(Navi.random.nextLong(1300, 2000))
+
+                if (success) {
+                    Zezimax.Logger.log("Withdrew all $stoneSpirit.")
+                } else {
+                    Zezimax.Logger.log("Failed to withdraw $stoneSpirit")
+                }
+            } else {
+                Zezimax.Logger.log("Could not find $stoneSpirit in the bank.")
+            }
         }
     }
     // Move to start mining after withdrawing supplies
@@ -72,6 +97,7 @@ class Mining(private val locationMine: String,
             else -> throw IllegalArgumentException("Unknown location: $locationMine")
         }
     }
+
     fun navigateToBankLocation() {
         when (locationBank) {
             "FaladorSmithBank" -> Navi.walkToFaladorSmithBank()
@@ -81,7 +107,6 @@ class Mining(private val locationMine: String,
             else -> throw IllegalArgumentException("Unknown bank location: $locationBank")
         }
     }
-
 
 
     fun mine(player: LocalPlayer) {
@@ -160,7 +185,9 @@ class Mining(private val locationMine: String,
 
             val oreBox = InventoryItemQuery.newQuery(93).name(oreBoxName).results().firstOrNull()
             if (oreBox != null) {
-                val oreBoxComponent = ComponentQuery.newQuery(517).componentIndex(15).itemName(oreBox.name).option("Empty - ore").results().firstOrNull()
+                val oreBoxComponent =
+                    ComponentQuery.newQuery(517).componentIndex(15).itemName(oreBox.name).option("Empty - ore")
+                        .results().firstOrNull()
                 if (oreBoxComponent != null && oreBoxComponent.interact("Empty - ore")) {
                     Zezimax.Logger.log("Emptying $oreBoxName.")
                     Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate emptying delay
@@ -174,22 +201,30 @@ class Mining(private val locationMine: String,
             val oreCount = Bank.getItems().filter { it.name == oreName }.sumOf { it.stackSize }
             Zezimax.Logger.log("$oreName count in bank: $oreCount")
 
-            Bank.close()
-            Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
-
             if (oreCount >= mineUntil) {
-                Zezimax.Logger.log("Collected $mineUntil or more $oreName. Re-Initializing.")
-                Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
-                return
+                if (oreBox != null) {
+                    val oreBoxComponent = ComponentQuery.newQuery(517).componentIndex(15).itemName(oreBox.name)
+                        .option("Empty - stone spirits").results().firstOrNull()
+                    if (oreBoxComponent != null && oreBoxComponent.interact("Empty - stone spirits")) {
+                        Zezimax.Logger.log("Emptying Spirits from $oreBoxName.")
+                        Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate emptying delay
+                    }
+                    Bank.close()
+                    Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
+                    Zezimax.Logger.log("Collected $mineUntil or more $oreName. Re-Initializing.")
+                    Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
+                    return
+                } else {
+                    Zezimax.Logger.log("Continuing to mine more $oreName.")
+                    Bank.close()
+                    Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
+                    Zezimax.botState = Zezimax.ZezimaxBotState.START_MINING
+                    return
+                }
             } else {
-                Zezimax.Logger.log("Continuing to mine more $oreName.")
-                Zezimax.botState = Zezimax.ZezimaxBotState.START_MINING
-                return
+                Zezimax.Logger.log("Bank is not open, retrying.")
+                Execution.delay(Navi.random.nextLong(1500, 3000))
             }
-        }
-        else {
-            Zezimax.Logger.log("Bank is not open, retrying.")
-            Execution.delay(Navi.random.nextLong(1500, 3000))
         }
     }
 }

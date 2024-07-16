@@ -371,6 +371,7 @@ fun closeGEInterface() {
         Execution.delay(Navi.random.nextLong(1000, 2500))
     } else {
         Zezimax.Logger.log("**GRAND EXCHANGE** Close button not found.")
+        Execution.delay(Navi.random.nextLong(1000, 2500))
     }
 }
 
@@ -486,8 +487,7 @@ fun grandExchangeSell(ItemID: Int, Quantity: String, PercentageDecrease: String)
                 clickAbortOfferButton()
                 clickToBankButton()
                 closeGEInterface()
-                Zezimax.Logger.log("Couldn't sell item to Grand Exchange, Reinitializing...")
-                Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
+                Zezimax.Logger.log("Couldn't sell item to Grand Exchange...")
                 return
             } else {
                 clickToInventoryButton()
@@ -547,8 +547,8 @@ fun grandExchangeBuy(ItemName: String, Quantity: String, PercentageIncrease: Str
                 clickAbortOfferButton()
                 clickToInventoryButton()
                 closeGEInterface()
-                Zezimax.Logger.log("Couldn't purchase item from Grand Exchange, Reinitializing...")
-                Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
+                Zezimax.Logger.log("Couldn't purchase item from Grand Exchange...")
+                Execution.delay(Navi.random.nextLong(3000, 5500))
                 return
             } else {
                 clickToBankButton()
