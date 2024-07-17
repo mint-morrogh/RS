@@ -209,7 +209,21 @@ fun smithOre() {
     }
     else {
         Execution.delay(Navi.random.nextLong(1500, 2500))
-        Zezimax.Logger.log("Not enough materials to continue, returning to Decision Tree.")
+        Zezimax.Logger.log("Not enough materials to continue, Returning Ore and Reinitializing...")
+        val smithWithdrawAllButton = ComponentQuery.newQuery(37)
+            .componentIndex(170) // Assuming component index for "Withdraw all"
+            .results()
+            .firstOrNull()
+        if (smithWithdrawAllButton != null) {
+            smithWithdrawAllButton.interact()
+            Execution.delay(Navi.random.nextLong(2500, 3500))
+        }
+        Navi.walkToFaladorSmithBank()
+        Execution.delay(Navi.random.nextLong(1500, 2500))
+        Bank.open()
+        Execution.delay(Navi.random.nextLong(1500, 2500))
+        Bank.depositAll()
+        Execution.delay(Navi.random.nextLong(1500, 2500))
         Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING // back to decision tree
         return
     }
@@ -254,11 +268,26 @@ fun smithOre() {
                 .results()
                 .firstOrNull()
 
+            val smithWithdrawAllButton = ComponentQuery.newQuery(37)
+                .componentIndex(170) // Assuming component index for "Withdraw all"
+                .results()
+                .firstOrNull()
+
             if (smithDepositAllButton != null) {
                 smithDepositAllButton.interact()
                 Zezimax.Logger.log("Deposited all materials.")
                 Execution.delay(Navi.random.nextLong(1500, 2500))
-                Zezimax.Logger.log("Not enough materials to continue, returning to Decision Tree.")
+                Zezimax.Logger.log("Not enough materials to continue, Returning Ore and Reinitializing...")
+                if (smithWithdrawAllButton != null) {
+                    smithWithdrawAllButton.interact()
+                    Execution.delay(Navi.random.nextLong(2500, 3500))
+                }
+                Navi.walkToFaladorSmithBank()
+                Execution.delay(Navi.random.nextLong(1500, 2500))
+                Bank.open()
+                Execution.delay(Navi.random.nextLong(1500, 2500))
+                Bank.depositAll()
+                Execution.delay(Navi.random.nextLong(1500, 2500))
                 Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING // back to decision tree
                 return
             } else {

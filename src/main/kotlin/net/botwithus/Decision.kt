@@ -49,10 +49,10 @@ object DecisionTree {
 
 
 
-/*
-         decision = 7
- */
 
+/*
+         decision = 1
+ */
 
 
 
@@ -387,7 +387,7 @@ object DecisionTree {
 
                 if (!taskAssigned) {
                     Zezimax.Logger.log("Not enough logs found. Re-Initializing...")
-                    botState = ZezimaxBotState.INITIALIZING
+                    decision = 999
                     return
                 }
 
@@ -633,7 +633,7 @@ object DecisionTree {
                 }
                 if (!taskAssigned) {
                     Zezimax.Logger.log("Not enough raw food found. Re-Initializing...")
-                    botState = ZezimaxBotState.INITIALIZING
+                    decision = 999
                     return
                 }
 
@@ -684,7 +684,7 @@ object DecisionTree {
                 }
                 if (!taskAssigned) {
                     Zezimax.Logger.log("Not enough logs found. Re-Initializing...")
-                    botState = ZezimaxBotState.INITIALIZING
+                    decision = 999
                     return
                 }
 

@@ -138,6 +138,7 @@ class Zezimax(
                         5 -> botState = ZezimaxBotState.START_FISHING
                         6 -> botState = ZezimaxBotState.START_COOKING
                         7 -> botState = ZezimaxBotState.START_FLETCHING
+                        999 -> botState = ZezimaxBotState.INITIALIZING
                     }
                 }
             }
