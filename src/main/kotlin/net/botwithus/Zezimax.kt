@@ -124,7 +124,7 @@ class Zezimax(
                 }
             }
             ZezimaxBotState.IDLE -> {
-                randomAmount = Random.nextInt(80, 220)
+                randomAmount = Random.nextInt(80, 300)
 
                 if (DecisionTree.decision == null) {
                     DecisionTree.makeRandomDecision()

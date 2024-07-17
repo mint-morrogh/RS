@@ -47,19 +47,19 @@ Zezimax.botState = Zezimax.ZezimaxBotState.START_FLETCHING
 
 fun fletching() {
 
-val player = Client.getLocalPlayer()
-if (player == null || Client.getGameState() != Client.GameState.LOGGED_IN) {
+    val player = Client.getLocalPlayer()
+    if (player == null || Client.getGameState() != Client.GameState.LOGGED_IN) {
     Zezimax.Logger.log("Player not logged in. Delaying execution.")
     Execution.delay(Navi.random.nextLong(2500, 7500))
     return
-}
-val nearestBank = Navi.getNearestBank(player.coordinate)
-if (nearestBank == null) {
+    }
+    val nearestBank = Navi.getNearestBank(player.coordinate)
+    if (nearestBank == null) {
     Zezimax.Logger.log("No nearby bank found. Delaying execution.")
     Execution.delay(Navi.random.nextLong(2500, 7500))
     return
-}
-if (!Bank.isOpen()) {
+    }
+    if (!Bank.isOpen()) {
     if (!nearestBank.contains(player.coordinate)) {
         Zezimax.Logger.log("Walking to the nearest bank...")
         Movement.traverse(NavPath.resolve(nearestBank.randomWalkableCoordinate))
@@ -67,10 +67,10 @@ if (!Bank.isOpen()) {
     }
     Bank.open()
     Execution.delay(Navi.random.nextLong(1000, 2000))
-}
+    }
 
 
-if (Bank.isOpen()) {
+    if (Bank.isOpen()) {
     if (!Backpack.isEmpty()) {
         Execution.delay(Navi.random.nextLong(1000, 2000))
         Bank.depositAll()
@@ -91,23 +91,13 @@ if (Bank.isOpen()) {
         Zezimax.botState = ZezimaxBotState.INITIALIZING
         return
     }
-}
+    }
 
 
 
-Execution.delay(Navi.random.nextLong(700, 1400))
+    Execution.delay(Navi.random.nextLong(700, 1400))
 
-// Find the first log in the inventory and interact with it
-val logComponent = ComponentQuery.newQuery(1473)
-    .componentIndex(5)
-    .item(fletchID)
-    .option("Craft")
-    .results()
-    .firstOrNull()
-if (logComponent != null && logComponent.interact("Craft")) {
-    Execution.delay(Navi.random.nextLong(400, 800))
-
-    // Interact with "Craft" option if needed
+    // Find the first log in the inventory and interact with it
     val logComponentCraft = ComponentQuery.newQuery(1473)
         .componentIndex(5)
         .item(fletchID)
@@ -117,10 +107,15 @@ if (logComponent != null && logComponent.interact("Craft")) {
     if (logComponentCraft != null && logComponentCraft.interact("Craft")) {
         Zezimax.Logger.log("Attempting to Fletch...")
         Execution.delay(Navi.random.nextLong(2000, 4000))
-        if (Interfaces.isOpen(1179) || Interfaces.isOpen(1370)) {
+        if (Interfaces.isOpen(1179) || Interfaces.isOpen(1370) || Interfaces.isOpen(1371)) {
             Zezimax.Logger.log("Craft Menu found...")
             val fletchMenu = ComponentQuery.newQuery(1179)
                 .componentIndex(17)
+                .option("Select")
+                .results()
+                .firstOrNull()
+            val craftMenu = ComponentQuery.newQuery(1371)
+                .componentIndex(22)
                 .results()
                 .firstOrNull()
             val fletchButton = ComponentQuery.newQuery(1370)
@@ -128,35 +123,54 @@ if (logComponent != null && logComponent.interact("Craft")) {
                 .results()
                 .firstOrNull()
 
-            if (fletchMenu != null && fletchMenu.interact()) {
-                Execution.delay(Navi.random.nextLong(1200, 2500))
-                Zezimax.Logger.log("Selecting bow type...")
+            if (fletchMenu != null) {
+                if (Interfaces.isOpen(1179) && fletchMenu.interact()) {
+                    Zezimax.Logger.log("Selecting knife...")
+                    Execution.delay(Navi.random.nextLong(2200, 3500))
+                }
+            }
+            if (craftMenu != null) {
+                if (Interfaces.isOpen(1371)) {
+
+
+                    val shortbow = ComponentQuery.newQuery(1371)
+                        .componentIndex(22)
+                        .subComponentIndex(5)
+                        .results()
+                        .firstOrNull()
+
+                    Zezimax.Logger.log("Selecting Shortbow...")
+                    shortbow?.interact("Select")
+                    Execution.delay(Navi.random.nextLong(2200, 3500))
+                }
             }
             if (fletchButton != null) {
-                fletchButton.interact()
-                Execution.delay(Navi.random.nextLong(1200, 2500))
+                if (Interfaces.isOpen(1370) && fletchButton.interact()) {
+                    Zezimax.Logger.log("Fletching...")
+                    Execution.delay(Navi.random.nextLong(2200, 3500))
+                }
             }
 
-                // While loop to check if there are logs in the inventory and if fire exists nearby
-                while (true) {
-                    val hasLogs = !InventoryItemQuery.newQuery().ids(logID).results().isEmpty
+            // While loop to check if there are logs in the inventory and if fire exists nearby
+            while (true) {
+                val hasLogs = !InventoryItemQuery.newQuery(93).ids(fletchID).results().isEmpty
 
-                    while (Interfaces.isOpen(1251)) {
-                        Zezimax.Logger.log("Still fletching...")
-                        Execution.delay(Navi.random.nextLong(2000, 6400))
-                    }
+                while (Interfaces.isOpen(1251)) {
+                    Zezimax.Logger.log("Still fletching...")
+                    Execution.delay(Navi.random.nextLong(2000, 6400))
+                }
 
-                    if (!hasLogs) {
-                        Zezimax.Logger.log("No more logs in inventory. Ending fletching session.")
-                        Execution.delay(Navi.random.nextLong(2000, 4000))
-                        Zezimax.botState = ZezimaxBotState.FLETCHING_BANKING
-                        return
-                    }
+                if (!hasLogs) {
+                    Zezimax.Logger.log("No more logs in inventory. Ending fletching session.")
+                    Execution.delay(Navi.random.nextLong(2000, 4000))
+                    Zezimax.botState = ZezimaxBotState.FLETCHING_BANKING
+                    return
                 }
             }
         }
     }
 }
+
 
 
 

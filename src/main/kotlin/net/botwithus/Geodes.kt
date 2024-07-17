@@ -146,7 +146,7 @@ fun processGemsInInventory() {
 fun processGem(item: net.botwithus.rs3.game.Item, gemId: Int) {
     Zezimax.Logger.log("Processing gem: ${item.id}")
 
-    val gemsInInventory = InventoryItemQuery.newQuery().ids(gemId).results().count()
+    val gemsInInventory = InventoryItemQuery.newQuery(93).ids(gemId).results().count()
     Zezimax.Logger.log("Gems in inventory: $gemsInInventory")
 
     if (gemsInInventory == 1) {

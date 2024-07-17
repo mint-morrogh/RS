@@ -149,7 +149,7 @@ class Fishing(private val locationFish: String,
             while (!Backpack.isFull()) {
                 // Check if feathers are needed and if they are present in inventory
                 if (DecisionTree.feathersNeeded) {
-                    val featherItem = InventoryItemQuery.newQuery().ids(featherId).results().firstOrNull()
+                    val featherItem = InventoryItemQuery.newQuery(93).ids(featherId).results().firstOrNull()
                     if (featherItem != null) {
                         if (featherItem.stackSize > 0) {
                             Zezimax.Logger.log("Feathers still in inventory, continuing to fish...")
@@ -162,7 +162,7 @@ class Fishing(private val locationFish: String,
                 }
                 // Check if bait is needed and if they are present in inventory
                 if (DecisionTree.baitNeeded) {
-                    val baitItem = InventoryItemQuery.newQuery().ids(baitId).results().firstOrNull()
+                    val baitItem = InventoryItemQuery.newQuery(93).ids(baitId).results().firstOrNull()
                     if (baitItem != null) {
                         if (baitItem.stackSize > 0) {
                             Zezimax.Logger.log("Bait still in inventory, continuing to fish...")

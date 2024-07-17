@@ -42,15 +42,16 @@ object DecisionTree {
         val goldInventorySlot = InventoryItemQuery.newQuery(623).ids(995).results()
         val gp = goldInventorySlot.sumOf {it.stackSize}
 
-        /*
+
                 decision = Navi.random.nextInt(8) // bound starts at 0
-         */
 
 
 
 
-         decision = 5
 
+/*
+         decision = 7
+ */
 
 
 
@@ -384,6 +385,12 @@ object DecisionTree {
                     }
                 }
 
+                if (!taskAssigned) {
+                    Zezimax.Logger.log("Not enough logs found. Re-Initializing...")
+                    botState = ZezimaxBotState.INITIALIZING
+                    return
+                }
+
                 Zezimax.Logger.log("Logs for Bonfire: $logToBurn")
                 startFiremaking()
             }
@@ -410,9 +417,9 @@ object DecisionTree {
                 Zezimax.Logger.log("Selected Task: Fishing")
                 val fishingLevel = Skills.FISHING.level
 
-                if (fishingLevel >= 50 && !taskAssigned) {
+                if (fishingLevel >= 50 && !taskAssigned ) {
                     // Which Fishing Task Decided
-                    if (rawSwordfishCount <= 150) {
+                    if (rawSwordfishCount <= 150 && gp >= 8000) {
                         fishingLocation = "PortSarimFishing"
                         bankLocation = "FaladorSouthBank"
                         fishToCollect = "Raw swordfish"
@@ -423,9 +430,9 @@ object DecisionTree {
                         taskAssigned = true
 
                     }
-                    else if (rawSalmonCount <= 150) {
+                    else if (rawSalmonCount <= 150 && gp >= 50000) {
                         if (featherCount <= 100) {
-                            grandExchangeBuy("feather", "200", "20")
+                            grandExchangeBuy("feather", "400", "20")
                         }
                         fishingLocation = "BarbarianVillageFishing"
                         bankLocation = "EdgevilleBank"
@@ -439,7 +446,7 @@ object DecisionTree {
                 }
                 if (fishingLevel >= 40 && !taskAssigned) {
                     // Which Fishing Task Decided
-                    if (rawLobsterCount <= 150) {
+                    if (rawLobsterCount <= 150 && gp >= 8000) {
                         fishingLocation = "PortSarimFishing"
                         bankLocation = "FaladorSouthBank"
                         fishToCollect = "Raw lobster"
@@ -450,9 +457,9 @@ object DecisionTree {
                         taskAssigned = true
 
                     }
-                    else if (rawSalmonCount <= 150) {
+                    else if (rawSalmonCount <= 150 && gp >= 50000) {
                             if (featherCount <= 100) {
-                                grandExchangeBuy("feather", "200", "20")
+                                grandExchangeBuy("feather", "400", "20")
                             }
                             fishingLocation = "BarbarianVillageFishing"
                             bankLocation = "EdgevilleBank"
@@ -468,7 +475,7 @@ object DecisionTree {
                     // Which Fishing Task Decided
                     if (rawSalmonCount <= 150 && gp >= 50000) {
                         if (featherCount <= 100) {
-                            grandExchangeBuy("feather", "200", "20")
+                            grandExchangeBuy("feather", "400", "20")
                         }
                         fishingLocation = "BarbarianVillageFishing"
                         bankLocation = "EdgevilleBank"
@@ -482,7 +489,7 @@ object DecisionTree {
                     }
                     else if (rawTroutCount <= 150 && gp >= 50000) {
                         if (featherCount <= 100) {
-                            grandExchangeBuy("feather", "200", "20")
+                            grandExchangeBuy("feather", "400", "20")
                         }
                         fishingLocation = "BarbarianVillageFishing"
                         bankLocation = "EdgevilleBank"
@@ -498,7 +505,7 @@ object DecisionTree {
                     // Which Fishing Task Decided
                     if (rawTroutCount <= 150 && gp >= 50000) {
                         if (featherCount <= 100) {
-                            grandExchangeBuy("feather", "200", "20")
+                            grandExchangeBuy("feather", "400", "20")
                         }
                         fishingLocation = "BarbarianVillageFishing"
                         bankLocation = "EdgevilleBank"
@@ -624,11 +631,13 @@ object DecisionTree {
                         taskAssigned = true
                     }
                 }
+                if (!taskAssigned) {
+                    Zezimax.Logger.log("Not enough raw food found. Re-Initializing...")
+                    botState = ZezimaxBotState.INITIALIZING
+                    return
+                }
+
                 Zezimax.Logger.log("Fish to cook: $fishToCook")
-
-
-
-
             }
 
 
@@ -673,6 +682,12 @@ object DecisionTree {
 
                     }
                 }
+                if (!taskAssigned) {
+                    Zezimax.Logger.log("Not enough logs found. Re-Initializing...")
+                    botState = ZezimaxBotState.INITIALIZING
+                    return
+                }
+
                 Zezimax.Logger.log("Logs for Fletching: $logToFletch")
                 startFletching()
 
