@@ -122,7 +122,7 @@ object DecisionTree {
                     // Which Mine Task Decided
                     if (adamantiteCount <= 300) {
                         if (adamantiteStoneSpirit <= 50 && gp >= 2000000) {
-                            grandExchangeBuy("Adamantite stone spirit", "250", "30")
+                            grandExchangeBuy("Adamantite stone spirit", "250", "80")
                         }
                         mineLocation = "VarrockEastMine"
                         bankLocation = "VarrockEastBank"

@@ -176,7 +176,6 @@ class Fishing(private val locationFish: String,
 
                 val fishSpot: Npc? = NpcQuery.newQuery().name(spotName).option(DecisionTree.actionToFish).results().nearest()
                 if (fishSpot != null && fishSpot.interact(DecisionTree.actionToFish)) {
-                    Zezimax.Logger.log("Fishing $spotName with ${DecisionTree.actionToFish}...")
                     Execution.delay(Navi.random.nextLong(10000, 24000))
                 } else {
                     Zezimax.Logger.log("No $spotName found with ${DecisionTree.actionToFish} action or failed to interact.")

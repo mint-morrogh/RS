@@ -138,7 +138,6 @@ class Zezimax(
                         5 -> botState = ZezimaxBotState.START_FISHING
                         6 -> botState = ZezimaxBotState.START_COOKING
                         7 -> botState = ZezimaxBotState.START_FLETCHING
-                        999 -> botState = ZezimaxBotState.INITIALIZING
                     }
                 }
             }
@@ -292,8 +291,21 @@ class Zezimax(
                 Execution.delay(Navi.random.nextLong(2000, 4000)) // Simulate deposit delay
             }
 
+            // Withdraw gp if found in bank
+            val gpInBank = Bank.getItems().filter { it.id == 995 }.sumOf { it.stackSize }
+                if (gpInBank > 0) {
+                    Bank.withdrawAll(995)
+                    Zezimax.Logger.log("GP found in bank... Withdrawing $gpInBank...")
+                    Execution.delay(Navi.random.nextLong(1300, 2000))
+                }
+
             // Make random decision on what to do next
             DecisionTree.makeRandomDecision()
+
+            if (DecisionTree.decision == 999) {
+                botState = ZezimaxBotState.INITIALIZING
+                return false
+            }
 
             // Close the bank
             if (Bank.isOpen()) {

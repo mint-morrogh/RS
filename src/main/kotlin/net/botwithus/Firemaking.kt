@@ -90,7 +90,9 @@ fun firemaking() {
         Execution.delay(Navi.random.nextLong(1000, 2000))
         // Get the count of each type of log in the bank
         if (logsForFire > 0) {
-            Zezimax.Logger.log("Withdrawing all ${DecisionTree.logToBurn}...")
+            val logCount = Bank.getItems().filter { it.id == DecisionTree.logToBurn }.sumOf { it.stackSize }
+            Zezimax.Logger.log("Logs left in bank: $logCount")
+            Zezimax.Logger.log("Withdrawing all chosen logs...")
             Bank.withdrawAll(DecisionTree.logToBurn)
             Execution.delay(Navi.random.nextLong(1000, 2000))
         }

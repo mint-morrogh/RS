@@ -492,10 +492,12 @@ fun grandExchangeSell(ItemID: Int, Quantity: String, PercentageDecrease: String)
             } else {
                 clickToInventoryButton()
                 closeGEInterface()
+                Execution.delay(Navi.random.nextLong(1500, 2500))
             }
         } else {
             clickToInventoryButton()
             closeGEInterface()
+            Execution.delay(Navi.random.nextLong(1500, 2500))
         }
     }
 }
@@ -553,10 +555,12 @@ fun grandExchangeBuy(ItemName: String, Quantity: String, PercentageIncrease: Str
             } else {
                 clickToBankButton()
                 closeGEInterface()
+                Execution.delay(Navi.random.nextLong(1500, 2500))
             }
         } else {
             clickToBankButton()
             closeGEInterface()
+            Execution.delay(Navi.random.nextLong(1500, 2500))
         }
     }
 }
