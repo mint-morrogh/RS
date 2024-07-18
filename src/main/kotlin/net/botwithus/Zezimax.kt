@@ -111,9 +111,9 @@ class Zezimax(
 
                 // TESTING FUNCTIONS HERE
                 ////////////////////////////
-                /*
+                grandExchangeBuy("feather", "1", "20")
                 Execution.delay(Navi.random.nextLong(250000, 750000))
-                 */
+
                 ////////////////////////////
 
 

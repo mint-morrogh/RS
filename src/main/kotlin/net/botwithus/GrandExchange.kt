@@ -377,7 +377,7 @@ fun closeGEInterface() {
 
 fun clickAbortOfferButton() {
     val abortButton = ComponentQuery.newQuery(105)
-        .componentIndex(9)
+        .componentIndex(27)
         .results()
         .firstOrNull()
 
@@ -395,6 +395,16 @@ fun clickAbortOfferButton() {
 
 
 fun grandExchangeSell(ItemID: Int, Quantity: String, PercentageDecrease: String) {
+
+    fun getEditOfferBoxText(): String? {
+        return ComponentQuery.newQuery(105)
+            .componentIndex(7)
+            .subComponentIndex(5)
+            .results()
+            .firstOrNull()
+            ?.text
+    }
+
     val player = Client.getLocalPlayer()
     if (player == null || Client.getGameState() != Client.GameState.LOGGED_IN) {
         Zezimax.Logger.log("Player not logged in. Delaying execution.")
@@ -461,7 +471,24 @@ fun grandExchangeSell(ItemID: Int, Quantity: String, PercentageDecrease: String)
     }
 
     interactWithGEClerk()
-    Execution.delay(Navi.random.nextLong(1500, 2500))
+    Execution.delay(Navi.random.nextLong(2800, 3900))
+
+    // Conditional logic checks if box is a green bar with no text, or has text containing a "/"
+    var editOfferBox = getEditOfferBoxText()
+    if (editOfferBox != null) {
+        if (editOfferBox.contains("/")) {
+            Zezimax.Logger.log("Clearing Previous Buy/Sell...")
+            clickAbortOfferButton()
+            Execution.delay(Navi.random.nextLong(1000, 2500))
+            clickToBankButton()
+            Execution.delay(Navi.random.nextLong(1000, 2500))
+        }
+        else {
+            clickToBankButton()
+            Execution.delay(Navi.random.nextLong(1000, 2500))
+        }
+    }
+
     interactWithSellButton()
     Execution.delay(Navi.random.nextLong(1000, 2000))
     interactWithInventoryItem()
@@ -473,13 +500,7 @@ fun grandExchangeSell(ItemID: Int, Quantity: String, PercentageDecrease: String)
     clickConfirmOfferButton()
     Execution.delay(Navi.random.nextLong(3000, 5500))
 
-    val editOfferBox = ComponentQuery.newQuery(105)
-        .componentIndex(7)
-        .subComponentIndex(5)
-        .results()
-        .firstOrNull()
-        ?.text
-
+    editOfferBox = getEditOfferBoxText()
     if (editOfferBox != null) {
         if (editOfferBox.contains("/")) {
             Execution.delay(Navi.random.nextLong(10000, 20000))
@@ -490,12 +511,12 @@ fun grandExchangeSell(ItemID: Int, Quantity: String, PercentageDecrease: String)
                 Zezimax.Logger.log("Couldn't sell item to Grand Exchange...")
                 return
             } else {
-                clickToInventoryButton()
+                clickToBankButton()
                 closeGEInterface()
                 Execution.delay(Navi.random.nextLong(1500, 2500))
             }
         } else {
-            clickToInventoryButton()
+            clickToBankButton()
             closeGEInterface()
             Execution.delay(Navi.random.nextLong(1500, 2500))
         }
@@ -506,6 +527,16 @@ fun grandExchangeSell(ItemID: Int, Quantity: String, PercentageDecrease: String)
 
 
 fun grandExchangeBuy(ItemName: String, Quantity: String, PercentageIncrease: String) {
+
+    fun getEditOfferBoxText(): String? {
+        return ComponentQuery.newQuery(105)
+            .componentIndex(7)
+            .subComponentIndex(5)
+            .results()
+            .firstOrNull()
+            ?.text
+    }
+
     val player = Client.getLocalPlayer()
     if (player == null || Client.getGameState() != Client.GameState.LOGGED_IN) {
         Zezimax.Logger.log("Player not logged in. Delaying execution.")
@@ -520,8 +551,25 @@ fun grandExchangeBuy(ItemName: String, Quantity: String, PercentageIncrease: Str
             Zezimax.Logger.log("**GRAND EXCHANGE** Failed to walk to the Grand Exchange.")
         }
     }
+
     interactWithGEClerk()
-    Execution.delay(Navi.random.nextLong(1500, 2500))
+    Execution.delay(Navi.random.nextLong(2800, 3900))
+
+    // Conditional logic checks if box is a green bar with no text, or has text containing a "/"
+    var editOfferBox = getEditOfferBoxText()
+    if (editOfferBox != null) {
+        if (editOfferBox.contains("/")) {
+            Zezimax.Logger.log("Clearing Previous Buy/Sell...")
+            clickAbortOfferButton()
+            Execution.delay(Navi.random.nextLong(1000, 2500))
+            clickToBankButton()
+            Execution.delay(Navi.random.nextLong(1000, 2500))
+        }
+        else {
+            clickToBankButton()
+            Execution.delay(Navi.random.nextLong(1000, 2500))
+        }
+    }
     interactWithBuyButton()
     Execution.delay(Navi.random.nextLong(1000, 2500))
     typeItemName(ItemName)
@@ -534,20 +582,15 @@ fun grandExchangeBuy(ItemName: String, Quantity: String, PercentageIncrease: Str
     Execution.delay(Navi.random.nextLong(1000, 2000))
     clickConfirmOfferButton()
     Execution.delay(Navi.random.nextLong(3000, 5500))
-    // Conditional logic checks if box is a green bar with no text, or has text containing a "/"
-    val editOfferBox = ComponentQuery.newQuery(105)
-        .componentIndex(7)
-        .subComponentIndex(5)
-        .results()
-        .firstOrNull()
-        ?.text
 
+    // Conditional logic checks if box is a green bar with no text, or has text containing a "/"
+    editOfferBox = getEditOfferBoxText()
     if (editOfferBox != null) {
         if (editOfferBox.contains("/")) {
             Execution.delay(Navi.random.nextLong(10000, 20000)) // Wait 10-20 seconds
             if (editOfferBox.contains("/")) {
                 clickAbortOfferButton()
-                clickToInventoryButton()
+                clickToBankButton()
                 closeGEInterface()
                 Zezimax.Logger.log("Couldn't purchase item from Grand Exchange...")
                 Execution.delay(Navi.random.nextLong(3000, 5500))
