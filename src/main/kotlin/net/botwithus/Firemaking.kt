@@ -41,9 +41,9 @@ import java.util.concurrent.Callable
 import java.util.regex.Pattern
 
 
-
-val logsForFire = Bank.getItems().filter { it.id == DecisionTree.logToBurn }.sumOf { it.stackSize }
 val logID = DecisionTree.logToBurn
+val logsForFire = Bank.getItems().any { it.id == logID }
+val firemakingGetName = Utilities.getNameById(DecisionTree.logToBurn)
 
 fun startFiremaking() {
     Zezimax.botState = Zezimax.ZezimaxBotState.START_FIREMAKING
@@ -89,10 +89,10 @@ fun firemaking() {
         }
         Execution.delay(Navi.random.nextLong(1000, 2000))
         // Get the count of each type of log in the bank
-        if (logsForFire > 0) {
+        if (logsForFire) {
             val logCount = Bank.getItems().filter { it.id == DecisionTree.logToBurn }.sumOf { it.stackSize }
             Zezimax.Logger.log("Logs left in bank: $logCount")
-            Zezimax.Logger.log("Withdrawing all chosen logs...")
+            Zezimax.Logger.log("Withdrawing all $firemakingGetName...")
             Bank.withdrawAll(DecisionTree.logToBurn)
             Execution.delay(Navi.random.nextLong(1000, 2000))
         }
@@ -120,7 +120,7 @@ fun firemaking() {
         .results()
         .firstOrNull()
     if (logComponent != null && logComponent.interact("Light")) {
-        Zezimax.Logger.log("Attempting to light the log")
+        Zezimax.Logger.log("Attempting to light $firemakingGetName")
         Execution.delay(Navi.random.nextLong(400, 800))
 
         // Wait until the player leaves the initial position
@@ -169,7 +169,7 @@ fun firemaking() {
                                 Execution.delay(Navi.random.nextLong(2000, 3000))
                             }
                             if (fireNearby && hasLogs) {
-                                Zezimax.Logger.log("Bonfire is still active and logs are available.")
+                                Zezimax.Logger.log("Bonfire is still active and $firemakingGetName are available.")
                                 Execution.delay(Navi.random.nextLong(10000, 12000))
                             } else if (!fireNearby && hasLogs) {
                                 Zezimax.Logger.log("Bonfire went out.")
@@ -177,7 +177,7 @@ fun firemaking() {
                                 Zezimax.botState = ZezimaxBotState.FIREMAKING_BANKING
                                 return
                             } else if (!hasLogs) {
-                                Zezimax.Logger.log("No more logs in inventory. Ending bonfire session.")
+                                Zezimax.Logger.log("No more $firemakingGetName in inventory. Returning to bank...")
                                 Execution.delay(Navi.random.nextLong(2000, 10000))
                                 Zezimax.botState = ZezimaxBotState.FIREMAKING_BANKING
                                 return

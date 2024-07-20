@@ -12,9 +12,10 @@ import net.botwithus.rs3.script.Execution
 import net.botwithus.rs3.script.ScriptConsole
 import java.util.concurrent.Callable
 
+val miningGetName = Utilities.getNameById(DecisionTree.oreToCollect)
+val spiritGetName = Utilities.getNameById(DecisionTree.stoneSpirit)
 
-
-fun withdrawMiningSupplies(itemName: String, stoneSpirit: String, quantity: Int) {
+fun withdrawMiningSupplies(itemName: String, stoneSpirit: Int, quantity: Int) {
 
     if (!Bank.isOpen()) {
         Execution.delay(Navi.random.nextLong(1000, 2000))
@@ -47,25 +48,28 @@ fun withdrawMiningSupplies(itemName: String, stoneSpirit: String, quantity: Int)
             Zezimax.Logger.log("Could not find $itemName in the bank.")
         }
 
-        if (stoneSpirit.isNotEmpty()) {
+
+        if (stoneSpirit != 0) {
             val spirit = ComponentQuery.newQuery(517)
-                .itemName(stoneSpirit)
+                .item(stoneSpirit)
                 .results()
                 .firstOrNull()
 
-            if (spirit != null) {
+            val spiritInBank = Bank.getItems().any { it.id == stoneSpirit }
+
+            if (spiritInBank) {
                 // Withdraw all stone spirits
-                val success = spirit.interact("Withdraw-All")
-                Zezimax.Logger.log("Attempting Bank Withdraw for $stoneSpirit")
+                val success = spirit?.interact("Withdraw-All")
+                Zezimax.Logger.log("Attempting Bank Withdraw for $spiritGetName")
                 Execution.delay(Navi.random.nextLong(1300, 2000))
 
-                if (success) {
-                    Zezimax.Logger.log("Withdrew all $stoneSpirit.")
+                if (success == true) {
+                    Zezimax.Logger.log("Withdrew all $spiritGetName.")
                 } else {
-                    Zezimax.Logger.log("Failed to withdraw $stoneSpirit")
+                    Zezimax.Logger.log("Failed to withdraw $spiritGetName")
                 }
             } else {
-                Zezimax.Logger.log("Could not find $stoneSpirit in the bank.")
+                Zezimax.Logger.log("Could not find $spiritGetName in the bank.")
             }
         }
     }
@@ -77,7 +81,7 @@ fun withdrawMiningSupplies(itemName: String, stoneSpirit: String, quantity: Int)
 class Mining(private val locationMine: String,
              private val locationBank: String,
              private val rockName: String,
-             private val oreName: String,
+             private val oreName: Int,
              private val oreBoxName: String,
              private val mineUntil: Int
 ) {
@@ -140,7 +144,7 @@ class Mining(private val locationMine: String,
             // Count the total number of specified ore in the inventory
             if (Backpack.isFull() && oreBox != null && oresInBox < oreBoxCapacity) {
                 val oresInInventory =
-                    InventoryItemQuery.newQuery(93).name(oreName).results().count { it.name == oreName }
+                    InventoryItemQuery.newQuery(93).ids(oreName).results().count { it.id == oreName }
                 Zezimax.Logger.log("Ores in inventory: $oresInInventory")
                 val oreBoxComponent =
                     ComponentQuery.newQuery(1473).componentIndex(5).itemName(oreBox.name).option("Fill")
@@ -198,8 +202,8 @@ class Mining(private val locationMine: String,
                 Zezimax.Logger.log("No $oreBoxName found in inventory.")
             }
 
-            val oreCount = Bank.getItems().filter { it.name == oreName }.sumOf { it.stackSize }
-            Zezimax.Logger.log("$oreName count in bank: $oreCount")
+            val oreCount = Bank.getItems().filter { it.id == oreName }.sumOf { it.stackSize }
+            Zezimax.Logger.log("$miningGetName count in bank: $oreCount")
 
             if (oreCount >= mineUntil) {
                 if (oreBox != null) {
@@ -211,11 +215,11 @@ class Mining(private val locationMine: String,
                     }
                     Bank.close()
                     Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
-                    Zezimax.Logger.log("Collected $mineUntil or more $oreName. Re-Initializing.")
+                    Zezimax.Logger.log("Collected $mineUntil or more $miningGetName. Re-Initializing.")
                     Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
                     return
                 } else {
-                    Zezimax.Logger.log("Continuing to mine more $oreName.")
+                    Zezimax.Logger.log("Continuing to mine more $miningGetName.")
                     Bank.close()
                     Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
                     Zezimax.botState = Zezimax.ZezimaxBotState.START_MINING

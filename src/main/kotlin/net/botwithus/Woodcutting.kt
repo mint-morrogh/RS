@@ -14,6 +14,9 @@ import net.botwithus.rs3.game.queries.builders.characters.PlayerQuery
 import java.util.stream.Collectors
 
 
+val woodcuttingGetName = Utilities.getNameById(DecisionTree.logsToCollect)
+val treeChopping = (DecisionTree.treeToChop)
+
 fun withdrawWoodcuttingSupplies(itemName: String, quantity: Int) {
 
 
@@ -51,7 +54,7 @@ fun withdrawWoodcuttingSupplies(itemName: String, quantity: Int) {
 class Woodcutting(private val locationWoodcutting: String,
              private val locationBank: String,
              private val treeName: String,
-             private val logName: String,
+             private val logName: Int,
              private val woodBoxName: String,
              private val randStart: Long,
              private val randEnd: Long,
@@ -108,13 +111,13 @@ class Woodcutting(private val locationWoodcutting: String,
                 .collect(Collectors.toList())
 
             if (nearbyPlayers.isEmpty()) {
-                Zezimax.Logger.log("Found free tree within 15 spaces")
+                Zezimax.Logger.log("Found free $treeChopping within 15 spaces")
                 return tree
             }
         }
 
         // If all trees within 10 spaces have players nearby animating, return the nearest tree regardless
-        Zezimax.Logger.log("Could not find a free tree within 10 spaces, choosing the nearest tree regardless")
+        Zezimax.Logger.log("Could not find a free $treeChopping within 10 spaces, choosing the nearest $treeChopping...")
         return SceneObjectQuery.newQuery().name(treeName).option("Chop down").hidden(false).results().nearest()
     }
 
@@ -138,10 +141,10 @@ class Woodcutting(private val locationWoodcutting: String,
 
                 // Attempt to interact with the current tree
                 if (currentTree != null && currentTree.interact("Chop down")) {
-                    Zezimax.Logger.log("Woodcutting ${currentTree.name}...")
+                    Zezimax.Logger.log("Woodcutting $treeChopping...")
                     Execution.delay(Navi.random.nextLong(randStart, randEnd)) // Simulate chopping delay
                 } else {
-                    Zezimax.Logger.log("No ${currentTree?.name} found or failed to interact.")
+                    Zezimax.Logger.log("No $treeChopping found or failed to interact.")
                     Execution.delay(Navi.random.nextLong(1500, 3000))
                 }
             }
@@ -159,8 +162,8 @@ class Woodcutting(private val locationWoodcutting: String,
             // Count the total number of specified wood in the inventory
             if (Backpack.isFull() && woodBox != null && woodInBox < woodBoxCapacity) {
                 val logsInInventory =
-                    InventoryItemQuery.newQuery(93).name(logName).results().count { it.name == logName }
-                Zezimax.Logger.log("Logs in inventory: $logsInInventory")
+                    InventoryItemQuery.newQuery(93).ids(logName).results().count { it.id == logName }
+                Zezimax.Logger.log("$woodcuttingGetName in inventory: $logsInInventory")
                 val woodBoxComponent =
                     ComponentQuery.newQuery(1473).componentIndex(5).itemName(woodBox.name).option("Fill")
                         .results().firstOrNull()
@@ -168,7 +171,7 @@ class Woodcutting(private val locationWoodcutting: String,
                     Zezimax.Logger.log("Filling $woodBoxName...")
                     Execution.delay(Navi.random.nextLong(1500, 2200))
                     woodInBox += logsInInventory
-                    Zezimax.Logger.log("Filled $woodBoxName. Total logs in box: $woodInBox / $woodBoxCapacity")
+                    Zezimax.Logger.log("Filled $woodBoxName. Total $woodcuttingGetName in box: $woodInBox / $woodBoxCapacity")
                 }
             } else {
                 Zezimax.Logger.log("$woodBoxName has reached known capacity.")
@@ -193,7 +196,7 @@ class Woodcutting(private val locationWoodcutting: String,
 
         if (Bank.isOpen()) {
             if (!Backpack.isEmpty()) {
-                Zezimax.Logger.log("Depositing all $logName.")
+                Zezimax.Logger.log("Depositing all $woodcuttingGetName.")
                 Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
                 Bank.depositAll(logName)
                 Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate deposit delay
@@ -212,18 +215,18 @@ class Woodcutting(private val locationWoodcutting: String,
                 Zezimax.Logger.log("No $woodBoxName found in inventory.")
             }
 
-            val logCount = Bank.getItems().filter { it.name == logName }.sumOf { it.stackSize }
-            Zezimax.Logger.log("$logName count in bank: $logCount")
+            val logCount = Bank.getItems().filter { it.id == logName }.sumOf { it.stackSize }
+            Zezimax.Logger.log("$woodcuttingGetName count in bank: $logCount")
 
             Bank.close()
             Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
 
             if (logCount >= woodcutUntil) {
-                Zezimax.Logger.log("Collected $woodcutUntil or more $logName. Re-Initializing.")
+                Zezimax.Logger.log("Collected $woodcutUntil or more $woodcuttingGetName. Re-Initializing.")
                 Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
                 return
             } else {
-                Zezimax.Logger.log("Continuing to woodcut more $logName.")
+                Zezimax.Logger.log("Continuing to woodcut more $woodcuttingGetName.")
                 Zezimax.botState = Zezimax.ZezimaxBotState.START_WOODCUTTING
                 return
             }

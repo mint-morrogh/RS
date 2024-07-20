@@ -38,8 +38,10 @@ import java.util.concurrent.Callable
 import java.util.regex.Pattern
 
 
-val logsForFletcing = Bank.getItems().filter { it.id == DecisionTree.logToFletch }.sumOf { it.stackSize }
 val fletchID = DecisionTree.logToFletch
+val logsForFletching = Bank.getItems().any { it.id == fletchID }
+val fletchingGetName = Utilities.getNameById(DecisionTree.logToFletch)
+
 
 fun startFletching() {
 Zezimax.botState = Zezimax.ZezimaxBotState.START_FLETCHING
@@ -71,26 +73,26 @@ fun fletching() {
 
 
     if (Bank.isOpen()) {
-    if (!Backpack.isEmpty()) {
+        if (!Backpack.isEmpty()) {
+            Execution.delay(Navi.random.nextLong(1000, 2000))
+            Bank.depositAll()
+            Execution.delay(Navi.random.nextLong(1000, 2000))
+        }
         Execution.delay(Navi.random.nextLong(1000, 2000))
-        Bank.depositAll()
-        Execution.delay(Navi.random.nextLong(1000, 2000))
-    }
-    Execution.delay(Navi.random.nextLong(1000, 2000))
-    // Get the count of each type of log in the bank
-    if (logsForFletcing > 0) {
-        Zezimax.Logger.log("Withdrawing all $fletchID...")
-        Bank.withdrawAll(fletchID)
-        Execution.delay(Navi.random.nextLong(1000, 2000))
-        Bank.close()
-        Execution.delay(Navi.random.nextLong(1000, 2000))
-    } else {
-        Zezimax.Logger.log("Out of logs, Re-Initializing...")
-        Bank.close()
-        Execution.delay(Navi.random.nextLong(1000, 2000))
-        Zezimax.botState = ZezimaxBotState.INITIALIZING
-        return
-    }
+        // Get the count of each type of log in the bank
+        if (logsForFletching) {
+            Zezimax.Logger.log("Withdrawing all $fletchingGetName...")
+            Bank.withdrawAll(fletchID)
+            Execution.delay(Navi.random.nextLong(1000, 2000))
+            Bank.close()
+            Execution.delay(Navi.random.nextLong(1000, 2000))
+        } else {
+            Zezimax.Logger.log("Out of $fletchingGetName, Re-Initializing...")
+            Bank.close()
+            Execution.delay(Navi.random.nextLong(1000, 2000))
+            Zezimax.botState = ZezimaxBotState.INITIALIZING
+            return
+        }
     }
 
 
@@ -105,7 +107,7 @@ fun fletching() {
         .results()
         .firstOrNull()
     if (logComponentCraft != null && logComponentCraft.interact("Craft")) {
-        Zezimax.Logger.log("Attempting to Fletch...")
+        Zezimax.Logger.log("Attempting to Fletch $fletchingGetName...")
         Execution.delay(Navi.random.nextLong(2000, 4000))
         if (Interfaces.isOpen(1179) || Interfaces.isOpen(1370) || Interfaces.isOpen(1371)) {
             Zezimax.Logger.log("Craft Menu found...")
@@ -146,7 +148,6 @@ fun fletching() {
             }
             if (fletchButton != null) {
                 if (Interfaces.isOpen(1370) && fletchButton.interact()) {
-                    Zezimax.Logger.log("Fletching...")
                     Execution.delay(Navi.random.nextLong(2200, 3500))
                 }
             }
@@ -156,12 +157,12 @@ fun fletching() {
                 val hasLogs = !InventoryItemQuery.newQuery(93).ids(fletchID).results().isEmpty
 
                 while (Interfaces.isOpen(1251)) {
-                    Zezimax.Logger.log("Still fletching...")
+                    Zezimax.Logger.log("Fletching $fletchingGetName...")
                     Execution.delay(Navi.random.nextLong(2000, 6400))
                 }
 
                 if (!hasLogs) {
-                    Zezimax.Logger.log("No more logs in inventory. Ending fletching session.")
+                    Zezimax.Logger.log("No more $fletchingGetName in inventory. Returning to bank...")
                     Execution.delay(Navi.random.nextLong(2000, 4000))
                     Zezimax.botState = ZezimaxBotState.FLETCHING_BANKING
                     return

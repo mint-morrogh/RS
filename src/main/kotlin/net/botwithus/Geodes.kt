@@ -36,8 +36,6 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.regex.Pattern
 
-// item ID 44816
-
 fun withdrawGeodes() {
     Zezimax.botState = Zezimax.ZezimaxBotState.START_GEODE_CRACKER
 }
@@ -67,6 +65,13 @@ fun geodeCracker() {
 
     while (true) {
         val geodeCount = Bank.getItems().filter { it.id == 44816 }.sumOf { it.stackSize }
+        val geodeNotNull = Bank.getItems().any { it.id == 44816 }
+
+        if (!geodeNotNull) {
+            Zezimax.Logger.log("Not enough Geodes. Reinitializing...")
+            Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
+            return
+        }
         if (geodeCount >= 10) {
             Bank.withdrawAll(44816)
             Execution.delay(Navi.random.nextLong(1000, 3000))
@@ -82,7 +87,7 @@ fun geodeCracker() {
                 .firstOrNull()
 
             if (geodeComponent != null && geodeComponent.interact("Open")) {
-                Zezimax.Logger.log("Opening geodes...");
+                Zezimax.Logger.log("Opening Geodes...");
 
                 // Wait a random time between 100 and 400 ms
                 Execution.delay(Navi.random.nextLong(300, 800));
@@ -93,12 +98,12 @@ fun geodeCracker() {
                     if (geodeComponent.interact("Open")) {
                         Execution.delay(Navi.random.nextLong(180, 400));
                     } else {
-                        Zezimax.Logger.log("Couldn't open geode...");
+                        Zezimax.Logger.log("Couldn't open Geode...");
                         break;
                     }
                 }
             } else {
-                Zezimax.Logger.log("Couldn't open geode...");
+                Zezimax.Logger.log("Couldn't open Geode...");
             }
 
             // Check for specific items in the inventory and process gems
@@ -111,8 +116,9 @@ fun geodeCracker() {
             }
             Bank.depositAll()
             Execution.delay(Navi.random.nextLong(2000, 4000))
+
         } else {
-            Zezimax.Logger.log("Not enough geodes")
+            Zezimax.Logger.log("Not enough Geodes. Reinitializing...")
             Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
             return
         }
@@ -144,10 +150,10 @@ fun processGemsInInventory() {
 }
 
 fun processGem(item: net.botwithus.rs3.game.Item, gemId: Int) {
-    Zezimax.Logger.log("Processing gem: ${item.id}")
+    val gemGetName = Utilities.getNameById(item.id)
+    Zezimax.Logger.log("Processing gem: $gemGetName")
 
     val gemsInInventory = InventoryItemQuery.newQuery(93).ids(gemId).results().count()
-    Zezimax.Logger.log("Gems in inventory: $gemsInInventory")
 
     if (gemsInInventory == 1) {
         val craftComponent = ComponentQuery.newQuery(1473)

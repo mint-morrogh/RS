@@ -36,10 +36,12 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.regex.Pattern
 
-class Cooking(private val fishName: String,
+class Cooking(private val fishName: Int,
               private val locationBank: String,
               private val locationRange: String
 ) {
+
+    val cookingGetName = Utilities.getNameById(fishName)
 
     // LOCATIONS
     fun navigateToCookLocation() {
@@ -74,21 +76,24 @@ class Cooking(private val fishName: String,
                 Bank.depositAll()
                 Execution.delay(Navi.random.nextLong(1000, 2000))
             }
-            Zezimax.Logger.log("Withdrawing all $fishName.")
+            Zezimax.Logger.log("Withdrawing all $cookingGetName.")
 
-            val fishCount = Bank.getItems().filter { it.name == fishName }.sumOf { it.stackSize }
-            Zezimax.Logger.log("$fishName count in bank: $fishCount")
-            if (fishCount > 0) {
-                Zezimax.Logger.log("Continuing to cook more $fishName.")
-                Execution.delay(Navi.random.nextLong(1000, 2000))
-                Bank.withdrawAll(fishName)
-                Execution.delay(Navi.random.nextLong(1000, 3000))
-                Bank.close()
-                Execution.delay(Navi.random.nextLong(1000, 2500))
-                Zezimax.botState = Zezimax.ZezimaxBotState.COOKING_RANGE
-                return
+            val fishCount = Bank.getItems().filter { it.id == fishName }.sumOf { it.stackSize }
+            val fishInBank = Bank.getItems().any { it.id == fishName }
+            Zezimax.Logger.log("$cookingGetName count in bank: $fishCount")
+            if (fishInBank) {
+                if (fishCount > 0) {
+                    Zezimax.Logger.log("Continuing to cook more $cookingGetName.")
+                    Execution.delay(Navi.random.nextLong(1000, 2000))
+                    Bank.withdrawAll(fishName)
+                    Execution.delay(Navi.random.nextLong(1000, 3000))
+                    Bank.close()
+                    Execution.delay(Navi.random.nextLong(1000, 2500))
+                    Zezimax.botState = Zezimax.ZezimaxBotState.COOKING_RANGE
+                    return
+                }
             } else {
-                Zezimax.Logger.log("No more $fishName to cook, Re-Initializing.")
+                Zezimax.Logger.log("No more $cookingGetName to cook, Re-Initializing...")
                 Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
                 return
             }

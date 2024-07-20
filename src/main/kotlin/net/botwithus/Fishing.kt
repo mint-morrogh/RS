@@ -41,7 +41,7 @@ import java.util.regex.Pattern
 
 val featherId = 314
 val baitId = 313
-
+val fishingGetName = Utilities.getNameById(DecisionTree.fishToCollect)
 
 fun withdrawFishingSupplies() {
     if (!Bank.isOpen()) {
@@ -55,10 +55,10 @@ fun withdrawFishingSupplies() {
 
         // Withdraw feathers if needed
         if (DecisionTree.feathersNeeded) {
-            val featherCount = Bank.getItems().filter { it.id == featherId }.sumOf { it.stackSize }
-            if (featherCount > 0) {
+            val featherCount =  Bank.getItems().any { it.id == featherId }
+            if (featherCount) {
                 Bank.withdrawAll(featherId)
-                Zezimax.Logger.log("Feathers withdrawn: $featherCount")
+                Zezimax.Logger.log("Feathers withdrawn...")
                 Execution.delay(Navi.random.nextLong(1300, 2000))
             }
             else {
@@ -70,10 +70,10 @@ fun withdrawFishingSupplies() {
 
         // Withdraw bait if needed
         if (DecisionTree.baitNeeded) {
-            val baitCount = Bank.getItems().filter { it.id == baitId }.sumOf { it.stackSize }
-            if (baitCount > 0) {
+            val baitCount =  Bank.getItems().any { it.id == baitId }
+            if (baitCount) {
                 Bank.withdrawAll(baitId)
-                Zezimax.Logger.log("Bait withdrawn: $baitCount")
+                Zezimax.Logger.log("Bait withdrawn...")
                 Execution.delay(Navi.random.nextLong(1300, 2000))
             }
             else {
@@ -97,7 +97,7 @@ fun withdrawFishingSupplies() {
 class Fishing(private val locationFish: String,
              private val locationBank: String,
              private val spotName: String,
-             private val fishName: String,
+             private val fishName: Int,
              private val fishUntil: Int
 ) {
 
@@ -165,7 +165,7 @@ class Fishing(private val locationFish: String,
                     val baitItem = InventoryItemQuery.newQuery(93).ids(baitId).results().firstOrNull()
                     if (baitItem != null) {
                         if (baitItem.stackSize > 0) {
-                            Zezimax.Logger.log("Bait still in inventory, continuing to fish...")
+                            Zezimax.Logger.log("Bait still in inventory, continuing to fish for $fishingGetName...")
                         } else {
                             Zezimax.Logger.log("Out of bait, Reinitializing...")
                             Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
@@ -217,10 +217,10 @@ class Fishing(private val locationFish: String,
             // Withdraw feathers if needed
 
             if (DecisionTree.feathersNeeded) {
-                val featherCount = Bank.getItems().filter { it.id == featherId }.sumOf { it.stackSize }
-                if (featherCount > 0) {
+                val featherCount =  Bank.getItems().any { it.id == featherId }
+                if (featherCount) {
                     Bank.withdrawAll(featherId)
-                    Zezimax.Logger.log("Feathers withdrawn: $featherCount")
+                    Zezimax.Logger.log("Feathers withdrawn...")
                     Execution.delay(Navi.random.nextLong(1300, 2000))
                 }
                 else {
@@ -233,10 +233,10 @@ class Fishing(private val locationFish: String,
             // Withdraw bait if needed
 
             if (DecisionTree.baitNeeded) {
-                val baitCount = Bank.getItems().filter { it.id == baitId }.sumOf { it.stackSize }
-                if (baitCount > 0) {
+                val baitCount =  Bank.getItems().any { it.id == baitId }
+                if (baitCount) {
                     Bank.withdrawAll(baitId)
-                    Zezimax.Logger.log("Bait withdrawn: $baitCount")
+                    Zezimax.Logger.log("Bait withdrawn...")
                     Execution.delay(Navi.random.nextLong(1300, 2000))
                 }
                 else {
@@ -245,19 +245,18 @@ class Fishing(private val locationFish: String,
                     return
                 }
             }
-
-            val fishCount = Bank.getItems().filter { it.name == fishName }.sumOf { it.stackSize }
+            val fishCount = Bank.getItems().filter { it.id == fishName }.sumOf { it.stackSize }
             Zezimax.Logger.log("$fishName count in bank: $fishCount")
 
             Bank.close()
             Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
 
             if (fishCount >= fishUntil) {
-                Zezimax.Logger.log("Collected $fishUntil or more $fishName. Re-Initializing.")
+                Zezimax.Logger.log("Collected $fishUntil or more $fishingGetName. Re-Initializing...")
                 Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
                 return
             } else {
-                Zezimax.Logger.log("Haven't collected $fishUntil or more $fishName, Continuing to fish more $fishName.")
+                Zezimax.Logger.log("Haven't collected $fishUntil or more $fishingGetName, Continuing to fish more $fishingGetName.")
                 Zezimax.botState = Zezimax.ZezimaxBotState.START_FISHING
                 return
             }
@@ -267,6 +266,4 @@ class Fishing(private val locationFish: String,
             Execution.delay(Navi.random.nextLong(1500, 3000))
         }
     }
-
-
 }

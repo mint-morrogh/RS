@@ -13,25 +13,25 @@ object DecisionTree {
     var oreBoxName: String = ""
     var mineLocation: String = ""
     var bankLocation: String = ""
-    var oreToCollect: String = ""
-    var stoneSpirit: String = ""
+    var oreToCollect: Int = 0
+    var stoneSpirit: Int = 0
     var rockToMine: String = ""
     var actionToMine: String = ""
     var woodBoxName: String = ""
     var woodcuttingLocation: String = ""
-    var logsToCollect: String = ""
+    var logsToCollect: Int = 0
     var treeToChop: String = ""
     var actionToChop: String = ""
     var startRand: Long = 0
     var endRand: Long = 0
     var bonfireFuel: String = ""
     var fishingLocation: String = ""
-    var fishToCollect: String = ""
+    var fishToCollect: Int = 0
     var spotToFish: String = ""
     var actionToFish: String = ""
     var feathersNeeded: Boolean = false
     var baitNeeded: Boolean = false
-    var fishToCook: String = ""
+    var fishToCook: Int = 0
     var rangeLocation: String = ""
     var logToBurn: Int = 0
     var logToFletch: Int = 0
@@ -42,7 +42,6 @@ object DecisionTree {
         val goldInventorySlot = InventoryItemQuery.newQuery(623).ids(995).results()
         val gp = goldInventorySlot.sumOf {it.stackSize}
 
-
                 decision = Navi.random.nextInt(8) // bound starts at 0
 
 
@@ -51,7 +50,7 @@ object DecisionTree {
 
 
 /*
-         decision = 1
+         decision = 0
  */
 
 
@@ -99,8 +98,8 @@ object DecisionTree {
                         }
                         mineLocation = "MiningGuild"
                         bankLocation = "FaladorSmithBank"
-                        oreToCollect = "Runite ore"
-                        stoneSpirit = "Runite stone spirit"
+                        oreToCollect = 451
+                        stoneSpirit = 44808
                         rockToMine = "Runite rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -111,8 +110,8 @@ object DecisionTree {
                         }
                         mineLocation = "FaladorLuminite"
                         bankLocation = "FaladorSmithBank"
-                        oreToCollect = "Luminite"
-                        stoneSpirit = "Luminite stone spirit"
+                        oreToCollect = 44820
+                        stoneSpirit = 44806
                         rockToMine = "Luminite rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -126,8 +125,8 @@ object DecisionTree {
                         }
                         mineLocation = "VarrockEastMine"
                         bankLocation = "VarrockEastBank"
-                        oreToCollect = "Adamantite ore"
-                        stoneSpirit = "Adamantite stone spirit"
+                        oreToCollect = 449
+                        stoneSpirit = 44807
                         rockToMine = "Adamantite rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -138,8 +137,8 @@ object DecisionTree {
                         }
                         mineLocation = "FaladorLuminite"
                         bankLocation = "FaladorSmithBank"
-                        oreToCollect = "Luminite"
-                        stoneSpirit = "Luminite stone spirit"
+                        oreToCollect = 44820
+                        stoneSpirit = 44806
                         rockToMine = "Luminite rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -150,8 +149,8 @@ object DecisionTree {
                     if (mithrilCount <= 300) {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
-                        oreToCollect = "Mithril ore"
-                        stoneSpirit = ""
+                        oreToCollect = 447
+                        stoneSpirit = 0
                         rockToMine = "Mithril rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -159,8 +158,8 @@ object DecisionTree {
                     else if (coalCount <= 300) {
                         mineLocation = "MiningGuild"
                         bankLocation = "FaladorSmithBank"
-                        oreToCollect = "Coal"
-                        stoneSpirit = ""
+                        oreToCollect = 453
+                        stoneSpirit = 0
                         rockToMine = "Coal rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -171,8 +170,8 @@ object DecisionTree {
                     if (ironCount <= 300) {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
-                        oreToCollect = "Iron ore"
-                        stoneSpirit = ""
+                        oreToCollect = 441
+                        stoneSpirit = 0
                         rockToMine = "Iron rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -180,8 +179,8 @@ object DecisionTree {
                     else if (copperCount <= 300) {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
-                        oreToCollect = "Copper ore"
-                        stoneSpirit = ""
+                        oreToCollect = 436
+                        stoneSpirit = 0
                         rockToMine = "Copper rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -189,8 +188,8 @@ object DecisionTree {
                     else if (tinCount <= 300) {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
-                        oreToCollect = "Tin ore"
-                        stoneSpirit = ""
+                        oreToCollect = 438
+                        stoneSpirit = 0
                         rockToMine = "Tin rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -201,16 +200,16 @@ object DecisionTree {
                     if (copperCount <= 300) {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
-                        oreToCollect = "Copper ore"
-                        stoneSpirit = ""
+                        oreToCollect = 436
+                        stoneSpirit = 0
                         rockToMine = "Copper rock"
                         actionToMine = "Mine"
                         taskAssigned = true
                     } else if (tinCount <= 300) {
                         mineLocation = "VarrockWestMine"
                         bankLocation = "VarrockWestBank"
-                        oreToCollect = "Tin ore"
-                        stoneSpirit = ""
+                        oreToCollect = 438
+                        stoneSpirit = 0
                         rockToMine = "Tin rock"
                         actionToMine = "Mine"
                         taskAssigned = true
@@ -220,7 +219,6 @@ object DecisionTree {
                 Zezimax.Logger.log("ore to collect: $oreToCollect")
                 withdrawMiningSupplies(oreBoxName, stoneSpirit,1)
             }
-
 
 
 
@@ -242,7 +240,6 @@ object DecisionTree {
 
 
 
-
 // GEODES
             2 -> {
                 Zezimax.Logger.log("Selected Task: Cracking Geodes")
@@ -255,9 +252,9 @@ object DecisionTree {
 // WOODCUTTING
             3 -> {
 
-                val willowCount = Bank.getItems().filter { it.name == "Willow logs" }.sumOf { it.stackSize }
-                val oakCount = Bank.getItems().filter { it.name == "Oak logs" }.sumOf { it.stackSize }
-                val logCount = Bank.getItems().filter { it.name == "Logs" }.sumOf { it.stackSize }
+                val willowCount = Bank.getItems().filter { it.id == 1519 }.sumOf { it.stackSize }
+                val oakCount = Bank.getItems().filter { it.id == 1521 }.sumOf { it.stackSize }
+                val logCount = Bank.getItems().filter { it.id == 1511 }.sumOf { it.stackSize }
                 var taskAssigned = false
                 Zezimax.Logger.log("Selected Task: Woodcutting")
                 val woodcuttingLevel = Skills.WOODCUTTING.level
@@ -268,7 +265,7 @@ object DecisionTree {
                     if (willowCount <= 300) {
                         woodcuttingLocation = "DraynorWillows"
                         bankLocation = "DraynorBank"
-                        logsToCollect = "Willow logs"
+                        logsToCollect = 1519
                         treeToChop = "Willow"
                         actionToChop = "Chop down"
                         startRand = 8000
@@ -278,7 +275,7 @@ object DecisionTree {
                     else if (logCount <= 300) {
                         woodcuttingLocation = "VarrockWestTrees"
                         bankLocation = "VarrockWestBank"
-                        logsToCollect = "Logs"
+                        logsToCollect = 1511
                         treeToChop = "Tree"
                         actionToChop = "Chop down"
                         startRand = 2500
@@ -291,7 +288,7 @@ object DecisionTree {
                     if (oakCount <= 300) {
                         woodcuttingLocation = "DraynorOaks"
                         bankLocation = "DraynorBank"
-                        logsToCollect = "Oak logs"
+                        logsToCollect = 1521
                         treeToChop = "Oak"
                         actionToChop = "Chop down"
                         startRand = 6500
@@ -301,7 +298,7 @@ object DecisionTree {
                     else if (logCount <= 300) {
                         woodcuttingLocation = "VarrockWestTrees"
                         bankLocation = "VarrockWestBank"
-                        logsToCollect = "Logs"
+                        logsToCollect = 1511
                         treeToChop = "Tree"
                         actionToChop = "Chop down"
                         startRand = 2500
@@ -309,12 +306,11 @@ object DecisionTree {
                         taskAssigned = true
                     }
                 }
-                if (!taskAssigned){
+                if (!taskAssigned) {
                     // Which Woodcutting Task Decided
-                    if (logCount <= 300) {
                         woodcuttingLocation = "VarrockWestTrees"
                         bankLocation = "VarrockWestBank"
-                        logsToCollect = "Logs"
+                        logsToCollect = 1511
                         treeToChop = "Tree"
                         actionToChop = "Chop down"
                         startRand = 2500
@@ -322,22 +318,10 @@ object DecisionTree {
                         taskAssigned = true
 
                     }
-                    else if (logCount <= 500) {
-                        woodcuttingLocation = "VarrockWestTrees"
-                        bankLocation = "VarrockWestBank"
-                        logsToCollect = "Logs"
-                        treeToChop = "Tree"
-                        actionToChop = "Chop down"
-                        startRand = 2500
-                        endRand = 6500
-                        taskAssigned = true
-                    }
-                }
 
                 Zezimax.Logger.log("logs to collect: $logsToCollect")
                 withdrawWoodcuttingSupplies(woodBoxName, 1)
             }
-
 
 
 
@@ -396,7 +380,6 @@ object DecisionTree {
             }
 
 
-
 // FISHING
             5 -> {
 
@@ -419,10 +402,10 @@ object DecisionTree {
 
                 if (fishingLevel >= 50 && !taskAssigned ) {
                     // Which Fishing Task Decided
-                    if (rawSwordfishCount <= 150 && gp >= 8000) {
+                    if (rawSwordfishCount <= 300 && gp >= 8000) {
                         fishingLocation = "PortSarimFishing"
                         bankLocation = "FaladorSouthBank"
-                        fishToCollect = "Raw swordfish"
+                        fishToCollect = 371
                         spotToFish = "Fishing spot"
                         actionToFish = "Harpoon"
                         feathersNeeded = false
@@ -430,13 +413,13 @@ object DecisionTree {
                         taskAssigned = true
 
                     }
-                    else if (rawSalmonCount <= 150 && gp >= 50000) {
+                    else if (rawSalmonCount <= 300 && gp >= 50000) {
                         if (featherCount <= 100) {
                             grandExchangeBuy("feather", "400", "20")
                         }
                         fishingLocation = "BarbarianVillageFishing"
                         bankLocation = "EdgevilleBank"
-                        fishToCollect = "Raw salmon"
+                        fishToCollect = 331
                         spotToFish = "Fishing spot"
                         actionToFish = "Lure"
                         feathersNeeded = true
@@ -446,10 +429,10 @@ object DecisionTree {
                 }
                 if (fishingLevel >= 40 && !taskAssigned) {
                     // Which Fishing Task Decided
-                    if (rawLobsterCount <= 150 && gp >= 8000) {
+                    if (rawLobsterCount <= 300 && gp >= 8000) {
                         fishingLocation = "PortSarimFishing"
                         bankLocation = "FaladorSouthBank"
-                        fishToCollect = "Raw lobster"
+                        fishToCollect = 337
                         spotToFish = "Fishing spot"
                         actionToFish = "Cage"
                         feathersNeeded = false
@@ -457,13 +440,13 @@ object DecisionTree {
                         taskAssigned = true
 
                     }
-                    else if (rawSalmonCount <= 150 && gp >= 50000) {
+                    else if (rawSalmonCount <= 300 && gp >= 50000) {
                             if (featherCount <= 100) {
                                 grandExchangeBuy("feather", "400", "20")
                             }
                             fishingLocation = "BarbarianVillageFishing"
                             bankLocation = "EdgevilleBank"
-                            fishToCollect = "Raw salmon"
+                            fishToCollect = 331
                             spotToFish = "Fishing spot"
                             actionToFish = "Lure"
                             feathersNeeded = true
@@ -473,13 +456,13 @@ object DecisionTree {
                 }
                 if (fishingLevel >= 30 && !taskAssigned) {
                     // Which Fishing Task Decided
-                    if (rawSalmonCount <= 150 && gp >= 50000) {
+                    if (rawSalmonCount <= 300 && gp >= 50000) {
                         if (featherCount <= 100) {
                             grandExchangeBuy("feather", "400", "20")
                         }
                         fishingLocation = "BarbarianVillageFishing"
                         bankLocation = "EdgevilleBank"
-                        fishToCollect = "Raw salmon"
+                        fishToCollect = 331
                         spotToFish = "Fishing spot"
                         actionToFish = "Lure"
                         feathersNeeded = true
@@ -487,13 +470,13 @@ object DecisionTree {
                         taskAssigned = true
 
                     }
-                    else if (rawTroutCount <= 150 && gp >= 50000) {
+                    else if (rawTroutCount <= 300 && gp >= 50000) {
                         if (featherCount <= 100) {
                             grandExchangeBuy("feather", "400", "20")
                         }
                         fishingLocation = "BarbarianVillageFishing"
                         bankLocation = "EdgevilleBank"
-                        fishToCollect = "Raw trout"
+                        fishToCollect = 335
                         spotToFish = "Fishing spot"
                         actionToFish = "Lure"
                         feathersNeeded = true
@@ -503,23 +486,23 @@ object DecisionTree {
                 }
                 if (fishingLevel >= 20 && !taskAssigned) {
                     // Which Fishing Task Decided
-                    if (rawTroutCount <= 150 && gp >= 50000) {
+                    if (rawTroutCount <= 300 && gp >= 50000) {
                         if (featherCount <= 100) {
                             grandExchangeBuy("feather", "400", "20")
                         }
                         fishingLocation = "BarbarianVillageFishing"
                         bankLocation = "EdgevilleBank"
-                        fishToCollect = "Raw trout"
+                        fishToCollect = 335
                         spotToFish = "Fishing spot"
                         actionToFish = "Lure"
                         feathersNeeded = true
                         baitNeeded = false
                         taskAssigned = true
                     }
-                    else if (rawAnchoviesCount <= 150) {
+                    else if (rawAnchoviesCount <= 300) {
                         fishingLocation = "AlkharidWestFishing"
                         bankLocation = "AlkharidWestBank"
-                        fishToCollect = "Raw anchovies"
+                        fishToCollect = 321
                         spotToFish = "Fishing spot"
                         actionToFish = "Net"
                         feathersNeeded = false
@@ -534,7 +517,6 @@ object DecisionTree {
                 withdrawFishingSupplies()
 
             }
-
 
 
 // COOKING
@@ -558,14 +540,14 @@ object DecisionTree {
                 if (cookingLevel >= 25 && !taskAssigned) {
                     // Which Cooking Task Decided
                     if (rawSalmonCount >= 150) {
-                        fishToCook = "Raw salmon"
+                        fishToCook = 331
                         bankLocation = "AlkharidWestBank"
                         rangeLocation = "AlkharidWestRange"
                         taskAssigned = true
 
                     }
                     else if (rawPikeCount >= 150) {
-                        fishToCook = "Raw pike"
+                        fishToCook = 349
                         bankLocation = "AlkharidWestBank"
                         rangeLocation = "AlkharidWestRange"
                         taskAssigned = true
@@ -574,14 +556,14 @@ object DecisionTree {
                 if (cookingLevel >= 20 && !taskAssigned) {
                     // Which Cooking Task Decided
                     if (rawPikeCount >= 150) {
-                        fishToCook = "Raw pike"
+                        fishToCook = 349
                         bankLocation = "AlkharidWestBank"
                         rangeLocation = "AlkharidWestRange"
                         taskAssigned = true
 
                     }
                     else if (rawTroutCount >= 150) {
-                        fishToCook = "Raw trout"
+                        fishToCook = 335
                         bankLocation = "AlkharidWestBank"
                         rangeLocation = "AlkharidWestRange"
                         taskAssigned = true
@@ -590,14 +572,14 @@ object DecisionTree {
                 if (cookingLevel >= 15 && !taskAssigned) {
                     // Which Cooking Task Decided
                     if (rawTroutCount >= 150) {
-                        fishToCook = "Raw trout"
+                        fishToCook = 335
                         bankLocation = "AlkharidWestBank"
                         rangeLocation = "AlkharidWestRange"
                         taskAssigned = true
 
                     }
                     else if (rawHerringCount >= 150) {
-                        fishToCook = "Raw herring"
+                        fishToCook = 345
                         bankLocation = "AlkharidWestBank"
                         rangeLocation = "AlkharidWestRange"
                         taskAssigned = true
@@ -606,26 +588,26 @@ object DecisionTree {
                 if (!taskAssigned) {
                     // Which Cooking Task Decided
                     if (rawAnchoviesCount >= 150) {
-                        fishToCook = "Raw anchovies"
+                        fishToCook = 321
                         bankLocation = "AlkharidWestBank"
                         rangeLocation = "AlkharidWestRange"
                         taskAssigned = true
 
                     }
                     else if (rawSardineCount >= 150) {
-                        fishToCook = "Raw sardine"
+                        fishToCook = 327
                         bankLocation = "AlkharidWestBank"
                         rangeLocation = "AlkharidWestRange"
                         taskAssigned = true
                     }
                     else if (rawShrimpCount >= 150) {
-                        fishToCook = "Raw shrimps"
+                        fishToCook = 2514
                         bankLocation = "AlkharidWestBank"
                         rangeLocation = "AlkharidWestRange"
                         taskAssigned = true
                     }
                     else if (rawCrayfishCount >= 150) {
-                        fishToCook = "Raw crayfish"
+                        fishToCook = 13435
                         bankLocation = "AlkharidWestBank"
                         rangeLocation = "AlkharidWestRange"
                         taskAssigned = true
@@ -688,7 +670,6 @@ object DecisionTree {
                     return
                 }
 
-                Zezimax.Logger.log("Logs for Fletching: $logToFletch")
                 startFletching()
 
 

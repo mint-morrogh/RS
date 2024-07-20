@@ -111,9 +111,12 @@ class Zezimax(
 
                 // TESTING FUNCTIONS HERE
                 ////////////////////////////
-                grandExchangeBuy("feather", "1", "20")
+/*
+                val itemId = 1514
+                val itemName = Utilities.getNameById(itemId)
+                println("Item name is: $itemName")
                 Execution.delay(Navi.random.nextLong(250000, 750000))
-
+ */
                 ////////////////////////////
 
 
@@ -292,10 +295,10 @@ class Zezimax(
             }
 
             // Withdraw gp if found in bank
-            val gpInBank = Bank.getItems().filter { it.id == 995 }.sumOf { it.stackSize }
-                if (gpInBank > 0) {
+            val gpInBank = Bank.getItems().any { it.id == 995 }
+                if (gpInBank) {
                     Bank.withdrawAll(995)
-                    Zezimax.Logger.log("GP found in bank... Withdrawing $gpInBank...")
+                    Zezimax.Logger.log("**INITIALIZING** GP found in bank... Withdrawing...")
                     Execution.delay(Navi.random.nextLong(1300, 2000))
                 }
 
@@ -312,10 +315,10 @@ class Zezimax(
                 Bank.close()
             }
             Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate bank closing delay
-            println("Initialization complete. Starting main script.")
+            println("**INITIALIZING** Initialization complete. Starting main script.")
             return true
         } else {
-            println("Bank is not open, retrying.")
+            println("**INITIALIZING** Bank is not open, retrying.")
             Execution.delay(Navi.random.nextLong(1500, 3000))
             return false
         }

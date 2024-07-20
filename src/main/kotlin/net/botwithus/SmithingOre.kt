@@ -13,7 +13,6 @@ import java.util.*
 
 
 
-
 fun withdrawSmithingOreSupplies(vararg items: Pair<Int, Int?>) {
     if (Bank.isOpen()) {
         val noteButton = ComponentQuery.newQuery(517)
@@ -34,23 +33,25 @@ fun withdrawSmithingOreSupplies(vararg items: Pair<Int, Int?>) {
                 .results()
                 .firstOrNull()
 
+            val smithingGetName = Utilities.getNameById(itemId)
+
             if (itemComponent != null) {
                 if (quantity == null) {
                     // Withdraw all instances of the item
                     val success = itemComponent.interact("Withdraw-All")
-                    Zezimax.Logger.log("Attempting to withdraw all instances of item ID: $itemId")
+                    Zezimax.Logger.log("Attempting to withdraw all instances of item ID: $smithingGetName")
 
                     if (success) {
-                        Zezimax.Logger.log("Successfully withdrew all instances of item ID: $itemId.")
+                        Zezimax.Logger.log("Successfully withdrew all instances of item ID: $smithingGetName.")
                         Execution.delay(Navi.random.nextLong(1300, 2000))
                     } else {
-                        Zezimax.Logger.log("Failed to withdraw item ID: $itemId")
+                        Zezimax.Logger.log("Failed to withdraw item $smithingGetName")
                         Execution.delay(Navi.random.nextLong(1300, 2000))
                     }
                 } else {
                     // Withdraw a specific quantity
                     val success = itemComponent.interact("Withdraw-X")
-                    Zezimax.Logger.log("Attempting to withdraw $quantity of item ID: $itemId")
+                    Zezimax.Logger.log("Attempting to withdraw $quantity of item ID: $smithingGetName")
 
                     if (success) {
                         // Type the quantity
@@ -58,13 +59,13 @@ fun withdrawSmithingOreSupplies(vararg items: Pair<Int, Int?>) {
                         GameInput.setTextInput(quantity.toString())
                         Execution.delay(Navi.random.nextLong(1600, 2600)) // Simulate delay after typing
 
-                        Zezimax.Logger.log("Withdrew $quantity of item ID: $itemId.")
+                        Zezimax.Logger.log("Withdrew $quantity of item ID: $smithingGetName.")
                     } else {
-                        Zezimax.Logger.log("Failed to withdraw item ID: $itemId")
+                        Zezimax.Logger.log("Failed to withdraw item ID: $smithingGetName")
                     }
                 }
             } else {
-                Zezimax.Logger.log("Could not find item ID: $itemId in the bank.")
+                Zezimax.Logger.log("Could not find item ID: $smithingGetName in the bank.")
             }
         }
     }
@@ -277,7 +278,7 @@ fun smithOre() {
                 smithDepositAllButton.interact()
                 Zezimax.Logger.log("Deposited all materials.")
                 Execution.delay(Navi.random.nextLong(1500, 2500))
-                Zezimax.Logger.log("Not enough materials to continue, Returning Ore and Reinitializing...")
+                Zezimax.Logger.log("Not enough materials to continue, Returning Ore to Bank and Reinitializing...")
                 if (smithWithdrawAllButton != null) {
                     smithWithdrawAllButton.interact()
                     Execution.delay(Navi.random.nextLong(2500, 3500))
