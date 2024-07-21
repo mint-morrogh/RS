@@ -65,9 +65,8 @@ fun geodeCracker() {
 
     while (true) {
         val geodeCount = Bank.getItems().filter { it.id == 44816 }.sumOf { it.stackSize }
-        val geodeNotNull = Bank.getItems().any { it.id == 44816 }
 
-        if (!geodeNotNull) {
+        if (Utilities.isItemIdInBank(44816)) {
             Zezimax.Logger.log("Not enough Geodes. Reinitializing...")
             Zezimax.botState = Zezimax.ZezimaxBotState.INITIALIZING
             return

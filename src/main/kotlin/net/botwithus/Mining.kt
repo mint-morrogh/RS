@@ -55,9 +55,9 @@ fun withdrawMiningSupplies(itemName: String, stoneSpirit: Int, quantity: Int) {
                 .results()
                 .firstOrNull()
 
-            val spiritInBank = Bank.getItems().any { it.id == stoneSpirit }
 
-            if (spiritInBank) {
+
+            if (Utilities.isItemIdInBank(stoneSpirit)) {
                 // Withdraw all stone spirits
                 val success = spirit?.interact("Withdraw-All")
                 Zezimax.Logger.log("Attempting Bank Withdraw for $spiritGetName")

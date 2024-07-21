@@ -7,6 +7,7 @@ import java.io.InputStreamReader
 import java.io.IOException
 
 import com.google.gson.*
+import net.botwithus.rs3.game.queries.builders.components.ComponentQuery
 import java.lang.reflect.Type
 
 
@@ -99,6 +100,17 @@ object Utilities {
             null
         }
     }
+
+    fun isItemIdInBank(ID: Int): Boolean {
+        val bankComponent = ComponentQuery.newQuery(517)
+            .componentIndex(195)
+            .item(ID)
+            .results()
+            .firstOrNull()
+
+        return bankComponent != null
+    }
+
 
 
 

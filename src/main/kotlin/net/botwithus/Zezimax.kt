@@ -154,8 +154,9 @@ class Zezimax(
                 botState = ZezimaxBotState.MINING_BANKING
             }
             ZezimaxBotState.MINING_BANKING -> {
-                println("Mining until ${randomAmount} ${DecisionTree.oreToCollect} have been banked...")
-                println("Mining ${DecisionTree.oreToCollect} at Location: ${DecisionTree.mineLocation}...")
+                val miningGetName = Utilities.getNameById(DecisionTree.oreToCollect)
+                println("Mining until ${randomAmount} $miningGetName have been banked...")
+                println("Mining $miningGetName} at Location: ${DecisionTree.mineLocation}...")
                 Mining(DecisionTree.mineLocation, DecisionTree.bankLocation, DecisionTree.rockToMine, DecisionTree.oreToCollect, DecisionTree.oreBoxName, randomAmount).mine(player)
             }
 
@@ -196,8 +197,9 @@ class Zezimax(
                 botState = ZezimaxBotState.WOODCUTTING_BANKING
             }
             ZezimaxBotState.WOODCUTTING_BANKING -> {
-                println("Woodcutting until ${randomAmount} ${DecisionTree.logsToCollect} have been banked...")
-                println("Woodcutting ${DecisionTree.logsToCollect} at Location: ${DecisionTree.woodcuttingLocation}...")
+                val woodcuttingGetName = Utilities.getNameById(DecisionTree.logsToCollect)
+                println("Woodcutting until ${randomAmount} $woodcuttingGetName have been banked...")
+                println("Woodcutting $woodcuttingGetName at Location: ${DecisionTree.woodcuttingLocation}...")
                 Woodcutting(DecisionTree.woodcuttingLocation, DecisionTree.bankLocation, DecisionTree.treeToChop, DecisionTree.logsToCollect, DecisionTree.woodBoxName, DecisionTree.startRand, DecisionTree.endRand, randomAmount).woodcut(player)
 
             }
@@ -224,8 +226,9 @@ class Zezimax(
                 botState = ZezimaxBotState.FISHING_BANKING
             }
             ZezimaxBotState.FISHING_BANKING -> {
-                println("Fishing until ${randomAmount} ${DecisionTree.fishToCollect} have been banked...")
-                println("Fishing ${DecisionTree.fishToCollect} at Location: ${DecisionTree.fishingLocation}...")
+                val fishingGetName = Utilities.getNameById(DecisionTree.fishToCollect)
+                println("Fishing until ${randomAmount} $fishingGetName have been banked...")
+                println("Fishing $fishingGetName at Location: ${DecisionTree.fishingLocation}...")
                 Fishing(DecisionTree.fishingLocation, DecisionTree.bankLocation, DecisionTree.spotToFish, DecisionTree.fishToCollect, randomAmount).fish(player)
             }
 

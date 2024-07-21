@@ -39,10 +39,10 @@ fun withdrawSmithingOreSupplies(vararg items: Pair<Int, Int?>) {
                 if (quantity == null) {
                     // Withdraw all instances of the item
                     val success = itemComponent.interact("Withdraw-All")
-                    Zezimax.Logger.log("Attempting to withdraw all instances of item ID: $smithingGetName")
+                    Zezimax.Logger.log("Attempting to withdraw all instances of $smithingGetName")
 
                     if (success) {
-                        Zezimax.Logger.log("Successfully withdrew all instances of item ID: $smithingGetName.")
+                        Zezimax.Logger.log("Successfully withdrew all instances of $smithingGetName.")
                         Execution.delay(Navi.random.nextLong(1300, 2000))
                     } else {
                         Zezimax.Logger.log("Failed to withdraw item $smithingGetName")
@@ -51,7 +51,7 @@ fun withdrawSmithingOreSupplies(vararg items: Pair<Int, Int?>) {
                 } else {
                     // Withdraw a specific quantity
                     val success = itemComponent.interact("Withdraw-X")
-                    Zezimax.Logger.log("Attempting to withdraw $quantity of item ID: $smithingGetName")
+                    Zezimax.Logger.log("Attempting to withdraw $quantity of $smithingGetName")
 
                     if (success) {
                         // Type the quantity
@@ -59,13 +59,13 @@ fun withdrawSmithingOreSupplies(vararg items: Pair<Int, Int?>) {
                         GameInput.setTextInput(quantity.toString())
                         Execution.delay(Navi.random.nextLong(1600, 2600)) // Simulate delay after typing
 
-                        Zezimax.Logger.log("Withdrew $quantity of item ID: $smithingGetName.")
+                        Zezimax.Logger.log("Withdrew $quantity of $smithingGetName.")
                     } else {
-                        Zezimax.Logger.log("Failed to withdraw item ID: $smithingGetName")
+                        Zezimax.Logger.log("Failed to withdraw $smithingGetName")
                     }
                 }
             } else {
-                Zezimax.Logger.log("Could not find item ID: $smithingGetName in the bank.")
+                Zezimax.Logger.log("Could not find $smithingGetName in the bank.")
             }
         }
     }
@@ -256,7 +256,7 @@ fun smithOre() {
         if (beginProjectButton != null) {
             Execution.delay(Navi.random.nextLong(400, 1000))
             beginProjectButton.interact()
-            Zezimax.Logger.log("Pressed Begin Project button.")
+            Zezimax.Logger.log("Began Smithing $barToSmelt...")
             Execution.delay(Navi.random.nextLong(3000, 6000))
         } else {
             Zezimax.Logger.log("Begin Project button not found.")
@@ -276,9 +276,9 @@ fun smithOre() {
 
             if (smithDepositAllButton != null) {
                 smithDepositAllButton.interact()
-                Zezimax.Logger.log("Deposited all materials.")
+                Zezimax.Logger.log("Deposited all $barToSmelt to Forge...")
                 Execution.delay(Navi.random.nextLong(1500, 2500))
-                Zezimax.Logger.log("Not enough materials to continue, Returning Ore to Bank and Reinitializing...")
+                Zezimax.Logger.log("Not enough Ore to continue, Returning Ore to Bank and Reinitializing...")
                 if (smithWithdrawAllButton != null) {
                     smithWithdrawAllButton.interact()
                     Execution.delay(Navi.random.nextLong(2500, 3500))
@@ -311,7 +311,7 @@ fun smithOre() {
 
         if (furnace != null) {
             furnace.interact("Smelt")
-            Zezimax.Logger.log("Interacted with Furnace to Smelt.")
+            Zezimax.Logger.log("Interacted with Furnace...")
             Execution.delay(Navi.random.nextLong(1200, 1900))
         } else {
             Zezimax.Logger.log("Furnace not found.")
@@ -327,7 +327,7 @@ fun smithOre() {
         if (smithDepositAllButton2 != null) {
             Execution.delay(Navi.random.nextLong(1500, 2500))
             smithDepositAllButton2.interact()
-            Zezimax.Logger.log("Deposited all materials.")
+            Zezimax.Logger.log("Deposited all $barToSmelt to Forge...")
         } else {
             Zezimax.Logger.log("Deposit All button not found.")
         }

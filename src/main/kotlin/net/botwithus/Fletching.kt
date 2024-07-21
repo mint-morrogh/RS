@@ -39,7 +39,6 @@ import java.util.regex.Pattern
 
 
 val fletchID = DecisionTree.logToFletch
-val logsForFletching = Bank.getItems().any { it.id == fletchID }
 val fletchingGetName = Utilities.getNameById(DecisionTree.logToFletch)
 
 
@@ -80,14 +79,14 @@ fun fletching() {
         }
         Execution.delay(Navi.random.nextLong(1000, 2000))
         // Get the count of each type of log in the bank
-        if (logsForFletching) {
+        if (Utilities.isItemIdInBank(fletchID)) {
             Zezimax.Logger.log("Withdrawing all $fletchingGetName...")
             Bank.withdrawAll(fletchID)
             Execution.delay(Navi.random.nextLong(1000, 2000))
             Bank.close()
             Execution.delay(Navi.random.nextLong(1000, 2000))
         } else {
-            Zezimax.Logger.log("Out of $fletchingGetName, Re-Initializing...")
+            Zezimax.Logger.log("Out of $fletchingGetName, ReInitializing...")
             Bank.close()
             Execution.delay(Navi.random.nextLong(1000, 2000))
             Zezimax.botState = ZezimaxBotState.INITIALIZING

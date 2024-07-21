@@ -36,12 +36,12 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.regex.Pattern
 
+val cookingGetName = Utilities.getNameById(DecisionTree.fishToCook)
+
 class Cooking(private val fishName: Int,
               private val locationBank: String,
               private val locationRange: String
 ) {
-
-    val cookingGetName = Utilities.getNameById(fishName)
 
     // LOCATIONS
     fun navigateToCookLocation() {
@@ -79,9 +79,8 @@ class Cooking(private val fishName: Int,
             Zezimax.Logger.log("Withdrawing all $cookingGetName.")
 
             val fishCount = Bank.getItems().filter { it.id == fishName }.sumOf { it.stackSize }
-            val fishInBank = Bank.getItems().any { it.id == fishName }
             Zezimax.Logger.log("$cookingGetName count in bank: $fishCount")
-            if (fishInBank) {
+            if (Utilities.isItemIdInBank(fishName)) {
                 if (fishCount > 0) {
                     Zezimax.Logger.log("Continuing to cook more $cookingGetName.")
                     Execution.delay(Navi.random.nextLong(1000, 2000))

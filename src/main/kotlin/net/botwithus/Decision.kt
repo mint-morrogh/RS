@@ -42,6 +42,7 @@ object DecisionTree {
         val goldInventorySlot = InventoryItemQuery.newQuery(623).ids(995).results()
         val gp = goldInventorySlot.sumOf {it.stackSize}
 
+
                 decision = Navi.random.nextInt(8) // bound starts at 0
 
 
@@ -50,7 +51,7 @@ object DecisionTree {
 
 
 /*
-         decision = 0
+         decision = 7
  */
 
 
@@ -216,7 +217,7 @@ object DecisionTree {
                     }
                 }
 
-                Zezimax.Logger.log("ore to collect: $oreToCollect")
+                Zezimax.Logger.log("Mining: $rockToMine")
                 withdrawMiningSupplies(oreBoxName, stoneSpirit,1)
             }
 

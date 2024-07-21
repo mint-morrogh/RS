@@ -116,8 +116,8 @@ class Woodcutting(private val locationWoodcutting: String,
             }
         }
 
-        // If all trees within 10 spaces have players nearby animating, return the nearest tree regardless
-        Zezimax.Logger.log("Could not find a free $treeChopping within 10 spaces, choosing the nearest $treeChopping...")
+        // If all trees within 15 spaces have players nearby animating, return the nearest tree regardless
+        Zezimax.Logger.log("Could not find a free $treeChopping within 15 spaces, choosing the nearest $treeChopping...")
         return SceneObjectQuery.newQuery().name(treeName).option("Chop down").hidden(false).results().nearest()
     }
 

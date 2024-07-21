@@ -42,7 +42,6 @@ import java.util.regex.Pattern
 
 
 val logID = DecisionTree.logToBurn
-val logsForFire = Bank.getItems().any { it.id == logID }
 val firemakingGetName = Utilities.getNameById(DecisionTree.logToBurn)
 
 fun startFiremaking() {
@@ -56,7 +55,6 @@ fun hasItemInInventory(itemId: Int): Boolean {
 }
 
 fun firemaking() {
-    val firemakingLevel = Skills.FIREMAKING.level
 
     val player = Client.getLocalPlayer()
     if (player == null || Client.getGameState() != Client.GameState.LOGGED_IN) {
@@ -89,14 +87,13 @@ fun firemaking() {
         }
         Execution.delay(Navi.random.nextLong(1000, 2000))
         // Get the count of each type of log in the bank
-        if (logsForFire) {
+        if (Utilities.isItemIdInBank(logID)) {
             val logCount = Bank.getItems().filter { it.id == DecisionTree.logToBurn }.sumOf { it.stackSize }
             Zezimax.Logger.log("Logs left in bank: $logCount")
             Zezimax.Logger.log("Withdrawing all $firemakingGetName...")
             Bank.withdrawAll(DecisionTree.logToBurn)
             Execution.delay(Navi.random.nextLong(1000, 2000))
-        }
-        else {
+        } else {
             Zezimax.Logger.log("Out of logs, Re-Initializing...")
             Execution.delay(Navi.random.nextLong(1000, 2000))
             Zezimax.botState = ZezimaxBotState.INITIALIZING

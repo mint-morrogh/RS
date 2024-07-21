@@ -55,8 +55,7 @@ fun withdrawFishingSupplies() {
 
         // Withdraw feathers if needed
         if (DecisionTree.feathersNeeded) {
-            val featherCount =  Bank.getItems().any { it.id == featherId }
-            if (featherCount) {
+            if (Utilities.isItemIdInBank(featherId)) {
                 Bank.withdrawAll(featherId)
                 Zezimax.Logger.log("Feathers withdrawn...")
                 Execution.delay(Navi.random.nextLong(1300, 2000))
@@ -70,8 +69,7 @@ fun withdrawFishingSupplies() {
 
         // Withdraw bait if needed
         if (DecisionTree.baitNeeded) {
-            val baitCount =  Bank.getItems().any { it.id == baitId }
-            if (baitCount) {
+            if (Utilities.isItemIdInBank(baitId)) {
                 Bank.withdrawAll(baitId)
                 Zezimax.Logger.log("Bait withdrawn...")
                 Execution.delay(Navi.random.nextLong(1300, 2000))
@@ -217,8 +215,7 @@ class Fishing(private val locationFish: String,
             // Withdraw feathers if needed
 
             if (DecisionTree.feathersNeeded) {
-                val featherCount =  Bank.getItems().any { it.id == featherId }
-                if (featherCount) {
+                if (Utilities.isItemIdInBank(featherId)) {
                     Bank.withdrawAll(featherId)
                     Zezimax.Logger.log("Feathers withdrawn...")
                     Execution.delay(Navi.random.nextLong(1300, 2000))
@@ -233,8 +230,7 @@ class Fishing(private val locationFish: String,
             // Withdraw bait if needed
 
             if (DecisionTree.baitNeeded) {
-                val baitCount =  Bank.getItems().any { it.id == baitId }
-                if (baitCount) {
+                if (Utilities.isItemIdInBank(baitId)) {
                     Bank.withdrawAll(baitId)
                     Zezimax.Logger.log("Bait withdrawn...")
                     Execution.delay(Navi.random.nextLong(1300, 2000))
