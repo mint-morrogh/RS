@@ -42,19 +42,19 @@ object DecisionTree {
         val goldInventorySlot = InventoryItemQuery.newQuery(623).ids(995).results()
         val gp = goldInventorySlot.sumOf {it.stackSize}
 
-/*
+
                 decision = Navi.random.nextInt(8) // bound starts at 0
 
 
- */
 
 
 
 
 
-
+/*
          decision = 4
 
+ */
 
 
 
@@ -218,7 +218,6 @@ object DecisionTree {
                     }
                 }
 
-                Zezimax.Logger.log("Mining: $rockToMine")
                 withdrawMiningSupplies(oreBoxName, stoneSpirit,1)
             }
 
@@ -321,7 +320,6 @@ object DecisionTree {
 
                     }
 
-                Zezimax.Logger.log("logs to collect: $logsToCollect")
                 withdrawWoodcuttingSupplies(woodBoxName, 1)
             }
 
@@ -377,7 +375,6 @@ object DecisionTree {
                     return
                 }
 
-                Zezimax.Logger.log("Logs for Bonfire: $logToBurn")
                 startFiremaking()
             }
 
@@ -515,7 +512,6 @@ object DecisionTree {
 
 
 
-                Zezimax.Logger.log("fish to collect: $fishToCollect")
                 withdrawFishingSupplies()
 
             }
@@ -621,7 +617,6 @@ object DecisionTree {
                     return
                 }
 
-                Zezimax.Logger.log("Fish to cook: $fishToCook")
             }
 
 
