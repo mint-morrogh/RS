@@ -128,16 +128,31 @@ fun firemaking() {
             Zezimax.Logger.log("Bonfire lit...")
             Execution.delay(Navi.random.nextLong(1300, 3000))
 
-            // Interact with "Craft" option if needed
+            // Interact with "Craft" option if needed, or back to 'Craft' option
             val logComponentCraft = ComponentQuery.newQuery(1473)
                 .componentIndex(5)
                 .item(logID)
                 .option("Craft")
                 .results()
                 .firstOrNull()
+            val craftMenu = ComponentQuery.newQuery(1371)
+                .componentIndex(22)
+                .results()
+                .firstOrNull()
+            val selectToolButton = ComponentQuery.newQuery(1371)
+                .componentIndex(14)
+                .results()
+                .firstOrNull()
             if (logComponentCraft != null && logComponentCraft.interact("Craft")) {
                 Zezimax.Logger.log("Adding Bonfire fuel...")
                 Execution.delay(Navi.random.nextLong(2000, 4000))
+                if (Interfaces.isOpen(1371)) {
+                    if (craftMenu != null) {
+                        Zezimax.Logger.log("Backing out of Fletching menu...")
+                        selectToolButton?.interact("Select")
+                        Execution.delay(Navi.random.nextLong(1900, 3000))
+                    }
+                }
                 if (Interfaces.isOpen(1179)) {
                     Zezimax.Logger.log("Craft Menu found...")
                     val woodMenu = ComponentQuery.newQuery(1179)

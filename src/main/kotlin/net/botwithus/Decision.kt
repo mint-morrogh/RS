@@ -42,17 +42,18 @@ object DecisionTree {
         val goldInventorySlot = InventoryItemQuery.newQuery(623).ids(995).results()
         val gp = goldInventorySlot.sumOf {it.stackSize}
 
-
+/*
                 decision = Navi.random.nextInt(8) // bound starts at 0
 
 
-
-
-
-
-/*
-         decision = 7
  */
+
+
+
+
+
+
+         decision = 4
 
 
 
