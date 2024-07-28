@@ -169,7 +169,8 @@ object Navi {
         draynorBank,
         edgevilleBank,
         burthorpeBank,
-        taverlyBank
+        taverlyBank,
+        varrockEastYewsBank
     )
 
     fun getNearestBank(playerCoord: Coordinate): Area.Rectangular? {
