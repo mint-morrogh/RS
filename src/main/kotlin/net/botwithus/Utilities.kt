@@ -8,6 +8,7 @@ import java.io.IOException
 
 import com.google.gson.*
 import net.botwithus.rs3.game.queries.builders.components.ComponentQuery
+import net.botwithus.rs3.script.Execution
 import java.lang.reflect.Type
 
 
@@ -109,6 +110,29 @@ object Utilities {
             .firstOrNull()
 
         return bankComponent != null
+    }
+
+    fun destroyKeyToken() {
+        val keyToken = ComponentQuery.newQuery(1473)
+            .componentIndex(5)
+            .item(24154)
+            .option("Destroy")
+            .results()
+            .firstOrNull()
+        val keyTokenYesButton = ComponentQuery.newQuery(1183)
+            .componentIndex(5)
+            .results()
+            .firstOrNull()
+
+        if (keyToken != null) {
+            if (keyToken.interact("Destroy")) {
+                Execution.delay(Navi.random.nextLong(1500, 3500))
+                if (keyTokenYesButton != null) {
+                    keyTokenYesButton.interact()
+                }
+                Execution.delay(Navi.random.nextLong(1500, 3500))
+            }
+        }
     }
 
 

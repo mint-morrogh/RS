@@ -1,5 +1,6 @@
 package net.botwithus
 
+import net.botwithus.api.game.hud.Dialog
 import net.botwithus.api.game.hud.inventories.Backpack
 import net.botwithus.api.game.hud.inventories.Bank
 import net.botwithus.internal.scripts.ScriptDefinition
@@ -111,12 +112,10 @@ class Zezimax(
 
                 // TESTING FUNCTIONS HERE
                 ////////////////////////////
-/*
-                val itemId = 1514
-                val itemName = Utilities.getNameById(itemId)
-                println("Item name is: $itemName")
+       /*
                 Execution.delay(Navi.random.nextLong(250000, 750000))
- */
+
+        */
                 ////////////////////////////
 
 
@@ -317,6 +316,14 @@ class Zezimax(
             if (Bank.isOpen()) {
                 Bank.close()
             }
+
+            // UTILITY CHECKS HERE
+            println("**INITIALIZING** Utility functions executing if needed... ")
+            Execution.delay(Navi.random.nextLong(1500, 3500))
+            // Key claims
+            Utilities.destroyKeyToken()
+
+
             Execution.delay(Navi.random.nextLong(1000, 3000)) // Simulate bank closing delay
             println("**INITIALIZING** Initialization complete. Starting main script.")
             return true

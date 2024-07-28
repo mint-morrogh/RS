@@ -213,6 +213,8 @@ class Woodcutting(private val locationWoodcutting: String,
                 } else {
                     Zezimax.Logger.log("Failed to empty $woodBoxName.")
                 }
+            } else if (woodBoxName.isEmpty()) {
+                Zezimax.Logger.log("Not using a woodbox...")
             } else {
                 Zezimax.Logger.log("No $woodBoxName found in inventory.")
             }
