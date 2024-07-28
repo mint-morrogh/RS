@@ -253,6 +253,7 @@ object DecisionTree {
 // WOODCUTTING
             3 -> {
 
+                val yewCount = Bank.getItems().filter { it.id == 1515 }.sumOf { it.stackSize }
                 val willowCount = Bank.getItems().filter { it.id == 1519 }.sumOf { it.stackSize }
                 val oakCount = Bank.getItems().filter { it.id == 1521 }.sumOf { it.stackSize }
                 val logCount = Bank.getItems().filter { it.id == 1511 }.sumOf { it.stackSize }
@@ -261,6 +262,29 @@ object DecisionTree {
                 val woodcuttingLevel = Skills.WOODCUTTING.level
                 woodBoxName = "Willow wood box"
 
+                if (woodcuttingLevel >= 70 && !taskAssigned) {
+                    // Which Woodcutting Task Decided
+                    if (yewCount <= 300) {
+                        woodcuttingLocation = "VarrockEastYews"
+                        bankLocation = "VarrockEastYewsBank"
+                        logsToCollect = 1515
+                        treeToChop = "Yew"
+                        actionToChop = "Chop down"
+                        startRand = 9000
+                        endRand = 18000
+                        taskAssigned = true
+                    }
+                    else if (willowCount <= 300) {
+                        woodcuttingLocation = "DraynorWillows"
+                        bankLocation = "DraynorBank"
+                        logsToCollect = 1519
+                        treeToChop = "Willow"
+                        actionToChop = "Chop down"
+                        startRand = 8000
+                        endRand = 15000
+                        taskAssigned = true
+                    }
+                }
                 if (woodcuttingLevel >= 20 && !taskAssigned) {
                     // Which Woodcutting Task Decided
                     if (willowCount <= 300) {

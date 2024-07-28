@@ -71,6 +71,7 @@ class Woodcutting(private val locationWoodcutting: String,
             "VarrockWestTrees" -> Navi.walkToVarrockWestTrees()
             "DraynorOaks" -> Navi.walkToDraynorOaks()
             "DraynorWillows" -> Navi.walkToDraynorWillows()
+            "VarrockEastYews" -> Navi.walkToVarrockEastYews()
             // Add more cases as needed
             else -> throw IllegalArgumentException("Unknown location: $locationWoodcutting")
         }
@@ -79,6 +80,7 @@ class Woodcutting(private val locationWoodcutting: String,
         when (locationBank) {
             "DraynorBank" -> Navi.walkToDraynorBank()
             "VarrockWestBank" -> Navi.walkToVarrockWestBank()
+            "VarrockEastYewsBank" -> Navi.walkToVarrockEastYewsBank()
             // Add more cases as needed
             else -> throw IllegalArgumentException("Unknown bank location: $locationBank")
         }
