@@ -74,8 +74,8 @@ object Navi {
         Coordinate(3147, 3443, 0)
     )
     val varrockEastYews = Area.Rectangular(
-        Coordinate(3269, 3480, 0),
-        Coordinate(3273, 3484, 0)
+        Coordinate(3264, 3484, 0),
+        Coordinate(3269, 3493, 0)
     )
     val varrockEastYewsBank = Area.Rectangular(
         Coordinate(3254, 3499, 0),
