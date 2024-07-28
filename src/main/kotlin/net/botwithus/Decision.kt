@@ -43,18 +43,20 @@ object DecisionTree {
         val gp = goldInventorySlot.sumOf {it.stackSize}
 
 
+        /*
                 decision = Navi.random.nextInt(8) // bound starts at 0
 
 
+         */
 
 
 
 
 
-/*
-         decision = 4
 
- */
+
+         decision = 3
+
 
 
 
@@ -270,8 +272,8 @@ object DecisionTree {
                         logsToCollect = 1515
                         treeToChop = "Yew"
                         actionToChop = "Chop down"
-                        startRand = 9000
-                        endRand = 18000
+                        startRand = 11000
+                        endRand = 23000
                         taskAssigned = true
                     }
                     else if (willowCount <= 300) {
@@ -532,6 +534,17 @@ object DecisionTree {
                         baitNeeded = false
                         taskAssigned = true
                     }
+                }
+                if (!taskAssigned) {
+                    // Which Fishing Task Decided
+                        fishingLocation = "AlkharidWestFishing"
+                        bankLocation = "AlkharidWestBank"
+                        fishToCollect = 2514
+                        spotToFish = "Fishing spot"
+                        actionToFish = "Net"
+                        feathersNeeded = false
+                        baitNeeded = false
+                        taskAssigned = true
                 }
 
 
