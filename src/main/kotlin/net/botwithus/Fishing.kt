@@ -242,7 +242,7 @@ class Fishing(private val locationFish: String,
                 }
             }
             val fishCount = Bank.getItems().filter { it.id == fishName }.sumOf { it.stackSize }
-            Zezimax.Logger.log("$fishName count in bank: $fishCount")
+            Zezimax.Logger.log("$fishingGetName count in bank: $fishCount")
 
             Bank.close()
             Execution.delay(Navi.random.nextLong(1000, 2500)) // Simulate bank closing delay
