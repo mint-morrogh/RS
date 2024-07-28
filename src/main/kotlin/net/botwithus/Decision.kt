@@ -262,7 +262,6 @@ object DecisionTree {
                 var taskAssigned = false
                 Zezimax.Logger.log("Selected Task: Woodcutting")
                 val woodcuttingLevel = Skills.WOODCUTTING.level
-                woodBoxName = "Willow wood box"
 
                 if (woodcuttingLevel >= 70 && !taskAssigned) {
                     // Which Woodcutting Task Decided
@@ -274,6 +273,7 @@ object DecisionTree {
                         actionToChop = "Chop down"
                         startRand = 11000
                         endRand = 23000
+                        woodBoxName = ""
                         taskAssigned = true
                     }
                     else if (willowCount <= 300) {
@@ -284,6 +284,7 @@ object DecisionTree {
                         actionToChop = "Chop down"
                         startRand = 8000
                         endRand = 15000
+                        woodBoxName = "Willow wood box"
                         taskAssigned = true
                     }
                 }
@@ -297,6 +298,7 @@ object DecisionTree {
                         actionToChop = "Chop down"
                         startRand = 8000
                         endRand = 15000
+                        woodBoxName = "Willow wood box"
                         taskAssigned = true
                     }
                     else if (logCount <= 300) {
@@ -307,6 +309,7 @@ object DecisionTree {
                         actionToChop = "Chop down"
                         startRand = 2500
                         endRand = 6500
+                        woodBoxName = "Willow wood box"
                         taskAssigned = true
                     }
                 }
@@ -320,6 +323,7 @@ object DecisionTree {
                         actionToChop = "Chop down"
                         startRand = 6500
                         endRand = 15000
+                        woodBoxName = "Willow wood box"
                         taskAssigned = true
                     }
                     else if (logCount <= 300) {
@@ -330,6 +334,7 @@ object DecisionTree {
                         actionToChop = "Chop down"
                         startRand = 2500
                         endRand = 6500
+                        woodBoxName = "Willow wood box"
                         taskAssigned = true
                     }
                 }
@@ -342,6 +347,7 @@ object DecisionTree {
                         actionToChop = "Chop down"
                         startRand = 2500
                         endRand = 6500
+                    woodBoxName = "Willow wood box"
                         taskAssigned = true
 
                     }

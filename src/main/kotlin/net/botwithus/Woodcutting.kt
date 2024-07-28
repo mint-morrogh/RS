@@ -20,7 +20,7 @@ val treeChopping = (DecisionTree.treeToChop)
 fun withdrawWoodcuttingSupplies(itemName: String, quantity: Int) {
 
 
-    if (Bank.isOpen()) {
+    if (Bank.isOpen() && !itemName.isEmpty()) {
         // Find the item in the bank
         val item = ComponentQuery.newQuery(517)
             .itemName(itemName)
@@ -47,8 +47,8 @@ fun withdrawWoodcuttingSupplies(itemName: String, quantity: Int) {
             Zezimax.Logger.log("Could not find $itemName in the bank.")
         }
     }
-    // Move to start mining after withdrawing supplies
-    Zezimax.botState = Zezimax.ZezimaxBotState.START_MINING
+    // Move to start woodcutting after withdrawing supplies
+    Zezimax.botState = Zezimax.ZezimaxBotState.START_WOODCUTTING
 }
 
 class Woodcutting(private val locationWoodcutting: String,
@@ -62,7 +62,7 @@ class Woodcutting(private val locationWoodcutting: String,
 ) {
     private val woodBoxCapacity = 90
     private var woodInBox = 0
-    private val woodBox = InventoryItemQuery.newQuery(93).name(woodBoxName).results().firstOrNull()
+    private val woodBox = if (woodBoxName.isEmpty()) null else InventoryItemQuery.newQuery(93).name(woodBoxName).results().firstOrNull()
 
 
     // LOCATIONS
