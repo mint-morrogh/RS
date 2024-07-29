@@ -43,20 +43,18 @@ object DecisionTree {
         val gp = goldInventorySlot.sumOf {it.stackSize}
 
 
-        /*
                 decision = Navi.random.nextInt(8) // bound starts at 0
 
 
-         */
 
 
 
 
 
 
-
+/*
          decision = 3
-
+ */
 
 
 
@@ -360,7 +358,7 @@ object DecisionTree {
 //FIREMAKING
 
             4 -> {
-
+                val yewCount = Bank.getItems().filter { it.id == 1515 }.sumOf { it.stackSize }
                 val willowCount = Bank.getItems().filter { it.id == 1519 }.sumOf { it.stackSize }
                 val oakCount = Bank.getItems().filter { it.id == 1521 }.sumOf { it.stackSize }
                 val logCount = Bank.getItems().filter { it.id == 1511 }.sumOf { it.stackSize }
@@ -368,6 +366,18 @@ object DecisionTree {
                 Zezimax.Logger.log("Selected Task: Firemaking")
                 val firemakingLevel = Skills.FIREMAKING.level
 
+                if (firemakingLevel >= 60 && !taskAssigned) {
+                    // Which Firemaking Task Decided
+                    if (yewCount >= 150) {
+                        logToBurn = 1515
+                        taskAssigned = true
+
+                    }
+                    else if (willowCount >= 150) {
+                        logToBurn = 1521
+                        taskAssigned = true
+                    }
+                }
                 if (firemakingLevel >= 30 && !taskAssigned) {
                     // Which Firemaking Task Decided
                     if (willowCount >= 150) {
@@ -665,6 +675,7 @@ object DecisionTree {
 
 // FLETCHING
             7 -> {
+                val yewCount = Bank.getItems().filter { it.id == 1515 }.sumOf { it.stackSize }
                 val willowCount = Bank.getItems().filter { it.id == 1519 }.sumOf { it.stackSize }
                 val oakCount = Bank.getItems().filter { it.id == 1521 }.sumOf { it.stackSize }
                 val logCount = Bank.getItems().filter { it.id == 1511 }.sumOf { it.stackSize }
@@ -672,6 +683,18 @@ object DecisionTree {
                 Zezimax.Logger.log("Selected Task: Fletching")
                 val fletchingLevel = Skills.FLETCHING.level
 
+                if (fletchingLevel >= 65 && !taskAssigned) {
+                    // Which Fletching Task Decided
+                    if (yewCount >= 150) {
+                        logToFletch = 1515
+                        taskAssigned = true
+
+                    }
+                    else if (willowCount >= 150) {
+                        logToFletch = 1521
+                        taskAssigned = true
+                    }
+                }
                 if (fletchingLevel >= 35 && !taskAssigned) {
                     // Which Fletching Task Decided
                     if (willowCount >= 150) {
